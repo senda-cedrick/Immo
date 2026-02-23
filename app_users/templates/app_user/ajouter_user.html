@@ -1,0 +1,58 @@
+<!-- Modal -->
+<div class="modal fade" id="ajouter_user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <p class="modal-title" style="font-size: 30px; text-align: center;">AJOUT D'UN UTILISATEUR</p>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal" enctype="multipart/form-data" method="post" action="{% url 'adduser' %}">
+              {% csrf_token %}
+              <!-- <label for="">E-mail:</label>
+              <div class="input-group flex-nowrap">
+                <input   placeholder="Entrez un email(exemple@gmail.com" type="email"   class="form-control" name="email" aria-label="Username" aria-describedby="addon-wrapping"style="width: 90%;">
+              </div> 
+              <br> -->
+              <label for="">UTILISATEUR</label>
+              <div class="input-group flex-nowrap">
+                <input required type="text" placeholder="Entrez un nom utilisateur ou Username"  name ="username" class="form-control"   aria-describedby="addon-wrapping" style="width: 90%;">
+              </div> 
+              <br>
+
+              <label for="">NOM</label>
+              <div class="input-group flex-nowrap">
+                <input required type="text" placeholder="Entrez votre nom complet"  class="form-control" name="noms" aria-label="Username" aria-describedby="addon-wrapping" style="width: 90%;">
+              </div> 
+              <br>
+
+              <label for="">PHOTO</label>
+              <div class="input-group flex-nowrap">
+                <input type="file" class="form-control" name="image_url"/>
+              </div>
+              <br> 
+
+              <label for="">MOT DE PASSE</label>
+              <div class="input-group flex-nowrap">
+                <input type="hidden"  value="rdc@2022" class="form-control" name="password" aria-label="Username" aria-describedby="addon-wrapping" style="width: 90%;">
+                <span>rdc@2026</span>
+              </div> 
+              <br>
+
+              <label for="">Profile:</label>
+              <select name="profile" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" style="width: 70%;">
+                {% for p in profiles %}
+                <option value="{{p.id}}">{{p}}</option>
+                {% endfor %}
+              </select><br>
+  
+        </div> 
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+          <button type="submit" class="btn btn-success">Enregistrer</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+  </div>

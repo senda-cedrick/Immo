@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div id="content">
+<div class="row-fluid">  
+  <div class="block">
+    <div class="navbar navbar-inner block-header">
+     <div class="muted pull-left"><strong>Log users : </strong> <span class="badge badge-info">{{compte}} au total</span></div>
+                 
+      </div>
+  <div class="block-content collapse in">
+    
+    <form action="" method="post" style="display: inline;">
+        {% csrf_token %}
+       <div class="input-group flex-nowrap" style="text-align: right;">
+        <!-- {{myFilter.form}} -->
+         <input  value="" placeholder="Rechercher" type="text"   class="form-control" name="rech" 
+         aria-label="Username" aria-describedby="addon-wrapping"style="width: 30%;">
+      </form>   
+
+      {% if pages %}
+
+        <div class="block-content collapse in">
+          
+          <div class="span12">
+
+            <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Utilisateur</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for u in pages %}
+                          <tr>
+                            <th scope="row">{{u.id}}</th>
+                            <td>{{u.user.noms}}</td>
+                            <td>{{u.action}}</td>
+                            <td>{{u.created_at}}</td>
+                          </tr>
+                        {% endfor %}
+                    </tbody>
+            </table>
+
+            {% if pages.has_previous %}
+            <a href="?page=1">&laquo;</a>
+            <a href="?page={{ pages.previous_page_number }}"><span class="badge badge-info ">Précédent</span></a>
+            {% endif %}
+            page {{ pages.number }} sur {{ pages.paginator.num_pages }}
+            <!-- <span class="badge badge-info pull-right">{{compte}}</span> -->
+ 
+            {% if pages.has_next %}
+               <a href="?page={{ pages.next_page_number }}"><span class="badge badge-info ">Suivant</span></a>
+            {% endif %}
+
+          </div>
+        </div>          
+   
+          </div>
+        </div> 
+        {% else %}        
+        <span><h4 class="text-center alert alert-warning">Aucune connexion</h4></span>
+    </div>
+  </div>
+  {% endif %}
+{% endblock content %} 

@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div id="content">
+  {% if messages %}
+
+    {% for message in messages %}
+    <div class="alert alert-danger">
+    <p style="text-align: center;">{{message}}</p>
+    </div> 
+    {% endfor %}
+
+  {% endif %}
+ 
+  {% if  sel_user_profile %}
+  <!-- <span><strong>Modifier le profile de : {{sel_user_profile.noms}}</strong></span>
+  <form class="form-horizontal" method="post" action="{% url 'update_user' sel_user.id %}">
+    {% csrf_token %}
+    <br>
+    <select name="profile" id="profile" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" style="width: 20%;">
+      {% for p in profiles %}
+      <option value="{{p.id}}">
+        {{p}}
+      </option>
+      {% endfor %}
+    </select><br><br> -->
+
+
+  {% elif sel_user %}
+  <span><strong>Modifier le profile de : {{sel_user.noms}}</strong></span>
+  <form class="form-horizontal" method="post" action="{% url 'update_user' sel_user.id %}">
+    {% csrf_token %}
+    <br>
+    {% if request.user.profile.id == 4 or request.user.is_staff %}
+    <select name="profile" id="profile" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" style="width: 20%;">
+      {% for p in profiles %}
+      <option value="{{p.id}}" {% if sel_user.profile.id == p.id %}selected{% endif %} >
+        {{p}}
+      
+      </option>
+      {% endfor %}
+    </select><br><br>
+
+    <label for="">Noms:</label>
+      <div class="input-group flex-nowrap">
+       <input type="text" placeholder="Entrez un nom utilisateur ou Username" value="{{sel_user.noms}}" style="width: 40%;"  class="form-control" name="noms"  aria-describedby="addon-wrapping" style="width: 90%;">
+    </div> 
+    <br>
+
+    <label for="">Nom utilisateur:</label>
+      <div class="input-group flex-nowrap">
+       <input type="text" placeholder="Entrez un nom utilisateur ou Username" value="{{sel_user.username}}" style="width: 40%;"  class="form-control" name="username"  aria-describedby="addon-wrapping" style="width: 90%;">
+    </div> 
+    <br>
+    
+      <button type="submit" class="btn btn-success">Confirmer la modification du profile</button>
+      <a  class="btn btn-success" href="{% url 'users' %}">Retour</a>
+   </form>
+   {% endif %}
+   {% else %}
+
+<div class="row-fluid">  
+  <div class="block">
+    <div class="navbar navbar-inner block-header">
+     <div class="muted pull-left"><strong>UTILISATEURS : </strong> <span class="badge badge-info">{{compte}} AU TOTAL</span></div>
+          
+         
+      </div>
+  <div class="block-content collapse in">
+    
+     <form action="" method="post" style="display: inline;">
+    {% csrf_token %}
+   <div class="input-group flex-nowrap" style="text-align: right;">
+    <!-- {{myFilter.form}} -->
+     <input  value="" placeholder="Rechercher" type="text"   class="form-control" name="rech" 
+     aria-label="Username" aria-describedby="addon-wrapping"style="width: 30%;">
+     {% if request.user.profile.id == 4 or request.user.is_staff %}
+     <div class="muted pull-left"><a href="" class="btn btn-success" data-toggle="modal" data-target="#ajouter_user">Ajouter un utilisateur</a>
+    </div> 
+    {% endif %}
+  </form>   
+  </div>
+  </div>
+
+
+      {% if users %}
+        <div class="navbar navbar-inner block-header">
+            <div class="muted pull-left"><strong>UTILISATEURS</strong></div>
+            <div class="muted pull-right"> <a href="{% url 'print_users' %}"><i class="icon-print"></i> Imprimer</a></div>
+        </div>
+        
+        <div class="block-content collapse in">
+          
+          <div class="span12">
+
+            <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Noms</th>
+                        <th scope="col">Profile</th>
+                        <!-- <th scope="col">Modifier Profile</th> -->
+                        {% if request.user.profile.id == 4 or request.user.is_staff %}
+                        <th scope="col">Etat</th>
+                        <th scope="col">Actions</th>
+                        {% endif %}
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for u in pages %}
+                          <tr>
+                            <th scope="row">{{u.id}}</th>
+                            <td>{{u.username}}</td>
+                            <td>{{u.noms}}</td>
+                            <td>{{u.profile}}</td>
+                  
+                        
+                            <!-- <td><a href="{% url 'edituser' u.id %}"><span class="badge badge-warning">Modifier Profile</span></td> 
+                                   -->
+                            {% if request.user.profile.id == 4 or request.user.is_staff %}
+                            <td>      
+                              <a href="{% url 'active_user' u.id %}">
+                                {% if u.is_active == True %}
+                                <img width="17px" src="/static/admin/img/icon-yes.svg" alt="True">
+                                {% else %}
+                                <img width="17px" src="/static/admin/img/icon-no.svg" alt="False">
+                                {% endif %}
+                              
+                              </a>
+                          </td>
+                          {% endif %}
+                          {% if request.user.profile.id == 4 or request.user.is_staff %}
+                          <td><a href="{% url 'edituser' u.id%}"><i class="icon-edit"></i>
+                            
+                          <a href="{% url 'generer_user_motdepasse' u.id%}" 
+                          onclick="return confirm('Etes-vous sûr de vouloir régénérer le mot de passe (rdc@2022) à {{u.username}} ')"><i class="icon-lock">
+                        </td>  
+                          {% endif %}
+                          </tr>
+
+                        {% endfor %}
+                    </tbody>
+            </table>
+
+            {% if pages.has_previous %}
+            <a href="?page=1">&laquo;</a>
+            <a href="?page={{ pages.previous_page_number }}"><span class="badge badge-info ">Précédent</span></a>
+            {% endif %}
+            page {{ pages.number }} sur {{ pages.paginator.num_pages }}
+            <span class="badge badge-info pull-right">{{compte}}</span>
+ 
+            {% if pages.has_next %}
+               <a href="?page={{ pages.next_page_number }}"><span class="badge badge-info ">Suivant</span></a>
+ 
+             {% else %}
+            {% endif %}
+
+          </div>
+        </div>          
+      {% else %}
+          </div>
+        </div>          
+        <span><h4 class="text-center alert alert-warning">Aucun utilisateur trouvé</h4></span>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+{% include 'app_user/ajouter_user.html' %}
+{% endblock content %} 

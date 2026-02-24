@@ -194,7 +194,7 @@ def adduser(request,):
         LogUser(user=owner,action=f"Ajout d'un utilisateur {user.noms} ")
         return HttpResponseRedirect('/user/users/')
 
-    return render(request,'app_users/ajouter_user.html',{'profiles':profile})
+    return render(request,'app_user/ajouter_user.html',{'profiles':profile})
 
 def edituser(request, myid):
 
@@ -213,7 +213,7 @@ def edituser(request, myid):
         'nombre' : len(liste_user),
         'profiles': profiles
     }
-    return render(request,'app_users/users.html',ctx)
+    return render(request,'app_user/users.html',ctx)
 
 def update_user(request, myid):
     user  = User.objects.get(id = myid)
@@ -257,7 +257,7 @@ def generer_user_motdepasse(request,myid):
 
 def page_modifpassword(request):
     
-    return render(request,'app_users/modifierMotPasse.html')
+    return render(request,'app_user/modifierMotPasse.html')
  
 def active_user(request, myid):
        user  = User.objects.get(id = myid)   
@@ -271,7 +271,7 @@ def active_user(request, myid):
        return HttpResponseRedirect('/user/users/')
 
 class LoginPageView(View):
-    template_name = 'app_users/login.html'
+    template_name = 'app_user/login.html'
     #form_class = forms.LoginForm
 
     def get(self, request):
@@ -312,7 +312,7 @@ def edit_profile_user(request, myid):
         'nombre' : len(liste_user),
         'profiles': profiles
     }
-    return render(request,'app_users/users.html',ctx)
+    return render(request,'app_user/users.html',ctx)
 
 def update_profile_user(request, myid):
     user  = User.objects.get(id = myid)
@@ -331,11 +331,11 @@ def rechercher_user(request):
         users = User.objects.filter(noms__contains=rech)
         
 
-        return render(request,'app_users/users.html',{'rech':rech,
+        return render(request,'app_user/users.html',{'rech':rech,
         'users_rech' : users})
 
     else:
-        return render(request,'app_users/users.html')
+        return render(request,'app_user/users.html')
 
 class UserAPIViewset(ModelViewSet):
     serializer_class = UserSerializer

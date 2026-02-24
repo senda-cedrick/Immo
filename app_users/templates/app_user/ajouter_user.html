@@ -1,58 +1,103 @@
-<!-- Modal -->
-<div class="modal fade" id="ajouter_user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-  
-        <div class="modal-header">
-          <p class="modal-title" style="font-size: 30px; text-align: center;">AJOUT D'UN UTILISATEUR</p>
-        </div>
-        <div class="modal-body">
-            <form class="form-horizontal" enctype="multipart/form-data" method="post" action="{% url 'adduser' %}">
-              {% csrf_token %}
-              <!-- <label for="">E-mail:</label>
-              <div class="input-group flex-nowrap">
-                <input   placeholder="Entrez un email(exemple@gmail.com" type="email"   class="form-control" name="email" aria-label="Username" aria-describedby="addon-wrapping"style="width: 90%;">
-              </div> 
-              <br> -->
-              <label for="">UTILISATEUR</label>
-              <div class="input-group flex-nowrap">
-                <input required type="text" placeholder="Entrez un nom utilisateur ou Username"  name ="username" class="form-control"   aria-describedby="addon-wrapping" style="width: 90%;">
-              </div> 
-              <br>
+{% comment %} {% load static %}
 
-              <label for="">NOM</label>
-              <div class="input-group flex-nowrap">
-                <input required type="text" placeholder="Entrez votre nom complet"  class="form-control" name="noms" aria-label="Username" aria-describedby="addon-wrapping" style="width: 90%;">
-              </div> 
-              <br>
 
-              <label for="">PHOTO</label>
-              <div class="input-group flex-nowrap">
-                <input type="file" class="form-control" name="image_url"/>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Corona Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="row w-100 m-0">
+          <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
+            <div class="card col-lg-4 mx-auto">
+              <div class="card-body px-5 py-5">
+                <h3 class="card-title text-left mb-3">Register</h3>
+                <form>
+                  <div class="form-group">
+                    <label>Utilisateur</label>
+                    <input name="username" type="text" class="form-control p_input" placeholder="Entrez le nom d'utilisateur">
+                  </div>
+                  <div class="form-group">
+                    <label>NOM</label>
+                    <input name="noms" type="text" class="form-control p_input" placeholder="Entrez votre nom complet">
+                  </div>
+                  <div class="form-group">
+                    <label>EMAIL</label>
+                    <input name="email" type="email" class="form-control p_input" placeholder="Entrez votre adresse mail">
+                  </div>
+                  <div class="form-group">
+                    <label>PHOTO</label>
+                    <input name="photo" type="file" class="form-control p_input" placeholder="Entrez votre adresse mail">
+                  </div>
+                  <div class="form-group">
+                    <label>PROFILE</label>
+                    <select name="profile" >
+                      {% for p in profiles %}
+                        <option value="{{p.id}}">{{p}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Password</label>
+                    <input name="password" type="password" class="form-control p_input" value="rdc@2026">
+                  </div>
+                  <div class="form-group d-flex align-items-center justify-content-between">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input"> Remember me </label>
+                    </div>
+                    <a href="#" class="forgot-pass">Forgot password</a>
+                  </div>
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-facebook col mr-2">
+                      <i class="mdi mdi-facebook"></i> Facebook </button>
+                    <button class="btn btn-google col">
+                      <i class="mdi mdi-google-plus"></i> Google plus </button>
+                  </div>
+                  <p class="sign-up text-center">Already have an Account?<a href="#"> Sign Up</a></p>
+                  <p class="terms">By creating an account you are accepting our<a href="#"> Terms & Conditions</a></p>
+                </form>
               </div>
-              <br> 
-
-              <label for="">MOT DE PASSE</label>
-              <div class="input-group flex-nowrap">
-                <input type="hidden"  value="rdc@2022" class="form-control" name="password" aria-label="Username" aria-describedby="addon-wrapping" style="width: 90%;">
-                <span>rdc@2026</span>
-              </div> 
-              <br>
-
-              <label for="">Profile:</label>
-              <select name="profile" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" style="width: 70%;">
-                {% for p in profiles %}
-                <option value="{{p.id}}">{{p}}</option>
-                {% endfor %}
-              </select><br>
-  
-        </div> 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-          <button type="submit" class="btn btn-success">Enregistrer</button>
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
         </div>
-      </form>
+        <!-- row ends -->
       </div>
+      <!-- page-body-wrapper ends -->
     </div>
-  </div>
-  </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'assets/js/off-canvas.js' %}"></script>
+    <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+    <script src="{% static 'assets/js/misc.js' %}"></script>
+    <script src="{% static 'assets/js/settings.js' %}"></script>
+    <script src="{% static 'assets/js/todolist.js' %}"></script>
+    <!-- endinject -->
+  </body>
+</html> {% endcomment %}

@@ -89,7 +89,7 @@
           <li class="nav-item menu-items">
             <a class="nav-link" href="index.html">
               <span class="menu-icon">
-                <i class="mdi mdi-speedometer"></i>
+                <i class="mdi mdi-view-dashboard"></i>
               </span>
               <span class="menu-title">Dashboard</span>
             </a>
@@ -97,7 +97,7 @@
           <li class="nav-item menu-items">
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
               <span class="menu-icon">
-                <i class="mdi mdi-laptop"></i>
+                <i class="mdi mdi-domain"></i>
               </span>
               <span class="menu-title">Agence</span>
               <i class="menu-arrow"></i>
@@ -111,7 +111,7 @@
           <li class="nav-item menu-items">
             <a class="nav-link" href="pages/forms/basic_elements.html">
               <span class="menu-icon">
-                <i class="mdi mdi-playlist-play"></i>
+                <i class="mdi mdi-account-multiple-plus"></i>
               </span>
               <span class="menu-title">Personnel</span>
             </a>
@@ -119,7 +119,7 @@
           <li class="nav-item menu-items">
             <a class="nav-link" href="pages/tables/basic-table.html">
               <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
+                <i class="mdi mdi-account-key"></i>
               </span>
               <span class="menu-title">Proprietaires</span>
             </a>
@@ -127,7 +127,7 @@
           <li class="nav-item menu-items">
             <a class="nav-link" href="pages/tables/basic-table.html">
               <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
+                <i class="mdi mdi-account-multiple"></i>
               </span>
               <span class="menu-title">Locataires</span>
             </a>
@@ -135,7 +135,7 @@
           <li class="nav-item menu-items">
             <a class="nav-link" href="pages/tables/basic-table.html">
               <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
+                <i class="mdi mdi-home-city"></i>
               </span>
               <span class="menu-title">Locations disponibles</span>
             </a>
@@ -143,7 +143,7 @@
           <li class="nav-item menu-items">
             <a class="nav-link" href="pages/tables/basic-table.html">
               <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
+                <i class="mdi mdi-credit-card"></i>
               </span>
               <span class="menu-title">Paiements</span>
             </a>
@@ -151,7 +151,7 @@
           <li class="nav-item menu-items">
             <a class="nav-link" href="pages/tables/basic-table.html">
               <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
+                <i class="mdi mdi-book-multiple"></i>
               </span>
               <span class="menu-title">Impayés et Préavis</span>
             </a>
@@ -159,7 +159,7 @@
           <li class="nav-item menu-items">
             <a class="nav-link" href="pages/tables/basic-table.html">
               <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
+                <i class="mdi mdi-folder-outline"></i>
               </span>
               <span class="menu-title">Gestion des garanties</span>
             </a>
@@ -167,7 +167,7 @@
           <li class="nav-item menu-items">
             <a class="nav-link" href="pages/tables/basic-table.html">
               <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
+                <i class="mdi mdi-cash"></i>
               </span>
               <span class="menu-title">Gestion de la caisse</span>
             </a>
@@ -183,15 +183,15 @@
           <li class="nav-item menu-items">
             <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
               <span class="menu-icon">
-                <i class="mdi mdi-security"></i>
+                <i class="mdi mdi-account-convert"></i>
               </span>
               <span class="menu-title">Utilisateurs</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="auth">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> Register </a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'login' %}"> Login </a></li>
+                <li class="nav-item"> <a class="nav-link" href="#"> Register </a></li>
               </ul>
             </div>
           </li>
@@ -423,7 +423,7 @@
                       </div>
                       <div class="col-3">
                         <div class="icon icon-box-success ">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
+                          <span class="mdi mdi-account-card-details icon-item"></span>
                         </div>
                       </div>
                     </div>
@@ -442,7 +442,7 @@
                       </div>
                       <div class="col-3">
                         <div class="icon icon-box-success">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
+                          <span class="mdi mdi-account-key icon-item"></span>
                         </div>
                       </div>
                     </div>
@@ -461,7 +461,7 @@
                       </div>
                       <div class="col-3">
                         <div class="icon icon-box-danger">
-                          <span class="mdi mdi-arrow-bottom-left icon-item"></span>
+                          <span class="mdi mdi-home-group icon-item"></span>
                         </div>
                       </div>
                     </div>
@@ -480,7 +480,7 @@
                       </div>
                       <div class="col-3">
                         <div class="icon icon-box-success ">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
+                          <span class="mdi mdi-city icon-item"></span>
                         </div>
                       </div>
                     </div>
@@ -502,7 +502,7 @@
                         </div>
                       </div>
                       <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
+                        <i class="icon-lg mdi mdi-cash text-primary ml-auto"></i>
                       </div>
                     </div>
                   </div>
@@ -519,7 +519,7 @@
                         </div>
                       </div>
                       <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-wallet-travel text-danger ml-auto"></i>
+                        <i class="icon-lg mdi mdi-cash-register text-danger ml-auto"></i>
                       </div>
                     </div>
                   </div>
@@ -536,7 +536,7 @@
                         </div>
                       </div>
                       <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-monitor text-success ml-auto"></i>
+                        <i class="icon-lg mdi mdi-shield-check text-success ml-auto"></i>
                       </div>
                     </div>
                   </div>

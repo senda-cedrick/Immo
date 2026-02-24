@@ -1,5 +1,5 @@
 from django.urls import path
-       
+    
 from app_users.views import LoginPageView, active_user, adduser, edit_profile_user, edituser, listeusers, logout_user, logusers, page_modifpassword, print_users, rechercher_user, update_profile_user, update_user, update_user_motdepasse,generer_user_motdepasse
 urlpatterns = [
     path('users/', listeusers, name='users'),

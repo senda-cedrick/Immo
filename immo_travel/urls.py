@@ -24,7 +24,6 @@ from app_users.views import MyTokenObtainPairView
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', home,name='home')
-    path('user/', include('app_users.urls')),
     # Ajoutez cette ligne pour la racine :
     path('', include('app_base.urls')),
     path('user/', include('app_users.urls')),
@@ -32,5 +31,6 @@ urlpatterns = [
     path('api/token/', MyTokenObtainPairView.as_view(), name='obtain_token'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='refresh_token'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-
+    
+    
 ]

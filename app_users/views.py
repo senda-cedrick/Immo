@@ -159,7 +159,12 @@ def logusers(request):
     }
 
     return render(request,'app_user/logusers.html',ctx)
-   
+
+# ---Page ---
+def addusers(request):
+    return render(request, 'app_user/ajouter_user.html')
+#--- page/----
+
 @login_required
 def adduser(request,):
 

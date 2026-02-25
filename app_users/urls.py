@@ -1,10 +1,11 @@
 from django.urls import path
     
-from app_users.views import LoginPageView, active_user, adduser, edit_profile_user, edituser, listeusers, logout_user, logusers, page_modifpassword, print_users, rechercher_user, update_profile_user, update_user, update_user_motdepasse,generer_user_motdepasse
+from app_users.views import LoginPageView, active_user, adduser, edit_profile_user, edituser, listeusers, logout_user, logusers, page_modifpassword, print_users, rechercher_user, update_profile_user, update_user, update_user_motdepasse,generer_user_motdepasse, addusers
 urlpatterns = [
     path('users/', listeusers, name='users'),
     path('logusers/',  logusers, name='logusers'),
     path('adduser/', adduser, name='adduser'),
+    path('addusers/', addusers, name='addusers'),
     path('edituser/<int:myid>/', edituser, name="edituser"),
     path('edit_profile_user/<int:myid>/',edit_profile_user, name="edit_profile_user"),
     path('update_profile_user/<int:myid>/', update_profile_user, name="update_profile_user"),

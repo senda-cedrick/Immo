@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Control Manager Login</title>
+    <!-- Bootstrap -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'bootstrap/css/bootstrap-responsive.min.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'assets/styles.css' %}" rel="stylesheet" media="screen">
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="{% static 'vendors/flot/excanvas.min.js' %}"></script><![endif]-->
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script src="{% static 'vendors/modernizr-2.6.2-respond-1.1.0.min.js' %}"></script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      
+      <div class="row-fluid">
+        <div class="span6" id="content">
+          <!-- Image -->
+        </div>
+        <div class="span6" id="content">
+          <!-- wizard -->
+          <div class="row-fluid section">
+            <!-- block -->
+          <div class="block">
+              <div class="navbar navbar-inner block-header">
+                  <div class="muted pull-left">Authentification</div>
+              </div>
+              <div class="block-content collapse in">
+                  <div class="span12">
+                      <div id="rootwizard">
+                          <div class="navbar">
+                            <div class="navbar-inner">
+                              <div class="container">
+                                <ul>
+                                    <li><a href="#tab1" class="alert-info" data-toggle="tab">Local</a></li>
+                                    <li><a href="#tab2" class="alert-success" data-toggle="tab">Distante</a></li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="tab-content">
+                              <div class="tab-pane" id="tab1">
+                                  <form class="form-horizontal pull-right alert-info" method="post" action="{% url 'login' %}">
+                                    {% csrf_token %}
+                                    <fieldset>
+                                      <div class="control-group">
+                                        <label class="control-label" for="username">Utilisateur</label>
+                                        <div class="controls">
+                                          <input class="input-medium" name="username" id="username" type="text" placeholder="utilisateur" />
+                                        </div>
+                                      </div>
+                                      <div class="control-group">
+                                        <label class="control-label" for="password">Mot de passe</label>
+                                        <div class="controls">
+                                          <input class="input-medium" name="password" id="password" type="password" placeholder="mot de passe" />
+                                        </div>
+                                      </div>
+                                      <div class="pull-right">
+                                        <button class="btn btn-medium btn-info" type="submit">Valider</button>
+                                      </div>
+                                    </fieldset>
+                                  </form>
+                                  {% if message %}
+                                    <div class="alert alert-danger">
+                                      <p style="text-align: center;">{{message}}</p>
+                                    </div> 
+                                  {% endif %}
+                              </div>
+                              <div class="tab-pane" id="tab2">
+                                  <form class="form-horizontal pull-right alert-success" method="post" action="{% url 'login' %}">
+                                    {% csrf_token %}
+                                    <fieldset>
+                                      <div class="control-group">
+                                        <label class="control-label" for="ip">IP</label>
+                                        <div class="controls">
+                                          <input class="input-medium" name="ip" id="ip" type="text" value="http://192.168.2.12" />
+                                        </div>
+                                      </div>
+                                      <div class="control-group">
+                                        <label class="control-label" for="username">Utilisateur</label>
+                                        <div class="controls">
+                                          <input class="input-medium" name="username" id="username" type="text" placeholder="utilisateur" value="CEX" />
+                                        </div>
+                                      </div>
+                                      <div class="control-group">
+                                        <label class="control-label" for="password">Mot de passe</label>
+                                        <div class="controls">
+                                          <input class="input-medium" name="password" id=   "password" type="password" placeholder="mot de passe" value="rdc@2022"/>
+                                        </div>
+                                      </div>
+                                      <div class="pull-right">
+                                        <button class="btn btn-medium btn-success" type="submit">Valider</button>
+                                      </div>
+                                    </fieldset>
+                                  </form>
+                                  {% if message %}
+                                    <div class="alert alert-danger">
+                                      <p style="text-align: center;">{{message}}</p>
+                                    </div> 
+                                  {% endif %}
+                              </div>
+                          </div>  
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- /block -->
+          </div>
+          <!-- /wizard -->
+        </div>
+      </div>
+    </div> <!-- /container -->
+
+
+<!--     <form class="form-signin" style="margin-top:10% ;" method="post">
+      <h2 class="form-signin-heading">Control Manager</h2>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn-large btn-primary" type="submit">Connexion</button>
+    </form>
+ -->
+
+    <link href="{% static 'vendors/datepicker.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'vendors/uniform.default.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'vendors/chosen.min.css' %}" rel="stylesheet" media="screen">
+
+    <link href="{% static 'vendors/wysiwyg/bootstrap-wysihtml5.css' %}" rel="stylesheet" media="screen">
+
+    <script src="{% static 'vendors/jquery-1.9.1.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendors/jquery.uniform.min.js' %}"></script>
+    <script src="{% static 'vendors/chosen.jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/bootstrap-datepicker.js' %}"></script>
+    
+    <script src="{% static 'vendors/wysiwyg/wysihtml5-0.3.0.js' %}"></script>
+    <script src="{% static 'vendors/wysiwyg/bootstrap-wysihtml5.js' %}"></script>
+
+    <script src="{% static 'vendors/wizard/jquery.bootstrap.wizard.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendors/jquery-validation/dist/jquery.validate.min.js' %}"></script>
+	  <script src="{% static 'assets/form-validation.js' %}"></script>
+
+    <script src="{% static 'assets/scripts.js' %}"></script>
+    
+    <script>
+
+	jQuery(document).ready(function() {   
+	   FormValidation.init();
+	});
+	
+
+        $(function() {
+            $(".datepicker").datepicker();
+            $(".uniform_on").uniform();
+            $(".chzn-select").chosen();
+            $('.textarea').wysihtml5();
+
+            $('#rootwizard').bootstrapWizard({onTabShow: function(tab, navigation, index) {
+                var $total = navigation.find('li').length;
+                var $current = index+1;
+                var $percent = ($current/$total) * 100;
+                $('#rootwizard').find('.bar').css({width:$percent+'%'});
+                // If it's the last tab then hide the last button and show the finish instead
+                if($current >= $total) {
+                    $('#rootwizard').find('.pager .next').hide();
+                    $('#rootwizard').find('.pager .finish').show();
+                    $('#rootwizard').find('.pager .finish').removeClass('disabled');
+                } else {
+                    $('#rootwizard').find('.pager .next').show();
+                    $('#rootwizard').find('.pager .finish').hide();
+                }
+            }});
+            $('#rootwizard .finish').click(function() {
+                alert('Finished!, Starting over!');
+                $('#rootwizard').find("a[href*='tab1']").trigger('click');
+            });
+        });
+        </script>
+  </body>
+</html>

@@ -6,4 +6,8 @@ def home(request):
     
     return render(request, 'index.html')
 
+def agence(request):
+    
+    return render(request, 'agence.html')
+
 

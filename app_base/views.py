@@ -22,3 +22,5 @@ def locataires(request):
 def personnels(request):
     return render(request, 'personnels.html')
 
+def proprietaires(request):
+    return render(request, 'proprietaires.html')

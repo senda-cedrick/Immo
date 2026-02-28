@@ -95,7 +95,7 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+            <a class="nav-link" data-toggle="collapse" href="{% url 'agences' %}" aria-expanded="false" aria-controls="ui-basic">
               <span class="menu-icon">
                 <i class="mdi mdi-domain"></i>
               </span>
@@ -401,7 +401,7 @@
           </div>
         </nav>
         <!-- partial -->
-         <!-- ici LIST-->
+         <!-- ici -->
         <div class="main-panel">
           <div class="content-wrapper bg-secondary">
             <div class="row">
@@ -416,7 +416,7 @@
                 <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card bg-secondary">
                   <div class="card-body">
-                    <h3 class="card-title text-dark">Liste des Garanties</h3>
+                    <h3 class="card-title text-dark"> Agences que vous gérez </h3>
                     <!-- add search + buttons-->
                     <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch bg-secondary text-dark">
                       <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -425,17 +425,17 @@
                       <ul class="navbar-nav w-100">
                         <li class="nav-item w-100">
                           <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
-                            <input type="text" class="form-control form-control-sm w-25 bg-white" placeholder="Search garanties">
+                            <input type="text" class="form-control form-control-sm w-25 bg-white" placeholder="Search Agences">
                           </form>
                         </li>
                       </ul>
                       <ul class="navbar-nav navbar-nav-right">
                         <li class="nav-item dropdown d-none d-lg-block">
-                          <a class="nav-link btn btn-primary text-white create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Nouvelle Garantie</a>
+                          <a class="nav-link btn btn-primary text-white create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Nouvelle Agence</a>
                         </li>
                       </ul>
                     </div>
-                    
+                    <!-- / -->
 
                     <p class="card-description"> Add class <code>.table-dark</code>
                     </p>
@@ -445,26 +445,32 @@
                         <thead>
                           <tr>
                             <th> # </th>
-                            <th> Id_Garantie </th>
-                            <th> locataires </th>
-                            <th> montant </th>
-                            <th> planification </th>
-                            <th> date_appartition </th>
-                            <th> created_at </th>
-                            <th> updated_at </th>
+                            <th> Id_Agence </th>
+                            <th> Nom </th>
+                            <th> Numero_impot </th>
+                            <th> Numero_fiscal </th>
+                            <th> Effectif </th>
+                            <th> Revenu </th>
+                            <th> Email </th>
+                            <th> Active </th>
+                            <th> Created_at </th>
+                            <th> Updated_at </th>
                             <th> Action </th>
                           </tr>
                         </thead>
                         <tbody>
-                          {% for ga in garanties %}
+                          {% for ag in agences %}
                           <tr>
-                            <td>{{ ga.id_garantie }}</td>
-                            <td>{{ ga.locataires }}</td>
-                            <td>{{ ga.montant }}</td>
-                            <td>{{ ga.planification }}</td>
-                            <td>{{ ga.date_appartition }}</td>
-                            <td>{{ ga.created_at }}</td>
-                            <td>{{ ga.updated_at }}</td>
+                            <td>{{ ag.id_agence }}</td>
+                            <td>{{ ag.nom }}</td>
+                            <td>{{ ag.numero_impot }}</td>
+                            <td>{{ ag.numero_fisc }}</td>
+                            <td>{{ ag.effectif }}</td>
+                            <td>{{ ag.revenu }}</td>
+                            <td>{{ ag.email }}</td>
+                            <td>{{ ag.active }}</td>
+                            <td>{{ ag.created_at }}</td>
+                            <td>{{ ag.updated_at }}</td>
                             <td>
                               <a href="#">
                                 <i class="mdi mdi-rename-box text-primary"></i>
@@ -484,7 +490,6 @@
               </div>
             </div>
           </div>
-          <!-- / List-->
             
             
           <!-- content-wrapper ends -->

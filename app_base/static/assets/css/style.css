@@ -11103,7 +11103,7 @@ input[type="button"].btn-block {
   .nav-tabs .nav-link.active,
   .nav-tabs .nav-item.show .nav-link {
     color: #ffffff;
-    background-color: black;
+    background-color: rgb(73, 45, 148);
     border-color: #2c2e33 #2c2e33 black; }
   .nav-tabs .dropdown-menu {
     margin-top: -1px;
@@ -20195,7 +20195,7 @@ div.tagsinput {
 /* === Landing screens === */
 /* Auth */
 .auth.login-bg {
-  background: url("../images/auth/Login_bg.jpg");
+  background: url("../images/auth/connexion.jpg");
   background-size: cover; }
 
 .auth .login-half-bg {
@@ -20735,7 +20735,7 @@ div.tagsinput {
           margin-right: auto;
           margin-left: 1rem; }
       .sidebar .nav .nav-item.active > .nav-link {
-        background: #0f1015;
+        background:#252835;
         position: relative; }
         .sidebar .nav .nav-item.active > .nav-link:before {
           content: "";
@@ -21126,7 +21126,7 @@ div.tagsinput {
       width: 100%; } }
 
 .content-wrapper {
-  background: #000000;
+  background: #f1f3f5;
   padding: 1.875rem 1.75rem;
   width: 100%;
   -webkit-flex-grow: 1;

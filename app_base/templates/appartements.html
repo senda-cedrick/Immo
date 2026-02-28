@@ -26,12 +26,12 @@
     <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
   </head>
   <body>
-    <div class="container-scroller">
+    <div class="container-scroller text-dark">
       <!-- partial:partials/_sidebar.html -->
-      <nav class="sidebar sidebar-offcanvas bg-secondary text-dark" id="sidebar">
-        <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-          <a class="sidebar-brand brand-logo" href="index.html"><img src="{% static 'assets/images/logo.svg' %}" alt="logo" /></a>
-          <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" /></a>
+      <nav class="sidebar sidebar-offcanvas bg-secondary" id="sidebar">
+        <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top bg-secondary text-dark">
+          <a class="sidebar-brand brand-logo text-dark" href="index.html"><img src="{% static 'assets/images/logo.svg' %}" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo-mini text-dark" href="index.html"><img src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" /></a>
         </div>
         <ul class="nav">
           <li class="nav-item profile">
@@ -104,12 +104,12 @@
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% url 'agence' %}">Agences</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'agences' %}">Agences</a></li>
               </ul>
             </div>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="pages/forms/basic_elements.html">
+            <a class="nav-link" href="{% url 'personnels' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-account-multiple-plus"></i>
               </span>
@@ -117,7 +117,7 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="pages/tables/basic-table.html">
+            <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-account-key"></i>
               </span>
@@ -125,7 +125,7 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="pages/tables/basic-table.html">
+            <a class="nav-link" href="{% url 'locataires' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-account-multiple"></i>
               </span>
@@ -133,7 +133,7 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="pages/tables/basic-table.html">
+            <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-home-city"></i>
               </span>
@@ -141,7 +141,7 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="pages/tables/basic-table.html">
+            <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-credit-card"></i>
               </span>
@@ -149,7 +149,7 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="pages/tables/basic-table.html">
+            <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-book-multiple"></i>
               </span>
@@ -157,7 +157,7 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="pages/tables/basic-table.html">
+            <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-folder-outline"></i>
               </span>
@@ -165,7 +165,7 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="pages/tables/basic-table.html">
+            <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-cash"></i>
               </span>
@@ -173,7 +173,7 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="pages/charts/chartjs.html">
+            <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-chart-bar"></i>
               </span>
@@ -219,13 +219,13 @@
             <ul class="navbar-nav w-100">
               <li class="nav-item w-100">
                 <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
-                  <input type="text" class="form-control" placeholder="Search products">
+                  <input type="text" class="form-control bg-white" placeholder="Search products">
                 </form>
               </li>
             </ul>
             <ul class="navbar-nav navbar-nav-right">
               <li class="nav-item dropdown d-none d-lg-block">
-                <a class="nav-link btn btn-info text-white create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Creer Users</a>
+                <a class="nav-link btn btn-primary text-white create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Creer Users</a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="createbuttonDropdown">
                   <h6 class="p-3 mb-0">Projects</h6>
                   <div class="dropdown-divider"></div>
@@ -401,6 +401,7 @@
           </div>
         </nav>
         <!-- partial -->
+         <!-- ici LIST-->
         <div class="main-panel">
           <div class="content-wrapper bg-secondary">
             <div class="row">
@@ -415,62 +416,64 @@
                 <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card bg-secondary">
                   <div class="card-body">
-                    <h4 class="card-title text-dark">Inverse table</h4>
+                    <h3 class="card-title text-dark">Liste des Appartements</h3>
+                    <!-- add search + buttons-->
+                    <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch bg-secondary text-dark">
+                      <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+                        <span class="mdi mdi-menu"></span>
+                      </button>
+                      <ul class="navbar-nav w-100">
+                        <li class="nav-item w-100">
+                          <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
+                            <input type="text" class="form-control form-control-sm w-25 bg-white" placeholder="Search appartements">
+                          </form>
+                        </li>
+                      </ul>
+                      <ul class="navbar-nav navbar-nav-right">
+                        <li class="nav-item dropdown d-none d-lg-block">
+                          <a class="nav-link btn btn-primary text-white create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Nouvelle Appartement</a>
+                        </li>
+                      </ul>
+                    </div>
+                    
+
                     <p class="card-description"> Add class <code>.table-dark</code>
                     </p>
+                    <!-- Affichage liste et fonction-->
                     <div class="table-responsive">
                       <table class="table table- bg-white">
                         <thead>
                           <tr>
                             <th> # </th>
-                            <th> First name </th>
-                            <th> Amount </th>
-                            <th> Deadline </th>
+                            <th> Id_Appartement </th>
+                            <th> identifiant </th>
+                            <th> prix </th>
+                            <th> status </th>
+                            <th> created_at </th>
+                            <th> updated_at </th>
+                            <th> Action </th>
                           </tr>
                         </thead>
                         <tbody>
+                          {% for ap in garanties %}
                           <tr>
-                            <td> 1 </td>
-                            <td> Herman Beck </td>
-                            <td> $ 77.99 </td>
-                            <td> May 15, 2015 </td>
+                            <td>{{ ap.id_appartement }}</td>
+                            <td>{{ ap.identifiant }}</td>
+                            <td>{{ ap.prix }}</td>
+                            <td>{{ ap.status }}</td>
+                            <td>{{ ap.created_at }}</td>
+                            <td>{{ ap.updated_at }}</td>
+                            <td>
+                              <a href="#">
+                                <i class="mdi mdi-rename-box text-primary"></i>
+                              </a>_
+                              <a href="#">
+                                <i class="mdi mdi-delete text-danger"></i>
+                              </a>
+                            </td>
                           </tr>
-                          <tr>
-                            <td> 2 </td>
-                            <td> Messsy Adam </td>
-                            <td> $245.30 </td>
-                            <td> July 1, 2015 </td>
-                          </tr>
-                          <tr>
-                            <td> 3 </td>
-                            <td> John Richards </td>
-                            <td> $138.00 </td>
-                            <td> Apr 12, 2015 </td>
-                          </tr>
-                          <tr>
-                            <td> 4 </td>
-                            <td> Peter Meggik </td>
-                            <td> $ 77.99 </td>
-                            <td> May 15, 2015 </td>
-                          </tr>
-                          <tr>
-                            <td> 5 </td>
-                            <td> Edward </td>
-                            <td> $ 160.25 </td>
-                            <td> May 03, 2015 </td>
-                          </tr>
-                          <tr>
-                            <td> 6 </td>
-                            <td> John Doe </td>
-                            <td> $ 123.21 </td>
-                            <td> April 05, 2015 </td>
-                          </tr>
-                          <tr>
-                            <td> 7 </td>
-                            <td> Henry Tom </td>
-                            <td> $ 150.00 </td>
-                            <td> June 16, 2015 </td>
-                          </tr>
+                          {% endfor %}
+                          <!-- / -->
                         </tbody>
                       </table>
                     </div>
@@ -478,13 +481,15 @@
                 </div>
               </div>
             </div>
+          </div>
+          <!-- / List-->
             
             
           <!-- content-wrapper ends -->
           <!-- partial:partials/_footer.html -->
-          <footer class="footer">
-            <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Templates © oyegroup 2026</span>
+          <footer class="footer bg-primary">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between text-white">
+              <span class="text-white d-block text-center text-sm-left d-sm-inline-block">Templates © oyegroup 2026</span>
               <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Oye <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Biso</a>  oyegroup.com</span>
             </div>
           </footer>
@@ -516,4 +521,4 @@
     <script src="{% static 'assets/js/dashboard.js' %}"></script>
     <!-- End custom js for this page -->
   </body>
-</html>
+</html>           

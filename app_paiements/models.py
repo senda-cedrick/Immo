@@ -12,9 +12,7 @@ class Paiement(models.Model):
     type_paie= models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    class Meta:
-            managed = False
-            db_table = 'paiement'
+ 
 
     def _str_(self):
         return self.id_paie
@@ -28,9 +26,7 @@ class Impayes(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    class Meta:
-            managed = False
-            db_table = 'impaye'
+  
 
     def _str_(self):
         return self.id_impaye

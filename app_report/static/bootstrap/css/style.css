@@ -1,0 +1,72 @@
+ul li.active 
+{
+    background-color: rgb(255, 240, 245);
+}
+  
+.slide {
+    position: absolute;
+    width: 150px;
+    height: 100%;
+    top :0;
+    left: 0;
+    background: aliceblue;
+    z-index: -1;
+    transition: 0.5s; 
+    opacity: 0;
+
+}
+
+ul li:nth-child(1).active ~ .slide
+{
+    left: 0;
+    opacity: 1;
+}
+
+ul li:nth-child(2).active ~ .slide
+{
+    left: 0;
+    opacity: 1;
+}
+act li:nth-child(3).active ~ .slide
+{
+    left: 0;
+    opacity: 1;
+}
+ul li:nth-child(4).active ~ .slide
+{
+    left: 0;
+    opacity: 1;
+}
+ul li:nth-child(5).active ~ .slide
+{
+    left: 0;
+    opacity: 1;
+}
+ul li:nth-child(6).active ~ .slide
+{
+    left: 0;
+    opacity: 1;
+}
+
+ul li:nth-child(7).active ~ .slide
+{
+    left: 0;
+    opacity: 1;
+}
+ul li:nth-child(8).active ~ .slide
+{
+    left: 0;
+    opacity: 1;
+}
+
+ul li:nth-child(9).active ~ .slide
+{
+    left: 0;
+    opacity: 1;
+}
+
+
+ul li.slide a
+{
+    color:#262
+}

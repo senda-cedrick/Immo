@@ -27,19 +27,25 @@
             <div class="card col-lg-4 mx-auto">
               <div class="card-body px-5 py-5">
                 <h3 class="card-title text-left mb-3">Login</h3>
-                <form>
+                <form method="post" action="{% url 'login' %}">
+                   {% csrf_token %}
                   <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" class="form-control p_input" placeholder="utilisateur" value="Admin">
+                    <label class="control-label" for="username">Username</label>
+                    <input type="text" class="form-control p_input" name="username" id="username" placeholder="utilisateur">
                   </div>
                   <div class="form-group">
-                    <label>Password *</label>
-                    <input type="password" class="form-control p_input" placeholder="mot de passe">
+                    <label class="control-label" for="password">Password *</label>
+                    <input type="password" class="form-control p_input" name="password" id="password"  placeholder="mot de passe">
                   </div>
 
                   <div class="text-center">
                     <button type="submit" class="btn btn-danger btn-block enter-btn">Login</button>
                   </div>
+                  {% if message %}
+                  <div class="alert alert-danger">
+                  <p style="text-align: center;">{{message}}</p>
+                  </div> 
+                  {% endif %}
 
                    <div class="form-group">
                     <label>IP *</label>
@@ -65,6 +71,8 @@
                   </div>
                   <div class="text-center">
                     <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
+                     {% csrf_token %}
+                     {{ form.as_p }}
                   </div>
                   <div class="d-flex">
                    <button class="btn btn-outline-danger col">
@@ -74,7 +82,8 @@
                       <i class="mdi mdi-link-variant"></i> Distante
                     </button>
                   </div>
-                  <p class="sign-up">Vous n'avez pas de compte?  <a href="{% url 'addusers' %}">     Creez</a></p>
+                  <p class="sign-up">Vous n'avez pas de compte?  <a href="{% url 'addusers' %}">  Creez</a></p>
+
                 </form>
               </div>
             </div>

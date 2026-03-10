@@ -13,9 +13,7 @@ class Agence(models.Model):
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    class Meta:
-            managed = False
-            db_table = 'agence'
+    
 
     def _str_(self):
         return self.nom + "(" + self.effectif + ")"
@@ -36,9 +34,7 @@ class Personnel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
         
-    class Meta:
-            managed = False
-            db_table = 'personnel'
+   
 
     def _str_(self):
         return self.noms 
@@ -53,9 +49,6 @@ class Proprietaire(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
         
-    class Meta:
-            managed = False
-            db_table = 'proprietaire'
 
     def _str_(self):
         return self.noms 
@@ -68,9 +61,7 @@ class Appartement(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
         
-    class Meta:
-            managed = False
-            db_table = 'appartement'
+   
 
     def _str_(self):
         return self.identifiant 
@@ -84,11 +75,6 @@ class Propriete(models.Model):
     appartements = models.ForeignKey(Appartement, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-        
-    class Meta:
-            managed = False
-            db_table = 'propriete'
-
     def _str_(self):
         return self.Agent 
 class Locataire(models.Model):
@@ -101,9 +87,6 @@ class Locataire(models.Model):
     email = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    class Meta:
-            managed = False
-            db_table = 'locataire'
 
     def _str_(self):
         return self.noms + "(" + self.email+ ")"
@@ -115,10 +98,6 @@ class Logement(models.Model):
     agent= models.ForeignKey(Propriete, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    class Meta:
-            managed = False
-            db_table = 'logement'
-
     def _str_(self):
         return self.identifiant
 class Garantie(models.Model):
@@ -129,9 +108,5 @@ class Garantie(models.Model):
     date_appartition= models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    class Meta:
-            managed = False
-            db_table = 'garantie'
-
     def _str_(self):
         return self.id_garantie

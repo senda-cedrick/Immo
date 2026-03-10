@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABA - Control Manager -  Utilisateurs</title>
+
+    <!-- Bootstrap -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="all">
+    <!-- <link href="{% static 'assets/styleprinting.css' %}" rel="stylesheet" media="all"> -->   
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="{% static 'vendors/flot/excanvas.min.js' %}"></script><![endif]-->
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+  <p style="text-align: right;font-size: 13px ">Kinshasa, le {{date}}</p>
+  <table class="styled-table" >
+    <thead>
+      
+       <tr >
+           <th style="text-align: left; padding-top: 5px;width:20%"><strong><img src="/images/flag.png" alt="Ministere de defense" style="width:90px;height:90px;border-radius:123px;objectif-fit:cover;margin-right:0px"/></strong></th>
+           <th style="text-align: center; padding-top: 5px;width:60%"><p style="font-size: 16px;margin-left:10px;visibility:hidden">  MINISTERE DE LA DEFENSE NATIONALE  ET ANCIENS COMBATTANTS <br><i style="font-size: 12px">INSPECTORAT GENERAL DES FORCES ARMEES DE LA REPUBLIQUE DEMOCRATIQUE DU CONGO  </i>          </p></th>
+           <th style="text-align: right; padding-top: 5px;width:20%"><strong><img src="/images/rdc1.png" alt="Ministere de defense" style="width:90px;height:90px;border-radius:123px;objectif-fit:cover;margin-right:0px"/></strong></th>
+           
+       </tr>
+       </thead>
+     </table>
+
+
+  <p>
+    <h1>Utilisateurs</h1><hr>
+  </p>
+
+  <table>
+    <tr>
+      <td style="vertical-align: top;">
+        <p>
+          <h2><u>Chargés de mission</u></h2>
+          <table>
+            <tr>
+              <td>Nom</td>
+            </tr>
+            {% for cm in cms %}
+              <tr>
+                <td>{{ cm.noms }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </p>
+      </td>
+      <td style="vertical-align: top;"> 
+        <p>
+          <h2><u>Chef d'équipe</u></h2>
+          <table>
+            <tr>
+              <td>Nom</td>
+            </tr>
+            {% for ce in ces %}
+              <tr>
+                <td>{{ ce.noms }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </p>
+      </td>
+      <td style="vertical-align: top;">
+        <p>
+          <h2><u>Controleurs</u></h2>
+          <table>
+            <tr>
+              <td>Nom</td>
+            </tr>
+            {% for co in controleurs %}
+              <tr>
+                <td>{{ co.noms }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </p>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

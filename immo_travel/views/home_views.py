@@ -28,5 +28,5 @@ class HomeView(View):
             
             "user" : user
         }
-        return render(request, "index.html", ctx)
+        return render(request, "home.html", ctx)
     

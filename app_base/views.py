@@ -6,7 +6,7 @@ class HomeView(TemplateView):
     template_name = 'index.html'
 def home(request):
     
-    return render(request, 'index.html')
+    return render(request, 'home.html')
 
 def agences(request):
     

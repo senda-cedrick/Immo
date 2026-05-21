@@ -1,6 +1,5 @@
 from django.db import models
 
-
 # Create your models here.
 class Agence(models.Model):
     id_agence =  models.IntegerField(primary_key=True)
@@ -34,8 +33,6 @@ class Personnel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
         
-   
-
     def _str_(self):
         return self.noms 
 
@@ -62,9 +59,6 @@ class Appartement(models.Model):
     status =  models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-        
-   
-
     def _str_(self):
         return self.identifiant 
 class Propriete(models.Model):
@@ -100,6 +94,7 @@ class Logement(models.Model):
     agent= models.ForeignKey(Propriete, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     def _str_(self):
         return self.identifiant
 class Garantie(models.Model):

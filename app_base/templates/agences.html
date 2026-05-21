@@ -1,7 +1,7 @@
+
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
-  
+{% block content %}        
         <div class="main-panel">
           <div class="content-wrapper bg-secondary">
             <div class="row">
@@ -24,8 +24,9 @@
                       </button>
                       <ul class="navbar-nav w-100">
                         <li class="nav-item w-100">
-                          <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
-                            <input type="text" class="form-control form-control-sm w-25 bg-white" placeholder="Search Agences">
+                          <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search" method="post">
+                             {% csrf_token %}
+                            <input type="text" class="form-control form-control-sm w-25 bg-white" name="rech" placeholder="Search Agences">
                           </form>
                         </li>
                       </ul>
@@ -36,15 +37,13 @@
                       </ul>
                     </div>
                     <!-- / -->
-
-                    <p class="card-description"> Add class <code>.table-dark</code>
+        
                     </p>
                     <!-- Affichage liste et fonction-->
                     <div class="table-responsive">
                       <table class="table table- bg-white">
                         <thead>
                           <tr>
-                            <th> # </th>
                             <th> Id_Agence </th>
                             <th> Nom </th>
                             <th> Numero_impot </th>
@@ -53,24 +52,21 @@
                             <th> Revenu </th>
                             <th> Email </th>
                             <th> Active </th>
-                            <th> Created_at </th>
-                            <th> Updated_at </th>
                             <th> Action </th>
                           </tr>
                         </thead>
                         <tbody>
-                          {% for ag in agences %}
+                          {% if agences %}
+                          {% for item in agences %}
                           <tr>
-                            <td>{{ ag.id_agence }}</td>
-                            <td>{{ ag.nom }}</td>
-                            <td>{{ ag.numero_impot }}</td>
-                            <td>{{ ag.numero_fisc }}</td>
-                            <td>{{ ag.effectif }}</td>
-                            <td>{{ ag.revenu }}</td>
-                            <td>{{ ag.email }}</td>
-                            <td>{{ ag.active }}</td>
-                            <td>{{ ag.created_at }}</td>
-                            <td>{{ ag.updated_at }}</td>
+                            <td>{{ item.id_agence }}</td>
+                            <td>{{ item.nom }}</td>
+                            <td>{{ item.numero_impot }}</td>
+                            <td>{{ item.numero_fisc }}</td>
+                            <td>{{ item.effectif }}</td>
+                            <td>{{ item.revenu }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.active }}</td>
                             <td>
                               <a href="#">
                                 <i class="mdi mdi-rename-box text-primary"></i>
@@ -81,6 +77,7 @@
                             </td>
                           </tr>
                           {% endfor %}
+                          {% endif %}
                           <!-- / -->
                         </tbody>
                       </table>

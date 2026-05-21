@@ -216,5 +216,3 @@ def pdf_decorator(pdfname="pdf_decorator.pdf"):
             return func(*args, **kwargs)
         return wrapper
     return decorator
-    
-    

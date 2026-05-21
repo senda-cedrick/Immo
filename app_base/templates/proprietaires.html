@@ -16,7 +16,7 @@
                 <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card bg-secondary">
                   <div class="card-body">
-                    <h3 class="card-title text-dark"> Agences que vous gérez </h3>
+                    <h3 class="card-title text-dark"> propriètaires que vous gérez </h3>
                     <!-- add search + buttons-->
                     <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch bg-secondary text-dark">
                       <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -31,7 +31,7 @@
                       </ul>
                       <ul class="navbar-nav navbar-nav-right">
                         <li class="nav-item dropdown d-none d-lg-block">
-                          <a class="nav-link btn btn-primary text-white create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Nouvelle Agence</a>
+                          <a class="nav-link btn btn-primary text-white create-new-button" href="{% url 'proprietaire' %}">+ Nouveau propriètaire</a>
                         </li>
                       </ul>
                     </div>
@@ -45,32 +45,28 @@
                         <thead>
                           <tr>
                             <th> # </th>
-                            <th> Id_Agence </th>
-                            <th> Nom </th>
-                            <th> Numero_impot </th>
-                            <th> Numero_fiscal </th>
-                            <th> Effectif </th>
-                            <th> Revenu </th>
+                            <th> Id_Proprietaire </th>
+                            <th> Noms </th>
+                            <th> Bien_confies </th>
+                            <th> Bien_locatif </th>
+                            <th> Catalogue </th>
                             <th> Email </th>
-                            <th> Active </th>
                             <th> Created_at </th>
                             <th> Updated_at </th>
                             <th> Action </th>
                           </tr>
                         </thead>
                         <tbody>
-                          {% for ag in agences %}
+                          {% for pr in proprietaires %}
                           <tr>
-                            <td>{{ ag.id_agence }}</td>
-                            <td>{{ ag.nom }}</td>
-                            <td>{{ ag.numero_impot }}</td>
-                            <td>{{ ag.numero_fisc }}</td>
-                            <td>{{ ag.effectif }}</td>
-                            <td>{{ ag.revenu }}</td>
-                            <td>{{ ag.email }}</td>
-                            <td>{{ ag.active }}</td>
-                            <td>{{ ag.created_at }}</td>
-                            <td>{{ ag.updated_at }}</td>
+                            <td>{{ pr.id_proprietaire }}</td>
+                            <td>{{ pr.noms }}</td>
+                            <td>{{ pr.bienconfie }}</td>
+                            <td>{{ pr.bienlocatif }}</td>
+                            <td>{{ pr.catalogue }}</td>
+                            <td>{{ pr.email }}</td>
+                            <td>{{ pr.created_at }}</td>
+                            <td>{{ pr.updated_at }}</td>
                             <td>
                               <a href="#">
                                 <i class="mdi mdi-rename-box text-primary"></i>

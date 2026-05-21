@@ -34,6 +34,7 @@
       <!-- /partial -->
 
 
+
       <nav class="sidebar sidebar-offcanvas bg-secondary" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top bg-secondary text-dark">
           <a class="sidebar-brand brand-logo text-dark" href="{% url 'login' %}"><img src="{% static 'assets/images/logo.svg' %}" alt="logo" /></a>
@@ -223,12 +224,17 @@
 
       <div class="container-fluid page-body-wrapper">
 
+      <div class="container-fluid page-body-wrapper bg-secondary">
+
+
         <!-- partial:partials/_navbar.html -->
 
         {% include "partials/_navbar.html" %}
         <!-- /partial -->
 
-        {% block content %}{% endblock content %}
+        {% block content %}
+        
+        {% endblock content %}
          <!-- Content -->
 
         <nav class="navbar p-0 fixed-top d-flex flex-row">

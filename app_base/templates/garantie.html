@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="content-wrapper bg-secondary">
+
+  <!-- Header -->
+  <div class="page-header bg-secondary">
+    <h3 class="page-title text-dark bg-secondary">Nouvelle garantie</h3>
+
+    <nav aria-label="breadcrumb bg-secondary">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item text-dark">
+          <a href="#">Forms</a>
+        </li>
+
+        <li class="breadcrumb-item active" aria-current="page">
+          Form elements
+        </li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Formulaire centré -->
+  <div class="row justify-content-center mt-4 mb-5 bg-secondary">
+
+    <div class="col-md-6 grid-margin stretch-card
+    ">
+
+      <div class="card bg-white">
+
+        <div class="card-body">
+
+          <h4 class="card-title text-dark">Formulaire de garantie</h4>
+
+            <p class="card-description text-danger">
+              Remplissez touts les champs
+            </p>
+
+          <form class="forms-sample">
+
+            <div class="form-group">
+              <label for="locataires">
+                Locataires
+              </label>
+
+              <input type="text"
+                     class="form-control bg-secondary text-dark"
+                     id="locataires"
+                     placeholder="Entrez le locataire" name="locataires">
+            </div>
+
+            <div class="form-group">
+              <label for="montant">
+                Montant
+              </label>
+
+              <input type="integer"
+                     class="form-control bg-secondary text-dark"
+                     id="montant"
+                     placeholder="Entrez le montant" name="montant">
+            </div>
+
+            <div class="form-group">
+              <label for="planification">
+                Planification
+              </label>
+
+              <input type="text"
+                     class="form-control bg-secondary text-dark"
+                     id="planification"
+                     placeholder="Entrez la planification" name="planification">
+            </div>
+            <div class="form-group">
+              <label for="Date_apparution">
+                Date d'apparution
+              </label>
+
+              <input type="date"
+                     class="form-control bg-secondary text-dark"
+                     id="date_apparution"
+                     placeholder="Entrez la date d'apparution" name="date_apparution">
+            </div>
+
+            <div class="form-check form-check-flat form-check-primary">
+
+              <label class="form-check-label">
+
+                <input type="checkbox"
+                       class="form-check-input bg-secondary text-dark">
+
+                Remember me
+
+                <i class="input-helper"></i>
+
+              </label>
+
+            </div>
+
+            <button type="submit" class="btn btn-success mr-2 btn-round">
+              Ajouter
+            </button>
+
+            <a href="{% url 'garanties' %}" class="btn btn-danger btn-round">
+              Annuler
+            </a>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+{% endblock content %}

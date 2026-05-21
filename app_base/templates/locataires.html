@@ -31,7 +31,7 @@
                       </ul>
                       <ul class="navbar-nav navbar-nav-right">
                         <li class="nav-item dropdown d-none d-lg-block">
-                          <a class="nav-link btn btn-primary text-white create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Nouveau Locataire</a>
+                          <a class="nav-link btn btn-primary text-white create-new-button" id="createbuttonDropdown" href="{% url 'locataire' %}">+ Nouveau Locataire</a>
                         </li>
                       </ul>
                     </div>
@@ -50,6 +50,7 @@
                             <th> telephone </th>
                             <th> contrat </th>
                             <th> loye </th>
+                            <th> Regularite </th>
                             <th> email </th>
                             <th> created_at </th>
                             <th> updated_at </th>
@@ -64,6 +65,7 @@
                             <td>{{ lo.telephone }}</td>
                             <td>{{ lo.contrat }}</td>
                             <td>{{ lo.loye }}</td>
+                            <td>{{ lo.regularite }}</td>
                             <td>{{ lo.email }}</td>
                             <td>{{ lo.created_at }}</td>
                             <td>{{ lo.updated_at }}</td>

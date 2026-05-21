@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="content-wrapper bg-secondary">
+
+  <!-- Header -->
+  <div class="page-header bg-secondary">
+    <h3 class="page-title text-dark bg-secondary">Nouvel appartement</h3>
+
+    <nav aria-label="breadcrumb bg-secondary">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item text-dark">
+          <a href="#">Forms</a>
+        </li>
+
+        <li class="breadcrumb-item active" aria-current="page">
+          Form elements
+        </li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Formulaire centré -->
+  <div class="row justify-content-center mt-4 mb-5 bg-secondary">
+
+    <div class="col-md-6 grid-margin stretch-card
+    ">
+
+      <div class="card bg-white">
+
+        <div class="card-body">
+
+          <h4 class="card-title text-dark">Formulaire Appartement</h4>
+
+            <p class="card-description text-danger">
+              Remplissez touts les champs
+            </p>
+
+          <form class="forms-sample">
+
+            <div class="form-group">
+              <label for="identifiant">
+                Identifiant
+              </label>
+
+              <input type="text"
+                     class="form-control bg-secondary text-dark"
+                     id="identifiant"
+                     placeholder="Entrez l'identifiant" name="identifiant">
+            </div>
+
+            <div class="form-group">
+              <label for="prix">
+                Prix
+              </label>
+
+              <input type="integer"
+                     class="form-control bg-secondary text-dark"
+                     id="prix"
+                     placeholder="Entrez le prix" name="prix">
+            </div>
+
+            <div class="form-group">
+              <label for="status">
+                Status
+              </label>
+
+              <input type="text"
+                     class="form-control bg-secondary text-dark"
+                     id="status"
+                     placeholder="Entrez le status" name="status">
+            </div>
+
+            <div class="form-check form-check-flat form-check-primary">
+
+              <label class="form-check-label">
+
+                <input type="checkbox"
+                       class="form-check-input bg-secondary text-dark">
+
+                Remember me
+
+                <i class="input-helper"></i>
+
+              </label>
+
+            </div>
+
+            <button type="submit" class="btn btn-success mr-2 btn-round">
+              Ajouter
+            </button>
+
+            <a href="{% url 'appartements' %}" class="btn btn-danger btn-round">
+              Annuler
+            </a>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+{% endblock content %}

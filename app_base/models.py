@@ -38,6 +38,7 @@ class Personnel(models.Model):
 
     def _str_(self):
         return self.noms 
+
 class Proprietaire(models.Model):
    
     id_proprietaire =  models.IntegerField(primary_key=True)
@@ -52,6 +53,7 @@ class Proprietaire(models.Model):
 
     def _str_(self):
         return self.noms 
+
 class Appartement(models.Model):
        
     id_appartement =  models.IntegerField(primary_key=True)

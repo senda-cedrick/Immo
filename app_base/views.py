@@ -50,3 +50,4 @@ def personnel(request):
         #   ____________
 def proprietaire(request):
     return render(request, 'proprietaire.html')
+        # ________End_______

@@ -393,13 +393,11 @@ def login_remote(request):
             user.set_password(password)
             if not User.objects.filter(username=username).exists():
                 user.save()
-
             user = authenticate(
                 username=username,
                 password=password,
             )
-
-                                           
+                                       
             login(request, user)
             LogUser(user=user,action="Première connexion et récupération des données sur pc").save()
                 

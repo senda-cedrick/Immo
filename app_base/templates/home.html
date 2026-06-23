@@ -168,6 +168,7 @@
                         </thead>
                         <tbody>
                           <tr>
+                            {% for r in u.Locataire %}
                             <td>
                               <div class="form-check form-check-muted m-0">
                                 <label class="form-check-label">
@@ -176,10 +177,10 @@
                               </div>
                             </td>
                             <td>
-                              <img src="{% static 'assets/images/faces/face1.jpg' %}" alt="image" />
-                              <span class="pl-2">Henry Klein</span>
+                              <img src="{% static 'assets/images/faces/face1.jpg' %}" alt="image"/>
+                              <span class="pl-2">{{r.noms}}</span>
                             </td>
-                            <td> $14,500 </td>
+                            <td>{{r.loye}}</td>
                             <td> 04 Dec 2019 </td>
                             <td> 04 Dec 2019 </td>
                             <td>
@@ -263,6 +264,7 @@
                             </td>
                           </tr>
                         </tbody>
+                        {% endfor %}
                       </table>
                     </div>
                   </div>

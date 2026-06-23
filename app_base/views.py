@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
+from .forms import AgenceForm
 # Create your views here.
 
 class HomeView(TemplateView):
@@ -50,4 +51,5 @@ def personnel(request):
         #   ____________
 def proprietaire(request):
     return render(request, 'proprietaire.html')
-        # ________End_______
+
+        # ________En_

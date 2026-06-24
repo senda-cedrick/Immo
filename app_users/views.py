@@ -13,10 +13,13 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.viewsets import ModelViewSet
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.db.models import Q
 import base64
+import secrets
+import string
 
 from rest_framework.permissions import IsAuthenticated
-from app_users.utils import create_profile
+from app_users.utils import create_profile, Client
 from django.contrib.auth import login,authenticate,logout
 from django.views.generic import View
 from django.contrib.auth.decorators import login_required
@@ -71,31 +74,33 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 @login_required
 def listeusers(request):
-    listuser= User.objects.order_by('-date_joined')
+    """
+    Affiche la liste des utilisateurs, avec pagination et possibilité de recherche.
+    La recherche s'effectue via un paramètre GET 'q'.
+    """
+    users_list = User.objects.select_related('profile').order_by('-date_joined')
     profiles = Profile.objects.all()
-    ctrep =[]
+    search_query = request.GET.get('q', '')
 
-    if request.method == "POST":
-        rech = request.POST['rech']
-        p = Paginator(listuser.filter(noms__contains=rech) | listuser.filter(profile__name__contains=rech) , 10)
-        page = request.GET.get('page') 
-        pages =p.get_page(page)
-    else:
-        p = Paginator(listuser, 20)
-        page = request.GET.get('page') 
-        pages =p.get_page(page)       
-    
-    user = User.objects.get(pk=request.user.id)
-    LogUser(user=user,action="Affichage de la liste des utilisateurs")
+    if search_query:
+        users_list = users_list.filter(
+            Q(noms__icontains=search_query) | 
+            Q(username__icontains=search_query) | 
+            Q(profile__name__icontains=search_query)
+        )
+
+    paginator = Paginator(users_list, 15)  # 15 utilisateurs par page
+    page_number = request.GET.get('page')
+    pages = paginator.get_page(page_number)
+
+    LogUser.objects.create(user=request.user, action="Affichage de la liste des utilisateurs")
 
     ctx = {
-        'users' : listuser,
-        'pages' : pages,
-        'profiles':profiles,
-        'compte' : len(listuser),
+        'pages': pages,
+        'profiles': profiles,
+        'compte': paginator.count,
         "lutilisateur" : 'active'
     }
-
     return render(request,'app_user/users.html',ctx)
 
 @pdf_decorator(pdfname="Utilisateurs.pdf")
@@ -220,22 +225,34 @@ def edituser(request, myid):
     }
     return render(request,'app_user/users.html',ctx)
 
+@login_required
 def update_user(request, myid):
+    """Mise à jour des informations d'un utilisateur."""
+    # Vérifier que l'utilisateur connecté a le droit de modifier
+    if not request.user.is_superuser and request.user.id != int(myid):
+        messages.warning(request, "Vous n'avez pas la permission de modifier cet utilisateur")
+        return redirect('/user/users/')
+    
     user  = User.objects.get(id = myid)
     id_profile = request.POST.get("profile")
-    #email = request.POST.get("email")
     username = request.POST.get("username")
     noms = request.POST.get("noms")
     profile = Profile.objects.get(pk=id_profile)
     
+    # Vérifier l'unicité du username
+    if User.objects.filter(username=username).exclude(id=myid).exists():
+        messages.warning(request, "Ce nom d'utilisateur existe déjà")
+        return redirect('/user/users/')
+    
     user.profile = profile
-    #user.email = email
-    user.usename = username
+    user.username = username
     user.noms = noms
     user.save()
     
-    return HttpResponseRedirect('/user/users/')
+    LogUser.objects.create(user=request.user, action=f"Mise à jour de l'utilisateur {user.noms}")
+    return redirect('/user/users/')
 
+@login_required
 def update_user_motdepasse(request):
     user  = User.objects.get(id = request.user.id)
     passew = request.POST.get("pass")
@@ -253,18 +270,30 @@ def update_user_motdepasse(request):
         
     return HttpResponseRedirect('/user/login/')
 
+@login_required
 def generer_user_motdepasse(request,myid): 
+    """Génère un mot de passe aléatoire sécurisé pour un utilisateur."""
     user  = User.objects.get(id = myid)
-    user.set_password("oye@2026") 
+    # Générer un mot de passe aléatoire de 12 caractères
+    alphabet = string.ascii_letters + string.digits + "!@#$%^&*"
+    new_password = ''.join(secrets.choice(alphabet) for _ in range(12))
+    user.set_password(new_password) 
     user.save()
-
-    return HttpResponseRedirect('/user/')
+    
+    LogUser.objects.create(user=request.user, action=f"Réinitialisation du mot de passe de {user.noms}")
+    messages.success(request, f"Mot de passe réinitialisé avec succès pour {user.noms}")
+    return redirect('/user/users/')
 
 def page_modifpassword(request):
     
     return render(request,'app_user/modifierMotPasse.html')
  
+@login_required
 def active_user(request, myid):
+       """Active ou désactive un utilisateur. Réservé aux superusers."""
+       if not request.user.is_superuser:
+           messages.warning(request, "Seuls les administrateurs peuvent activer/désactiver des utilisateurs")
+           return redirect('/user/users/')
        user  = User.objects.get(id = myid)   
        if user.is_active == False:    
           user.is_active = True
@@ -319,7 +348,12 @@ def edit_profile_user(request, myid):
     }
     return render(request,'app_user/users.html',ctx)
 
+@login_required
 def update_profile_user(request, myid):
+    """Met à jour le profil d'un utilisateur."""
+    if not request.user.is_superuser and request.user.id != int(myid):
+        messages.warning(request, "Vous n'avez pas la permission de modifier ce profil")
+        return redirect('/user/users/')
     user  = User.objects.get(id = myid)
     id_profile = request.POST.get("profile")
     profile = Profile.objects.get(pk=id_profile)

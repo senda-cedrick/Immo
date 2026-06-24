@@ -2,7 +2,7 @@
 <nav class="sidebar sidebar-offcanvas bg-secondary" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top bg-secondary text-dark">
           <a class="sidebar-brand brand-logo text-dark" href="{% url 'login' %}"><img src="{% static 'assets/images/logo.svg' %}" alt="logo" /></a>
-          <a class="sidebar-brand brand-logo-mini text-dark" href="index.html"><img src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo-mini text-dark" href="{% url 'home' %}"><img src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" /></a>
         </div>
         <ul class="nav">
           <li class="nav-item profile">
@@ -30,7 +30,7 @@
                   </div>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item preview-item">
+                <a href="{% url 'page_modifpassword' %}" class="dropdown-item preview-item">
                   <div class="preview-thumbnail">
                     <div class="preview-icon bg-dark rounded-circle">
                       <i class="mdi mdi-onepassword  text-info"></i>
@@ -41,7 +41,7 @@
                   </div>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item preview-item">
+                <a href="/user/users/" class="dropdown-item preview-item">
                   <div class="preview-thumbnail">
                     <div class="preview-icon bg-dark rounded-circle">
                       <i class="mdi mdi-calendar-today text-success"></i>
@@ -57,7 +57,7 @@
           <li class="nav-item nav-category">
             <span class="nav-link">Navigation</span>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
             <a class="nav-link" href="{% url 'home' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-view-dashboard"></i>
@@ -65,7 +65,7 @@
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if 'agences' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'agences' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-account-multiple-plus"></i>
@@ -73,7 +73,7 @@
               <span class="menu-title">Agences</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if 'personnels' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'personnels' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-account-multiple-plus"></i>
@@ -81,7 +81,7 @@
               <span class="menu-title">Personnel</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if 'proprietaires' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'proprietaires' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-account-key"></i>
@@ -89,7 +89,7 @@
               <span class="menu-title">Proprietaires</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if 'locataires' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'locataires' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-account-multiple"></i>
@@ -97,7 +97,7 @@
               <span class="menu-title">Locataires</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if 'locations' in request.path %}active{% endif %}">
             <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-home-city"></i>
@@ -105,7 +105,7 @@
               <span class="menu-title">Locations disponibles</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if 'paiements' in request.path %}active{% endif %}">
             <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-credit-card"></i>
@@ -113,7 +113,7 @@
               <span class="menu-title">Paiements</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if 'impayes' in request.path %}active{% endif %}">
             <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-book-multiple"></i>
@@ -121,7 +121,7 @@
               <span class="menu-title">Impayés et Préavis</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if 'garanties' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'garanties' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-folder-outline"></i>
@@ -129,7 +129,7 @@
               <span class="menu-title">Gestion des garanties</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if 'caisse' in request.path %}active{% endif %}">
             <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-cash"></i>
@@ -137,7 +137,7 @@
               <span class="menu-title">Gestion de la caisse</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if 'graphique' in request.path %}active{% endif %}">
             <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-chart-bar"></i>
@@ -145,20 +145,13 @@
               <span class="menu-title">Graphique</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+          <li class="nav-item menu-items {% if lutilisateur %}active{% endif %}">
+            <a class="nav-link" href="/user/users/">
               <span class="menu-icon">
                 <i class="mdi mdi-account-convert"></i>
               </span>
               <span class="menu-title">Utilisateurs</span>
-              <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="auth">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% url 'login' %}"> Login </a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% url 'addusers' %}"> Register </a></li>
-              </ul>
-            </div>
           </li>
           <li class="nav-item menu-items">
             <a class="nav-link" href="http://www.bootstrapdash.com/demo/corona-free/jquery/documentation/documentation.html">

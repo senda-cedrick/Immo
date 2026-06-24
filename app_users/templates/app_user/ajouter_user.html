@@ -28,15 +28,20 @@
           <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
             <div class="card col-lg-4 mx-auto">
               <div class="card-body px-5 py-5">
-                <h3 class="card-title text-left mb-3">Register</h3>
-                <form>
+                <div class="text-center mb-4">
+                  <i class="mdi mdi-account-plus" style="font-size: 48px; color: #4B49AC;"></i>
+                  <h3 class="card-title mt-2">Créer un compte</h3>
+                  <p class="text-muted">Inscrivez-vous pour accéder à la plateforme</p>
+                </div>
+                <form method="post" action="{% url 'adduser' %}" enctype="multipart/form-data">
+                  {% csrf_token %}
                   <div class="form-group">
-                    <label>Utilisateur</label>
-                    <input name="username" type="text" class="form-control p_input" placeholder="Entrez le nom d'utilisateur">
+                    <label>Utilisateur <span class="text-danger">*</span></label>
+                    <input name="username" type="text" class="form-control p_input" placeholder="Entrez le nom d'utilisateur" required>
                   </div>
                   <div class="form-group">
-                    <label>NOM</label>
-                    <input name="noms" type="text" class="form-control p_input" placeholder="Entrez votre nom complet">
+                    <label>Noms complets <span class="text-danger">*</span></label>
+                    <input name="noms" type="text" class="form-control p_input" placeholder="Entrez votre nom complet" required>
                   </div>
                   <div class="form-group">
                     <label>EMAIL</label>
@@ -44,38 +49,25 @@
                   </div>
                   <div class="form-group">
                     <label>PHOTO</label>
-                    <input name="photo" type="file" class="form-control p_input" placeholder="Entrez votre adresse mail">
+                    <input name="image_url" type="file" class="form-control p_input" accept=".jpg,.png">
                   </div>
                   <div class="form-group">
-                    <label>PROFILE</label>
-                    <select name="profile" >
+                    <label>PROFILE <span class="text-danger">*</span></label>
+                    <select name="profile" class="form-control">
                       {% for p in profiles %}
                         <option value="{{p.id}}">{{p}}</option>
                       {% endfor %}
                     </select>
                   </div>
                   <div class="form-group">
-                    <label>Password</label>
-                    <input name="password" type="password" class="form-control p_input" value="rdc@2026">
-                  </div>
-                  <div class="form-group d-flex align-items-center justify-content-between">
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input"> Remember me </label>
-                    </div>
-                    
+                    <label>Mot de passe <span class="text-danger">*</span></label>
+                    <input name="password" type="password" class="form-control p_input" value="rdc@2026" required>
+                    <small class="text-muted">Mot de passe par défaut: rdc@2026 (modifiable après connexion)</small>
                   </div>
                   <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
+                    <button type="submit" class="btn btn-primary btn-block enter-btn">S'inscrire</button>
                   </div>
-                  <div class="d-flex">
-                    <button class="btn btn-facebook col mr-2">
-                      <i class="mdi mdi-facebook"></i> Facebook </button>
-                    <button class="btn btn-google col">
-                      <i class="mdi mdi-google-plus"></i> Google plus </button>
-                  </div>
-                  <p class="sign-up text-center">Already have an Account?<a href="{% url 'login' %}">Connectez-vous</a></p>
-                  <p class="terms">By creating an account you are accepting our<a href="#"> Terms & Conditions</a></p>
+                  <p class="sign-up text-center mt-3">Vous avez déjà un compte ? <a href="{% url 'login' %}">Connectez-vous</a></p>
                 </form>
               </div>
             </div>

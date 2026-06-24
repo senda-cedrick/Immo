@@ -19,9 +19,7 @@ def create_profile():
                 profile = Profile()
                 profile.name = p
                 profile.save()
-def create_user_profile(user):
-        Profile = apps.get_model('app_users', 'Profile') # Charge le modèle sans import direct
-        Profile.objects.create(user=user)
+
 class Client:
 
     ip:str = None
@@ -210,9 +208,20 @@ class Client:
     # app_users/utils.py
 
 def pdf_decorator(pdfname="pdf_decorator.pdf"):
-    """Décorateur temporaire pour éviter l'erreur d'import"""
+    """
+    Décorateur pour l'export PDF.
+    Nécessite le package 'pdfkit' ou 'weasyprint' pour fonctionner réellement.
+    Pour l'instant, il se contente d'appeler la fonction décorée.
+    """
     def decorator(func):
-        def wrapper(*args, **kwargs):
-            return func(*args, **kwargs)
+        def wrapper(request, *args, **kwargs):
+            response = func(request, *args, **kwargs)
+            # Log de l'impression
+            if request.user.is_authenticated:
+                LogUser.objects.create(
+                    user=request.user,
+                    action=f"Impression du document {pdfname}"
+                )
+            return response
         return wrapper
     return decorator

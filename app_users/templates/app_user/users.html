@@ -68,106 +68,160 @@
           
          
       </div>
-  <div class="block-content collapse in">
-    
-     <form action="" method="post" style="display: inline;">
-    {% csrf_token %}
-   <div class="input-group flex-nowrap" style="text-align: right;">
-    <!-- {{myFilter.form}} -->
-     <input  value="" placeholder="Rechercher" type="text"   class="form-control" name="rech" 
-     aria-label="Username" aria-describedby="addon-wrapping"style="width: 30%;">
-     {% if request.user.profile.id == 4 or request.user.is_staff %}
-     <div class="muted pull-left"><a href="" class="btn btn-success" data-toggle="modal" data-target="#ajouter_user">Ajouter un utilisateur</a>
-    </div> 
-    {% endif %}
-  </form>   
-  </div>
-  </div>
+    <div class="block-content collapse in">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <form class="form-inline" method="get" action="{% url 'users' %}">
+          <div class="input-group">
+            <input type="text" class="form-control bg-white border-primary" name="q" value="{{ request.GET.q }}" placeholder="Rechercher un utilisateur..." style="min-width: 300px;">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="submit">
+                <i class="mdi mdi-magnify"></i> Rechercher
+              </button>
+            </div>
+          </div>
+        </form>
+        {% if request.user.profile.id == 4 or request.user.is_staff %}
+        <div>
+          <a href="{% url 'print_users' %}" class="btn btn-info mr-2">
+            <i class="mdi mdi-printer"></i> Imprimer
+          </a>
+          <a href="{% url 'addusers' %}" class="btn btn-success">
+            <i class="mdi mdi-account-plus"></i> Ajouter un utilisateur
+          </a>
+        </div>
+        {% endif %}
+      </div>
 
-
-      {% if users %}
+      {% if pages %}
         <div class="navbar navbar-inner block-header">
-            <div class="muted pull-left"><strong>UTILISATEURS</strong></div>
-            <div class="muted pull-right"> <a href="{% url 'print_users' %}"><i class="icon-print"></i> Imprimer</a></div>
+            <div class="muted pull-left"><strong>LISTE DES UTILISATEURS</strong></div>
         </div>
         
         <div class="block-content collapse in">
           
           <div class="span12">
 
-            <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Noms</th>
-                        <th scope="col">Profile</th>
-                        <!-- <th scope="col">Modifier Profile</th> -->
-                        {% if request.user.profile.id == 4 or request.user.is_staff %}
-                        <th scope="col">Etat</th>
-                        <th scope="col">Actions</th>
-                        {% endif %}
-                        
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for u in pages %}
-                          <tr>
-                            <th scope="row">{{u.id}}</th>
-                            <td>{{u.username}}</td>
-                            <td>{{u.noms}}</td>
-                            <td>{{u.profile}}</td>
-                  
-                        
-                            <!-- <td><a href="{% url 'edituser' u.id %}"><span class="badge badge-warning">Modifier Profile</span></td> 
-                                   -->
-                            {% if request.user.profile.id == 4 or request.user.is_staff %}
-                            <td>      
-                              <a href="{% url 'active_user' u.id %}">
-                                {% if u.is_active == True %}
-                                <img width="17px" src="/static/admin/img/icon-yes.svg" alt="True">
-                                {% else %}
-                                <img width="17px" src="/static/admin/img/icon-no.svg" alt="False">
-                                {% endif %}
-                              
-                              </a>
-                          </td>
-                          {% endif %}
+            <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Username</th>
+                          <th scope="col">Noms</th>
+                          <th scope="col">Profile</th>
                           {% if request.user.profile.id == 4 or request.user.is_staff %}
-                          <td><a href="{% url 'edituser' u.id%}"><i class="icon-edit"></i>
-                            
-                          <a href="{% url 'generer_user_motdepasse' u.id%}" 
-                          onclick="return confirm('Etes-vous sûr de vouloir régénérer le mot de passe (rdc@2026) à {{u.username}} ')"><i class="icon-lock">
-                        </td>  
+                          <th scope="col">Statut</th>
+                          <th scope="col" style="width: 120px;">Actions</th>
                           {% endif %}
-                          </tr>
+                          
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for u in pages %}
+                            <tr>
+                              <th scope="row">{{u.id}}</th>
+                              <td><strong>{{u.username}}</strong></td>
+                              <td>{{u.noms}}</td>
+                              <td>
+                                <span class="badge badge-{% if u.profile.id == 4 %}primary{% elif u.profile.id == 1 %}info{% elif u.profile.id == 2 %}warning{% elif u.profile.id == 3 %}success{% else %}secondary{% endif %}">
+                                  {{u.profile}}
+                                </span>
+                              </td>
+                              {% if request.user.profile.id == 4 or request.user.is_staff %}
+                              <td>      
+                                <a href="{% url 'active_user' u.id %}" title="Cliquer pour activer/désactiver">
+                                  {% if u.is_active == True %}
+                                  <span class="badge badge-success">
+                                    <i class="mdi mdi-check-circle"></i> Actif
+                                  </span>
+                                  {% else %}
+                                  <span class="badge badge-danger">
+                                    <i class="mdi mdi-close-circle"></i> Inactif
+                                  </span>
+                                  {% endif %}
+                                </a>
+                            </td>
+                            {% endif %}
+                            {% if request.user.profile.id == 4 or request.user.is_staff %}
+                            <td class="text-center">
+                              <div class="btn-group" role="group">
+                                <a href="{% url 'edituser' u.id%}" class="btn btn-sm btn-warning" title="Modifier">
+                                  <i class="mdi mdi-account-edit"></i>
+                                </a>
+                                <a href="{% url 'generer_user_motdepasse' u.id%}" class="btn btn-sm btn-info" 
+                                onclick="return confirm('Réinitialiser le mot de passe de {{u.username}} ?')" title="Réinitialiser mot de passe">
+                                  <i class="mdi mdi-lock-reset"></i>
+                                </a>
+                              </div>
+                          </td>  
+                            {% endif %}
+                            </tr>
 
-                        {% endfor %}
-                    </tbody>
-            </table>
+                          {% endfor %}
+                      </tbody>
+              </table>
+            </div>
 
-            {% if pages.has_previous %}
-            <a href="?page=1">&laquo;</a>
-            <a href="?page={{ pages.previous_page_number }}"><span class="badge badge-info ">Précédent</span></a>
+            <!-- Pagination -->
+            {% if pages.has_other_pages %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center mb-1">
+                  {% if pages.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page=1" aria-label="Première">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                      </a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ pages.previous_page_number }}" aria-label="Précédente">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled"><span class="page-link">&laquo;&laquo;</span></li>
+                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                  {% endif %}
+
+                  {% for i in pages.paginator.page_range %}
+                    {% if pages.number == i %}
+                      <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% else %}
+                      <li class="page-item"><a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                  {% endfor %}
+
+                  {% if pages.has_next %}
+                    <li class="page-item">
+                      <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ pages.next_page_number }}" aria-label="Suivante">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ pages.paginator.num_pages }}" aria-label="Dernière">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                      </a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                    <li class="page-item disabled"><span class="page-link">&raquo;&raquo;</span></li>
+                  {% endif %}
+                </ul>
+                <div class="text-center text-muted">
+                  <small>Page {{ pages.number }} sur {{ pages.paginator.num_pages }} ({{ compte }} utilisateur(s))</small>
+                </div>
+            </nav>
             {% endif %}
-            page {{ pages.number }} sur {{ pages.paginator.num_pages }}
-            <span class="badge badge-info pull-right">{{compte}}</span>
- 
-            {% if pages.has_next %}
-               <a href="?page={{ pages.next_page_number }}"><span class="badge badge-info ">Suivant</span></a>
- 
-             {% else %}
-            {% endif %}
-
           </div>
-        </div>          
+        </div>
       {% else %}
+        <div class="block-content collapse in">
+          <div class="span12">
+            <span><h4 class="text-center alert alert-warning">Aucun utilisateur trouvé</h4></span>
           </div>
-        </div>          
-        <span><h4 class="text-center alert alert-warning">Aucun utilisateur trouvé</h4></span>
+        </div>
       {% endif %}
     </div>
   </div>
 {% endif %}
-{% include 'app_user/ajouter_user.html' %}
+{% include 'app_user/ajouter_users.html' %}
 {% endblock content %} 

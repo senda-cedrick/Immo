@@ -24,9 +24,8 @@
                       </button>
                       <ul class="navbar-nav w-100">
                         <li class="nav-item w-100">
-                          <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search" method="post">
-                             {% csrf_token %}
-                            <input type="text" class="form-control form-control-sm w-25 bg-white" name="rech" placeholder="Search Agences">
+                          <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search" method="get" action="{% url 'agences' %}">
+                            <input type="text" class="form-control form-control-sm w-25 bg-white" name="q" value="{{ request.GET.q }}" placeholder="Rechercher une agence...">
                           </form>
                         </li>
                       </ul>
@@ -37,11 +36,9 @@
                       </ul>
                     </div>
                     <!-- / -->
-        
-                    </p>
                     <!-- Affichage liste et fonction-->
                     <div class="table-responsive">
-                      <table class="table table- bg-white">
+                      <table class="table table-hover bg-white">
                         <thead>
                           <tr>
                             <th> Id_Agence </th>
@@ -56,8 +53,8 @@
                           </tr>
                         </thead>
                         <tbody>
-                          {% if agences %}
-                          {% for item in agences %}
+                          {% if pages %}
+                          {% for item in pages %}
                           <tr>
                             <td>{{ item.id_agence }}</td>
                             <td>{{ item.nom }}</td>
@@ -68,10 +65,10 @@
                             <td>{{ item.email }}</td>
                             <td>{{ item.active }}</td>
                             <td>
-                              <a href="#">
+                              <a href="#"> {# {% url 'edit_agence' item.id %} #}
                                 <i class="mdi mdi-rename-box text-primary"></i>
                               </a>_
-                              <a href="#">
+                              <a href="#"> {# {% url 'delete_agence' item.id %} #}
                                 <i class="mdi mdi-delete text-danger"></i>
                               </a>
                             </td>
@@ -82,6 +79,30 @@
                         </tbody>
                       </table>
                     </div>
+                    <!-- Pagination -->
+                    <nav class="mt-4">
+                      {% if pages.has_other_pages %}
+                      <ul class="pagination justify-content-center">
+                        {% if pages.has_previous %}
+                          <li class="page-item"><a class="page-link" href="?page=1">&laquo; Première</a></li>
+                          <li class="page-item"><a class="page-link" href="?page={{ pages.previous_page_number }}">Précédente</a></li>
+                        {% endif %}
+
+                        {% for i in pages.paginator.page_range %}
+                          {% if pages.number == i %}
+                            <li class="page-item active"><span class="page-link">{{ i }}<span class="sr-only">(current)</span></span></li>
+                          {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                          {% endif %}
+                        {% endfor %}
+
+                        {% if pages.has_next %}
+                          <li class="page-item"><a class="page-link" href="?page={{ pages.next_page_number }}">Suivante</a></li>
+                          <li class="page-item"><a class="page-link" href="?page={{ pages.paginator.num_pages }}">Dernière &raquo;</a></li>
+                        {% endif %}
+                      </ul>
+                      {% endif %}
+                    </nav>
                   </div>
                 </div>
               </div>

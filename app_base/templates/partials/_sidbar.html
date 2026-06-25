@@ -153,7 +153,7 @@
               <span class="menu-title">Utilisateurs</span>
             </a>
           </li>
-          {% if request.user.is_superuser or request.user.is_manager %}
+          {% if request.user.is_superuser or request.user.is_staff or request.user.is_manager %}
           <li class="nav-item menu-items {% if 'profiles' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'profile_list' %}">
               <span class="menu-icon">

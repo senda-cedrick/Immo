@@ -3,23 +3,6 @@
 {% block content %}
 <!-- Premium Design for Users Management -->
 <style>
-    /* Ensure the page takes full height and footer stays at bottom */
-    html, body {
-        height: 100%;
-    }
-    body {
-        display: flex;
-        flex-direction: column;
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        color: #fff;
-        margin: 0;
-    }
-    /* Main content area expands to fill remaining space */
-    #content {
-        flex: 1;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
     /* Glass‑morphism card */
     .glass-card {
         background: rgba(255, 255, 255, 0.15);
@@ -85,18 +68,21 @@
     .clickable-row {
         cursor: pointer;
     }
+    /* Style pour le footer pour correspondre au design */
+    footer {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px 12px 0 0; /* Coins arrondis seulement en haut */
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 -8px 32px 0 rgba(31, 38, 135, 0.37);
+        margin-top: 2rem;
+        padding: 1.5rem;
+        color: #fff;
+        text-align: center;
+    }
 </style>
 
 <div class="container-fluid">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-
     <div class="glass-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="mb-0"><i class="mdi mdi-account-multiple"></i> Gestion des utilisateurs</h5>
@@ -106,14 +92,14 @@
             </div>
         </div>
 
-        <div class="row g-3 mb-3">
+        <form method="get" action="{% url 'users' %}" class="row g-3 mb-3">
             <div class="col-md-12">
                 <div class="input-group">
                     <input type="text" name="q" class="form-control" placeholder="Rechercher un utilisateur..." value="{{ request.GET.q }}">
                     <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i> Rechercher</button>
                 </div>
-            </form>
-
+            </div>
+        </form>
             {% if pages %}
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
@@ -219,8 +205,8 @@
                     Aucun utilisateur trouvé. Total : {{ compte }}
                 </div>
             {% endif %}
-        </div>
-</div>
+    </div> <!-- Fin de glass-card -->
+</div> <!--! Fin de container-fluid -->
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

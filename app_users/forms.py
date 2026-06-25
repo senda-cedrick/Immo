@@ -15,7 +15,7 @@ class UserCreationForm(BaseUserCreationForm):
     """
     Formulaire pour la création d'utilisateurs.
     """
-    photo_url = forms.ImageField(label="Photo", required=False)
+    photo_url = forms.ImageField(label="Photo", required=False, widget=forms.ClearableFileInput)
     class Meta(BaseUserCreationForm.Meta):
         model = User
         fields = ('username', 'noms', 'email', 'profile', 'photo_url')

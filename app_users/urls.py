@@ -24,4 +24,5 @@ urlpatterns = [
     path('profiles/edit/<int:pk>/', ProfileUpdateView.as_view(), name='profile_edit'),
     path('profiles/delete/<int:pk>/', ProfileDeleteView.as_view(), name='profile_delete'),
    
+    path('addusers/', UserCreateView.as_view(), name='addusers'),
 ]

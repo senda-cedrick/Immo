@@ -396,7 +396,7 @@ class ManagerRequiredMixin(UserPassesTestMixin):
     Mixin pour restreindre l'accès aux managers et super-utilisateurs.
     """
     def test_func(self):
-        return self.request.user.is_superuser or (self.request.user.profile and self.request.user.profile.name == 'Manager')
+        return self.request.user.is_superuser or self.request.user.is_staff or (self.request.user.profile and self.request.user.profile.name == 'Manager')
 
     def handle_no_permission(self):
         messages.error(self.request, "Accès refusé. Vous n'avez pas les permissions nécessaires.")

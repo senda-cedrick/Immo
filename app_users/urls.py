@@ -1,15 +1,14 @@
 from django.urls import path
 
-from app_users.views import LoginPageView, active_user, adduser, edit_profile_user, edituser, listeusers, logout_user, logusers, page_modifpassword, print_users, rechercher_user, update_profile_user, update_user, update_user_motdepasse,generer_user_motdepasse, addusers
+from app_users.views import (LoginPageView, active_user, listeusers, logout_user, logusers, page_modifpassword, print_users, rechercher_user, update_user_motdepasse,generer_user_motdepasse, ProfileListView, ProfileCreateView, ProfileUpdateView, ProfileDeleteView, UserCreateView, UserUpdateView, UserDeleteView)
 urlpatterns = [
     path('users/', listeusers, name='users'),
+    path('users/add/', UserCreateView.as_view(), name='user_add'),
+    path('users/edit/<int:pk>/', UserUpdateView.as_view(), name='user_edit'),
+    path('users/delete/<int:pk>/', UserDeleteView.as_view(), name='user_delete'),
+
     path('logusers/',  logusers, name='logusers'),
-    path('adduser/', adduser, name='adduser'),
-    path('addusers/', addusers, name='addusers'),
-    path('edituser/<int:myid>/', edituser, name="edituser"),
-    path('edit_profile_user/<int:myid>/',edit_profile_user, name="edit_profile_user"),
-    path('update_profile_user/<int:myid>/', update_profile_user, name="update_profile_user"),
-    path('update_user/<int:myid>/', update_user, name="update_user"),
+
     path('active_user/<int:myid>/', active_user, name="active_user"),
     path('login/', LoginPageView.as_view(), name='login'),
     path('logout/', logout_user, name='logout'),
@@ -19,5 +18,10 @@ urlpatterns = [
     path('generer_user_motdepasse/<int:myid>', generer_user_motdepasse, name='generer_user_motdepasse'),    
     path('page_modifpassword/', page_modifpassword, name='page_modifpassword'),
 
+    # URLs pour la gestion des profils
+    path('profiles/', ProfileListView.as_view(), name='profile_list'),
+    path('profiles/add/', ProfileCreateView.as_view(), name='profile_add'),
+    path('profiles/edit/<int:pk>/', ProfileUpdateView.as_view(), name='profile_edit'),
+    path('profiles/delete/<int:pk>/', ProfileDeleteView.as_view(), name='profile_delete'),
    
 ]

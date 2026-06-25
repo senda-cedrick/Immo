@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+        padding: 2rem;
+        margin-top: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .glass-card h5, .glass-card h4 {
+        color: #fff;
+    }
+    .glass-card p {
+        color: #eee;
+    }
+    .glass-card .text-muted {
+        color: #ccc !important;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="glass-card">
+        <h5 class="mb-4 text-danger"><i class="mdi mdi-alert-outline"></i> Confirmer la suppression</h5>
+        
+        <p>Êtes-vous sûr de vouloir supprimer le profil "<strong>{{ object.name }}</strong>" ?</p>
+        <p class="text-muted">Cette action est irréversible. Les utilisateurs associés à ce profil auront leur profil défini à "nul".</p>
+
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger me-2"><i class="mdi mdi-delete-forever"></i> Oui, supprimer</button>
+            <a href="{% url 'profile_list' %}" class="btn btn-outline-light">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock content %}

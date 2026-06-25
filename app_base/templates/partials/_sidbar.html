@@ -153,6 +153,16 @@
               <span class="menu-title">Utilisateurs</span>
             </a>
           </li>
+          {% if request.user.is_superuser or request.user.is_manager %}
+          <li class="nav-item menu-items {% if 'profiles' in request.path %}active{% endif %}">
+            <a class="nav-link" href="{% url 'profile_list' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-shield-account"></i>
+              </span>
+              <span class="menu-title">Gestion des Profils</span>
+            </a>
+          </li>
+          {% endif %}
           <li class="nav-item menu-items">
             <a class="nav-link" href="http://www.bootstrapdash.com/demo/corona-free/jquery/documentation/documentation.html">
               <span class="menu-icon">

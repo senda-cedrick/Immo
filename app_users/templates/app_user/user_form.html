@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        padding: 2rem;
+        margin-top: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .glass-card h5 { color: #fff; }
+    .form-label { color: #fff; }
+    .form-control, .form-select {
+        background-color: rgba(255,255,255,0.1) !important;
+        color: #fff !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
+    }
+    .form-control::placeholder { color: #ccc; }
+    .form-check-label { color: #fff; }
+</style>
+
+<div class="container-fluid">
+    <div class="glass-card">
+        <h5 class="mb-4"><i class="mdi mdi-account-plus"></i> {{ action }} un utilisateur</h5>
+        
+        <form method="post" enctype="multipart/form-data" class="row g-3">
+            {% csrf_token %}
+            
+            {# Boucle pour afficher tous les champs du formulaire #}
+            {% for field in form %}
+                {% if field.name == 'photo_url' %}
+                {# Gestion spéciale pour le champ de la photo #}
+                <div class="col-md-6 mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    <input type="file" name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}" accept="image/*" onchange="previewImage(event)">
+                    
+                    {# Affiche l'image existante ou une zone pour l'aperçu #}
+                    {% if form.instance and form.instance.photo_url %}
+                        <img id="image-preview" src="{{ form.instance.photo_url.url }}" alt="Photo actuelle" class="mt-3" style="max-width: 200px; max-height: 200px; border-radius: 8px; display: block;"/>
+                        <small class="form-text text-light mt-1">Photo actuelle. Choisissez un nouveau fichier pour la remplacer.</small>
+                    {% else %}
+                        <img id="image-preview" src="#" alt="Aperçu de l'image" class="mt-3" style="max-width: 200px; max-height: 200px; border-radius: 8px; display: none;"/>
+                    {% endif %}
+                </div>
+                {% else %}
+                {# Affiche les autres champs normalement #}
+                <div class="col-md-6 mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}<small class="text-danger">{{ field.errors|first }}</small>{% endif %}
+                    {% if field.help_text %}<small class="form-text text-muted">{{ field.help_text|safe }}</small>{% endif %}
+                </div>
+                {% endif %}
+            {% endfor %}
+
+            <div class="col-12 d-flex justify-content-end mt-3">
+                <button type="submit" class="btn btn-success me-2"><i class="mdi mdi-check"></i> Enregistrer</button>
+                <a href="{% url 'users' %}" class="btn btn-outline-light">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        const imagePreview = document.getElementById('image-preview');
+        
+        reader.onload = function(){
+            if (reader.readyState === 2) {
+                imagePreview.src = reader.result;
+                imagePreview.style.display = 'block';
+            }
+        };
+        
+        if (event.target.files[0]) {
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    }
+</script>
+{% endblock content %}

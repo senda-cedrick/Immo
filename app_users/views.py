@@ -21,12 +21,15 @@ import string
 from rest_framework.permissions import IsAuthenticated
 from app_users.utils import create_profile, Client
 from django.contrib.auth import login,authenticate,logout
-from django.views.generic import View
+from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from app_users.models import LogUser, Profile, User
 from app_users.serializers import UserSerializer
+from .forms import ProfileForm, UserCreationForm, UserChangeForm
 
 
 class RegisterViewset(ModelViewSet):
@@ -93,12 +96,26 @@ def listeusers(request):
     page_number = request.GET.get('page')
     pages = paginator.get_page(page_number)
 
+    # Créer une chaîne de caractères lisible pour le nombre d'utilisateurs
+    nombre_utilisateurs = paginator.count
+    if nombre_utilisateurs == 1:
+        compte_str = "1 utilisateur"
+    else:
+        compte_str = f"{nombre_utilisateurs} utilisateurs"
+
+    # Ajouter une classe CSS pour la couleur du statut
+    for user in pages:
+        if user.is_active:
+            user.statut_class = 'badge badge-success'
+        else:
+            user.statut_class = 'badge badge-danger'
+
     LogUser.objects.create(user=request.user, action="Affichage de la liste des utilisateurs")
 
     ctx = {
         'pages': pages,
         'profiles': profiles,
-        'compte': paginator.count,
+        'compte_str': compte_str,
         "lutilisateur" : 'active'
     }
     return render(request,'app_user/users.html',ctx)
@@ -118,13 +135,13 @@ def print_users(request):
     data_profiles = []
     
     for user in users:
-        if user.profile.id == 1 :
+        if user.is_agent:
             agent.append(user)
-        if user.profile.id == 2 :
+        if user.is_proprietaire:
             propietaire.append(user)
         if user.profile.id == 3 :
             locataire.append(user)
-        if user.profile.id == 4 :
+        if user.is_manager:
             managers.append(user)
     
     data_profiles.append(agent)
@@ -165,47 +182,6 @@ def logusers(request):
 
     return render(request,'app_user/logusers.html',ctx)
 
-# ---Page ---
-def addusers(request):
-    return render(request, 'app_user/ajouter_user.html')
-#--- page/----
-
-@login_required
-def adduser(request,):
-
-    if request.method == 'POST':
-        photo = request.FILES.get("image_url")
-        password  = request.POST.get("password")
-        username = request.POST.get("username")
-        noms = request.POST.get("noms")
-        id_profile = request.POST.get("profile")
-        profile = Profile.objects.get(pk=id_profile)
-
-        rs_username = User.objects.filter(username=username)
-        try:
-            if len(rs_username)>0:
-                messages.warning(request,"Ce nom utilisateur existe déjà")
-                return redirect('/user/users') 
-            else:
-                user = User(
-                    #email = email,
-                    username = username.upper(),
-                    noms = noms.upper(),
-                    profile = profile,
-                    photo_url = photo,
-                    is_active = True
-                )   
-            user.set_password(password)
-            user.save()
-        except:
-            pass
-
-        owner = User.objects.get(pk=request.user.id)
-        LogUser(user=owner,action=f"Ajout d'un utilisateur {user.noms} ")
-        return HttpResponseRedirect('/user/users/')
-
-    return render(request,'app_user/ajouter_user.html',{'profiles':profile})
-
 def edituser(request, myid):
 
     sel_user = User.objects.get(id = myid)
@@ -224,33 +200,6 @@ def edituser(request, myid):
         'profiles': profiles
     }
     return render(request,'app_user/users.html',ctx)
-
-@login_required
-def update_user(request, myid):
-    """Mise à jour des informations d'un utilisateur."""
-    # Vérifier que l'utilisateur connecté a le droit de modifier
-    if not request.user.is_superuser and request.user.id != int(myid):
-        messages.warning(request, "Vous n'avez pas la permission de modifier cet utilisateur")
-        return redirect('/user/users/')
-    
-    user  = User.objects.get(id = myid)
-    id_profile = request.POST.get("profile")
-    username = request.POST.get("username")
-    noms = request.POST.get("noms")
-    profile = Profile.objects.get(pk=id_profile)
-    
-    # Vérifier l'unicité du username
-    if User.objects.filter(username=username).exclude(id=myid).exists():
-        messages.warning(request, "Ce nom d'utilisateur existe déjà")
-        return redirect('/user/users/')
-    
-    user.profile = profile
-    user.username = username
-    user.noms = noms
-    user.save()
-    
-    LogUser.objects.create(user=request.user, action=f"Mise à jour de l'utilisateur {user.noms}")
-    return redirect('/user/users/')
 
 @login_required
 def update_user_motdepasse(request):
@@ -291,7 +240,7 @@ def page_modifpassword(request):
 @login_required
 def active_user(request, myid):
        """Active ou désactive un utilisateur. Réservé aux superusers."""
-       if not request.user.is_superuser:
+       if not request.user.is_superuser and not request.user.is_manager:
            messages.warning(request, "Seuls les administrateurs peuvent activer/désactiver des utilisateurs")
            return redirect('/user/users/')
        user  = User.objects.get(id = myid)   
@@ -351,7 +300,7 @@ def edit_profile_user(request, myid):
 @login_required
 def update_profile_user(request, myid):
     """Met à jour le profil d'un utilisateur."""
-    if not request.user.is_superuser and request.user.id != int(myid):
+    if not request.user.is_superuser and not request.user.is_manager:
         messages.warning(request, "Vous n'avez pas la permission de modifier ce profil")
         return redirect('/user/users/')
     user  = User.objects.get(id = myid)
@@ -441,3 +390,70 @@ def login_remote(request):
 
 
 # Create your views here.
+
+class ManagerRequiredMixin(UserPassesTestMixin):
+    """
+    Mixin pour restreindre l'accès aux managers et super-utilisateurs.
+    """
+    def test_func(self):
+        return self.request.user.is_superuser or (self.request.user.profile and self.request.user.profile.name == 'Manager')
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Accès refusé. Vous n'avez pas les permissions nécessaires.")
+        return redirect('home')
+
+
+# --- Vues pour la gestion des profils (CRUD) ---
+
+class UserCreateView(LoginRequiredMixin, ManagerRequiredMixin, CreateView):
+    model = User
+    form_class = UserCreationForm
+    template_name = 'app_user/user_form.html'
+    success_url = reverse_lazy('users')
+    extra_context = {'action': 'Ajouter'}
+
+    def form_valid(self, form):
+        messages.success(self.request, "L'utilisateur a été créé avec succès.")
+        return super().form_valid(form)
+
+class UserUpdateView(LoginRequiredMixin, ManagerRequiredMixin, UpdateView):
+    model = User
+    form_class = UserChangeForm
+    template_name = 'app_user/user_form.html'
+    success_url = reverse_lazy('users')
+    extra_context = {'action': 'Modifier'}
+
+    def form_valid(self, form):
+        messages.success(self.request, "L'utilisateur a été mis à jour avec succès.")
+        return super().form_valid(form)
+
+class UserDeleteView(LoginRequiredMixin, ManagerRequiredMixin, DeleteView):
+    model = User
+    template_name = 'app_user/user_confirm_delete.html'
+    success_url = reverse_lazy('users')
+    success_message = "L'utilisateur a été supprimé avec succès."
+
+class ProfileListView(LoginRequiredMixin, ManagerRequiredMixin, ListView):
+    model = Profile
+    template_name = 'app_user/profile_list.html'
+    context_object_name = 'profiles'
+    paginate_by = 10
+
+class ProfileCreateView(LoginRequiredMixin, ManagerRequiredMixin, CreateView):
+    model = Profile
+    form_class = ProfileForm
+    template_name = 'app_user/profile_form.html'
+    success_url = reverse_lazy('profile_list')
+    extra_context = {'action': 'Ajouter'}
+
+class ProfileUpdateView(LoginRequiredMixin, ManagerRequiredMixin, UpdateView):
+    model = Profile
+    form_class = ProfileForm
+    template_name = 'app_user/profile_form.html'
+    success_url = reverse_lazy('profile_list')
+    extra_context = {'action': 'Modifier'}
+
+class ProfileDeleteView(LoginRequiredMixin, ManagerRequiredMixin, DeleteView):
+    model = Profile
+    template_name = 'app_user/profile_confirm_delete.html'
+    success_url = reverse_lazy('profile_list')

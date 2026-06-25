@@ -1,227 +1,241 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Premium Design for Users Management -->
+<style>
+    /* Ensure the page takes full height and footer stays at bottom */
+    html, body {
+        height: 100%;
+    }
+    body {
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: #fff;
+        margin: 0;
+    }
+    /* Main content area expands to fill remaining space */
+    #content {
+        flex: 1;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    /* Glass‑morphism card */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+    .glass-card h5 {
+        color: #fff;
+    }
+    .glass-card .form-control,
+    .glass-card .btn {
+        border-radius: 8px;
+    }
+    .badge-profile {
+        font-size: 0.85rem;
+        padding: 0.45em 0.75em;
+    }
+    .table thead th {
+        color: #fff;
+        background-color: rgba(255,255,255,0.1);
+    }
+    .table tbody td {
+        color: #fff;
+    }
+    .table tbody tr:hover {
+        background-color: rgba(255,255,255,0.08);
+    }
+    .pagination .page-link {
+        background-color: rgba(255,255,255,0.2);
+        color: #fff;
+        border: none;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: #fff;
+        color: #1e3c72;
+    }
+    /* Custom styles for action button icons */
+    .btn-group .btn .mdi {
+        transition: color 0.2s ease-in-out;
+    }
+    .btn-outline-warning .mdi {
+        color: #ffc107; /* Jaune */
+    }
+    .btn-outline-info .mdi {
+        color: #0dcaf0; /* Cyan */
+    }
+    .btn-outline-danger .mdi {
+        color: #dc3545; /* Rouge */
+    }
+    .btn-group .btn:hover .mdi {
+        color: #fff; /* Blanc au survol */
+    }
+    .user-photo {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    .clickable-row {
+        cursor: pointer;
+    }
+</style>
 
-
-<div id="content">
-  {% if messages %}
-
-    {% for message in messages %}
-    <div class="alert alert-danger">
-    <p style="text-align: center;">{{message}}</p>
-    </div> 
-    {% endfor %}
-
-  {% endif %}
- 
-  {% if  sel_user_profile %}
-  <!-- <span><strong>Modifier le profile de : {{sel_user_profile.noms}}</strong></span>
-  <form class="form-horizontal" method="post" action="{% url 'update_user' sel_user.id %}">
-    {% csrf_token %}
-    <br>
-    <select name="profile" id="profile" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" style="width: 20%;">
-      {% for p in profiles %}
-      <option value="{{p.id}}">
-        {{p}}
-      </option>
-      {% endfor %}
-    </select><br><br> -->
-
-
-  {% elif sel_user %}
-  <span><strong>Modifier le profile de : {{sel_user.noms}}</strong></span>
-  <form class="form-horizontal" method="post" action="{% url 'update_user' sel_user.id %}">
-    {% csrf_token %}
-    <br>
-    {% if request.user.profile.id == 4 or request.user.is_staff %}
-    <select name="profile" id="profile" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" style="width: 20%;">
-      {% for p in profiles %}
-      <option value="{{p.id}}" {% if sel_user.profile.id == p.id %}selected{% endif %} >
-        {{p}}
-      
-      </option>
-      {% endfor %}
-    </select><br><br>
-
-    <label for="">Noms:</label>
-      <div class="input-group flex-nowrap">
-       <input type="text" placeholder="Entrez un nom utilisateur ou Username" value="{{sel_user.noms}}" style="width: 40%;"  class="form-control" name="noms"  aria-describedby="addon-wrapping" style="width: 90%;">
-    </div> 
-    <br>
-
-    <label for="">Nom utilisateur:</label>
-      <div class="input-group flex-nowrap">
-       <input type="text" placeholder="Entrez un nom utilisateur ou Username" value="{{sel_user.username}}" style="width: 40%;"  class="form-control" name="username"  aria-describedby="addon-wrapping" style="width: 90%;">
-    </div> 
-    <br>
-    
-      <button type="submit" class="btn btn-success">Confirmer la modification du profile</button>
-      <a  class="btn btn-success" href="{% url 'users' %}">Retour</a>
-   </form>
-   {% endif %}
-   {% else %}
-
-<div class="row-fluid">  
-  <div class="block">
-    <div class="navbar navbar-inner block-header">
-     <div class="muted pull-left"><strong>UTILISATEURS : </strong> <span class="badge badge-info">{{compte}} AU TOTAL</span></div>
-          
-         
-      </div>
-    <div class="block-content collapse in">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <form class="form-inline" method="get" action="{% url 'users' %}">
-          <div class="input-group">
-            <input type="text" class="form-control bg-white border-primary" name="q" value="{{ request.GET.q }}" placeholder="Rechercher un utilisateur..." style="min-width: 300px;">
-            <div class="input-group-append">
-              <button class="btn btn-primary" type="submit">
-                <i class="mdi mdi-magnify"></i> Rechercher
-              </button>
+<div class="container-fluid">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-          </div>
-        </form>
-        {% if request.user.profile.id == 4 or request.user.is_staff %}
-        <div>
-          <a href="{% url 'print_users' %}" class="btn btn-info mr-2">
-            <i class="mdi mdi-printer"></i> Imprimer
-          </a>
-          <a href="{% url 'addusers' %}" class="btn btn-success">
-            <i class="mdi mdi-account-plus"></i> Ajouter un utilisateur
-          </a>
-        </div>
-        {% endif %}
-      </div>
+        {% endfor %}
+    {% endif %}
 
-      {% if pages %}
-        <div class="navbar navbar-inner block-header">
-            <div class="muted pull-left"><strong>LISTE DES UTILISATEURS</strong></div>
-        </div>
-        
-        <div class="block-content collapse in">
-          
-          <div class="span12">
-
-            <div class="table-responsive">
-              <table class="table table-hover table-striped">
-                      <thead class="thead-dark">
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Username</th>
-                          <th scope="col">Noms</th>
-                          <th scope="col">Profile</th>
-                          {% if request.user.profile.id == 4 or request.user.is_staff %}
-                          <th scope="col">Statut</th>
-                          <th scope="col" style="width: 120px;">Actions</th>
-                          {% endif %}
-                          
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for u in pages %}
-                            <tr>
-                              <th scope="row">{{u.id}}</th>
-                              <td><strong>{{u.username}}</strong></td>
-                              <td>{{u.noms}}</td>
-                              <td>
-                                <span class="badge badge-{% if u.profile.id == 4 %}primary{% elif u.profile.id == 1 %}info{% elif u.profile.id == 2 %}warning{% elif u.profile.id == 3 %}success{% else %}secondary{% endif %}">
-                                  {{u.profile}}
-                                </span>
-                              </td>
-                              {% if request.user.profile.id == 4 or request.user.is_staff %}
-                              <td>      
-                                <a href="{% url 'active_user' u.id %}" title="Cliquer pour activer/désactiver">
-                                  {% if u.is_active == True %}
-                                  <span class="badge badge-success">
-                                    <i class="mdi mdi-check-circle"></i> Actif
-                                  </span>
-                                  {% else %}
-                                  <span class="badge badge-danger">
-                                    <i class="mdi mdi-close-circle"></i> Inactif
-                                  </span>
-                                  {% endif %}
-                                </a>
-                            </td>
-                            {% endif %}
-                            {% if request.user.profile.id == 4 or request.user.is_staff %}
-                            <td class="text-center">
-                              <div class="btn-group" role="group">
-                                <a href="{% url 'edituser' u.id%}" class="btn btn-sm btn-warning" title="Modifier">
-                                  <i class="mdi mdi-account-edit"></i>
-                                </a>
-                                <a href="{% url 'generer_user_motdepasse' u.id%}" class="btn btn-sm btn-info" 
-                                onclick="return confirm('Réinitialiser le mot de passe de {{u.username}} ?')" title="Réinitialiser mot de passe">
-                                  <i class="mdi mdi-lock-reset"></i>
-                                </a>
-                              </div>
-                          </td>  
-                            {% endif %}
-                            </tr>
-
-                          {% endfor %}
-                      </tbody>
-              </table>
+    <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="mb-0"><i class="mdi mdi-account-multiple"></i> Gestion des utilisateurs</h5>
+            <div>
+                <a href="{% url 'print_users' %}" class="btn btn-outline-light btn-sm me-2"><i class="mdi mdi-printer"></i> Imprimer</a>
+                <a href="{% url 'user_add' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-account-plus"></i> Ajouter</a>
             </div>
+        </div>
 
-            <!-- Pagination -->
-            {% if pages.has_other_pages %}
-            <nav class="mt-4">
-                <ul class="pagination justify-content-center mb-1">
-                  {% if pages.has_previous %}
-                    <li class="page-item">
-                      <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page=1" aria-label="Première">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                      </a>
-                    </li>
-                    <li class="page-item">
-                      <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ pages.previous_page_number }}" aria-label="Précédente">
-                        <span aria-hidden="true">&laquo;</span>
-                      </a>
-                    </li>
-                  {% else %}
-                    <li class="page-item disabled"><span class="page-link">&laquo;&laquo;</span></li>
-                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                  {% endif %}
-
-                  {% for i in pages.paginator.page_range %}
-                    {% if pages.number == i %}
-                      <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                    {% else %}
-                      <li class="page-item"><a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ i }}">{{ i }}</a></li>
-                    {% endif %}
-                  {% endfor %}
-
-                  {% if pages.has_next %}
-                    <li class="page-item">
-                      <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ pages.next_page_number }}" aria-label="Suivante">
-                        <span aria-hidden="true">&raquo;</span>
-                      </a>
-                    </li>
-                    <li class="page-item">
-                      <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ pages.paginator.num_pages }}" aria-label="Dernière">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                      </a>
-                    </li>
-                  {% else %}
-                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                    <li class="page-item disabled"><span class="page-link">&raquo;&raquo;</span></li>
-                  {% endif %}
-                </ul>
-                <div class="text-center text-muted">
-                  <small>Page {{ pages.number }} sur {{ pages.paginator.num_pages }} ({{ compte }} utilisateur(s))</small>
+        <div class="row g-3 mb-3">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Rechercher un utilisateur..." value="{{ request.GET.q }}">
+                    <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i> Rechercher</button>
                 </div>
-            </nav>
+            </form>
+
+            {% if pages %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Photo</th>
+                                <th>Username</th>
+                                <th>Nom</th>
+                                <th>Profil</th>
+                                {% if request.user.is_manager or request.user.is_staff %}
+                                    <th>Statut</th>
+                                    <th class="text-center">Actions</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in pages %}
+                                {% if request.user.is_manager or request.user.is_staff %}
+                                <tr class="clickable-row" data-href="{% url 'user_edit' u.pk %}">
+                                {% else %}
+                                <tr>
+                                {% endif %}
+                                    <td>{{ u.id }}</td>
+                                    <td>
+                                        {% if u.photo_url %}
+                                            <img src="{{ u.photo_url.url }}" alt="Photo de {{ u.username }}" class="user-photo">
+                                        {% else %}
+                                            <i class="mdi mdi-account-circle" style="font-size: 40px; color: rgba(255,255,255,0.5);"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td><strong>{{ u.username }}</strong></td>
+                                    <td>{{ u.noms }}</td>
+                                    <td>
+                                        <span class="badge badge-profile bg-{% if u.profile.id == 4 %}primary{% elif u.profile.id == 1 %}info{% elif u.profile.id == 2 %}warning{% elif u.profile.id == 3 %}success{% else %}secondary{% endif %}">
+                                            {{ u.profile.name }}
+                                        </span>
+                                    </td>
+                                    {% if request.user.is_manager or request.user.is_staff %}
+                                        <td>
+                                            <a href="{% url 'active_user' u.id %}" class="text-decoration-none">
+                                                {% if u.is_active %}
+                                                    <span class="badge bg-success"><i class="mdi mdi-check-circle"></i> Actif</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger"><i class="mdi mdi-close-circle"></i> Inactif</span>
+                                                {% endif %}
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a href="{% url 'user_edit' u.pk %}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="mdi mdi-account-edit"></i></a>
+                                                <a href="{% url 'generer_user_motdepasse' u.id %}" class="btn btn-sm btn-outline-info" title="Réinitialiser le mot de passe" onclick="return confirm('Réinitialiser le mot de passe de {{ u.username }} ?')"><i class="mdi mdi-lock-reset"></i></a>
+                                                <a href="{% url 'user_delete' u.pk %}" class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="mdi mdi-delete"></i></a>
+                                            </div>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <nav aria-label="Pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if pages.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page=1" aria-label="Première"><span aria-hidden="true">&laquo;&laquo;</span></a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ pages.previous_page_number }}" aria-label="Précédente"><span aria-hidden="true">&laquo;</span></a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">&laquo;&laquo;</span></li>
+                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        {% endif %}
+
+                        {% for i in pages.paginator.page_range %}
+                            {% if pages.number == i %}
+                                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if pages.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ pages.next_page_number }}" aria-label="Suivante"><span aria-hidden="true">&raquo;</span></a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ pages.paginator.num_pages }}" aria-label="Dernière"><span aria-hidden="true">&raquo;&raquo;</span></a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                            <li class="page-item disabled"><span class="page-link">&raquo;&raquo;</span></li>
+                        {% endif %}
+                    </ul>
+                    <div class="text-center text-light mt-2">
+                        <small>Page {{ pages.number }} sur {{ pages.paginator.num_pages }} ({{ compte_str }})</small>
+                    </div>
+                </nav>
+            {% else %}
+                <div class="alert alert-warning text-center" role="alert">
+                    Aucun utilisateur trouvé. Total : {{ compte }}
+                </div>
             {% endif %}
-          </div>
         </div>
-      {% else %}
-        <div class="block-content collapse in">
-          <div class="span12">
-            <span><h4 class="text-center alert alert-warning">Aucun utilisateur trouvé</h4></span>
-          </div>
-        </div>
-      {% endif %}
-    </div>
-  </div>
-{% endif %}
-{% include 'app_user/ajouter_users.html' %}
-{% endblock content %} 
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rows = document.querySelectorAll('.clickable-row');
+    rows.forEach(row => {
+        row.addEventListener('click', function(event) {
+            // Empêche la redirection si un bouton ou un lien dans la ligne est cliqué
+            if (event.target.closest('a, button')) {
+                return;
+            }
+            // Redirige vers la page d'édition
+            window.location.href = row.dataset.href;
+        });
+    });
+});
+</script>
+
+{% endblock content %}

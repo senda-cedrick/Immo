@@ -30,6 +30,22 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['noms']
     EMAIL_FIELD = 'email'
 
+    @property
+    def is_manager(self):
+        """Vérifie si l'utilisateur a le profil 'Manager'."""
+        return self.profile and self.profile.name == 'Manager'
+
+    @property
+    def is_agent(self):
+        """Vérifie si l'utilisateur a le profil 'Agent'."""
+        return self.profile and self.profile.name == 'Agent'
+
+    @property
+    def is_proprietaire(self):
+        """Vérifie si l'utilisateur a le profil 'Proprietaire'."""
+        return self.profile and self.profile.name == 'Proprietaire'
+
+
 class LogUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     action = models.TextField(blank=True, null=True)

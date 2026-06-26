@@ -18,6 +18,10 @@
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
+    <style>
+      .auth.login-bg .control-label { color: #fff !important; }
+      .auth.login-bg .form-control { background-color: #fff; color: #212529; }
+    </style>
   </head>
   <body>
     <div class="container-scroller">
@@ -34,13 +38,13 @@
                 <form method="post" action="{% url 'login' %}">
                    {% csrf_token %}
                   <div class="form-group">
-                    <label class="control-label text-dark fw-semibold" for="username">
+                    <label for="username" style="color:#fff; font-weight:600;">
                       <i class="mdi mdi-account"></i> Nom d'utilisateur
                     </label>
                     <input type="text" class="form-control p_input bg-white text-dark" name="username" id="username" placeholder="Entrez votre nom d'utilisateur" required>
                   </div>
                   <div class="form-group">
-                    <label class="control-label text-dark fw-semibold" for="password">
+                    <label for="password" style="color:#fff; font-weight:600;">
                       <i class="mdi mdi-lock"></i> Mot de passe
                     </label>
                     <input type="password" class="form-control p_input bg-white text-dark" name="password" id="password" placeholder="Entrez votre mot de passe" required>

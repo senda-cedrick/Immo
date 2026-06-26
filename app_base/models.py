@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 class Agence(models.Model):
     # id = models.BigAutoField(primary_key=True) est ajouté automatiquement
     nom = models.CharField(max_length=50)
@@ -23,8 +22,7 @@ class Personnel(models.Model):
         ('F','Feminin'),
         ('ND','Non défini'),
     )
-    # id = models.BigAutoField(primary_key=True) est ajouté automatiquement
-    noms = models.CharField(max_length=50)
+    noms = models.CharField(max_length=150)
     sexe = models.CharField(max_length=2, choices=SEXE_CHOISES)
     role = models.CharField(max_length=50)
     status = models.CharField(max_length=40, blank=True, null=True)
@@ -59,22 +57,38 @@ class Appartement(models.Model):
     status =  models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
-        return self.identifiant 
+        return self.identifiant
+    
+class TypePropriete(models.Model):
+    TYPE_CHOIX = (
+        ('maison', 'Maison'),
+        ('villa', 'Villa'),
+        ('appartement', 'Appartement'),
+        ('studio', 'Studio'),
+        ('bureau', 'Bureau'),
+        ('commerce', 'Commerce'),
+        ('terrain', 'Terrain'),
+    )
+    nom = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.nom
+
 class Propriete(models.Model):
-       
-    # id = models.BigAutoField(primary_key=True) est ajouté automatiquement
-    type_propiete = models.CharField(max_length=50)
+    type_propriete = models.ForeignKey(TypePropriete, on_delete=models.PROTECT)
     ville =  models.CharField(max_length=50)
-    Agent =  models.CharField(max_length=50)
+    agent =  models.CharField(max_length=50)
     gestion = models.BooleanField(default=True)
-    appartements = models.ForeignKey(Appartement, on_delete=models.CASCADE)
+    appartement = models.ForeignKey(Appartement, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
-        return self.Agent 
+        return self.agent
+    
 class Locataire(models.Model):
-    # id = models.BigAutoField(primary_key=True) est ajouté automatiquement
     noms = models.CharField(max_length=50)
     telephone = models.CharField(max_length=50)
     contrat = models.CharField(max_length=50)
@@ -86,8 +100,8 @@ class Locataire(models.Model):
 
     def __str__(self):
         return f"{self.noms} ({self.email})"
+    
 class Logement(models.Model):
-    # id = models.BigAutoField(primary_key=True) est ajouté automatiquement
     identifiant = models.ForeignKey(Appartement, on_delete=models.CASCADE)
     status = models.CharField(max_length=50)
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.CASCADE)
@@ -97,13 +111,14 @@ class Logement(models.Model):
 
     def __str__(self):
         return str(self.identifiant)
+    
 class Garantie(models.Model):
-    # id = models.BigAutoField(primary_key=True) est ajouté automatiquement
-    locataires = models.ForeignKey(Locataire, on_delete=models.CASCADE)
-    montant= models.IntegerField()
+    locataire = models.ForeignKey(Locataire, on_delete=models.CASCADE)
+    montant = models.IntegerField()
     planification = models.CharField(max_length=50)
-    date_appartition= models.DateField()
+    date_apparition = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
-        return f"Garantie pour {self.locataires.noms}"
+        return f"Garantie pour {self.locataire.noms}"

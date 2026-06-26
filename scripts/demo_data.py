@@ -27,7 +27,7 @@ from decimal import Decimal
 
 from app_base.models import (
     Agence, Personnel, Proprietaire, Appartement,
-    Propriete, Locataire, Logement, Garantie
+    Propriete, TypePropriete, Locataire, Logement, Garantie
 )
 from app_users.models import Profile, User, LogUser
 from app_paiements.models import Paiement, Impayes
@@ -177,11 +177,11 @@ def create_demo_data():
     # 7. PROPRIETES (app_base)
     # ──────────────────────────────────────────────
     proprietes_data = [
-        {'type_propiete': 'Immeuble', 'ville': 'Kinshasa/Gombe',      'Agent': 'Mbuyi Kalenga',    'gestion': True,  'appartements': Appartement.objects.get(identifiant='APT-001')},
-        {'type_propiete': 'Villa',    'ville': 'Kinshasa/Ngaliema',    'Agent': 'Ilunga Kayembe',   'gestion': True,  'appartements': Appartement.objects.get(identifiant='APT-002')},
-        {'type_propiete': 'Immeuble', 'ville': 'Kinshasa/Limete',      'Agent': 'Mwepu Kazadi',     'gestion': True,  'appartements': Appartement.objects.get(identifiant='APT-003')},
-        {'type_propiete': 'Studio',   'ville': 'Kinshasa/Kalamu',      'Agent': 'Mbuyi Kalenga',    'gestion': False, 'appartements': Appartement.objects.get(identifiant='APT-004')},
-        {'type_propiete': 'Duplex',   'ville': 'Kinshasa/Gombe',       'Agent': 'Ilunga Kayembe',   'gestion': True,  'appartements': Appartement.objects.get(identifiant='APT-005')},
+        {'type_propriete': TypePropriete.objects.get_or_create(nom='Immeuble')[0], 'ville': 'Kinshasa/Gombe',      'agent': 'Mbuyi Kalenga',    'gestion': True,  'appartement': Appartement.objects.get(identifiant='APT-001')},
+        {'type_propriete': TypePropriete.objects.get_or_create(nom='Villa')[0],    'ville': 'Kinshasa/Ngaliema',    'agent': 'Ilunga Kayembe',   'gestion': True,  'appartement': Appartement.objects.get(identifiant='APT-002')},
+        {'type_propriete': TypePropriete.objects.get_or_create(nom='Immeuble')[0], 'ville': 'Kinshasa/Limete',      'agent': 'Mwepu Kazadi',     'gestion': True,  'appartement': Appartement.objects.get(identifiant='APT-003')},
+        {'type_propriete': TypePropriete.objects.get_or_create(nom='Studio')[0],   'ville': 'Kinshasa/Kalamu',      'agent': 'Mbuyi Kalenga',    'gestion': False, 'appartement': Appartement.objects.get(identifiant='APT-004')},
+        {'type_propriete': TypePropriete.objects.get_or_create(nom='Duplex')[0],   'ville': 'Kinshasa/Gombe',       'agent': 'Ilunga Kayembe',   'gestion': True,  'appartement': Appartement.objects.get(identifiant='APT-005')},
     ]
     for p in proprietes_data:
         Propriete.objects.create(**p)
@@ -206,11 +206,11 @@ def create_demo_data():
     # 9. LOGEMENTS (app_base)
     # ──────────────────────────────────────────────
     logements_data = [
-        {'identifiant': Appartement.objects.get(identifiant='APT-001'), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(noms='M. Tshisekedi Félix'),       'agent': Propriete.objects.get(type_propiete='Immeuble', ville='Kinshasa/Gombe')},
-        {'identifiant': Appartement.objects.get(identifiant='APT-002'), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(noms='Mme Bemba Gertrude'),        'agent': Propriete.objects.get(type_propiete='Villa', ville='Kinshasa/Ngaliema')},
-        {'identifiant': Appartement.objects.get(identifiant='APT-003'), 'status': 'Libre',         'proprietaire': Proprietaire.objects.get(noms='M. Tshisekedi Félix'),       'agent': Propriete.objects.get(type_propiete='Immeuble', ville='Kinshasa/Limete')},
-        {'identifiant': Appartement.objects.get(identifiant='APT-004'), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(noms='M. Katumbi Moïse'),          'agent': Propriete.objects.get(type_propiete='Studio', ville='Kinshasa/Kalamu')},
-        {'identifiant': Appartement.objects.get(identifiant='APT-005'), 'status': 'En rénovation', 'proprietaire': Proprietaire.objects.get(noms='Mme Masangu Sylvie'),        'agent': Propriete.objects.get(type_propiete='Duplex', ville='Kinshasa/Gombe')},
+        {'identifiant': Appartement.objects.get(identifiant='APT-001'), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(noms='M. Tshisekedi Félix'),       'agent': Propriete.objects.get(type_propriete__nom='Immeuble', ville='Kinshasa/Gombe')},
+        {'identifiant': Appartement.objects.get(identifiant='APT-002'), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(noms='Mme Bemba Gertrude'),        'agent': Propriete.objects.get(type_propriete__nom='Villa', ville='Kinshasa/Ngaliema')},
+        {'identifiant': Appartement.objects.get(identifiant='APT-003'), 'status': 'Libre',         'proprietaire': Proprietaire.objects.get(noms='M. Tshisekedi Félix'),       'agent': Propriete.objects.get(type_propriete__nom='Immeuble', ville='Kinshasa/Limete')},
+        {'identifiant': Appartement.objects.get(identifiant='APT-004'), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(noms='M. Katumbi Moïse'),          'agent': Propriete.objects.get(type_propriete__nom='Studio', ville='Kinshasa/Kalamu')},
+        {'identifiant': Appartement.objects.get(identifiant='APT-005'), 'status': 'En rénovation', 'proprietaire': Proprietaire.objects.get(noms='Mme Masangu Sylvie'),        'agent': Propriete.objects.get(type_propriete__nom='Duplex', ville='Kinshasa/Gombe')},
     ]
     for lg in logements_data:
         Logement.objects.create(**lg)
@@ -220,10 +220,10 @@ def create_demo_data():
     # 10. GARANTIES (app_base)
     # ──────────────────────────────────────────────
     garanties_data = [
-        {'locataires': Locataire.objects.get(noms='Kakudji Pierre'), 'montant': 450,  'planification': 'Mensuelle',  'date_appartition': date.today() - timedelta(days=30)},
-        {'locataires': Locataire.objects.get(noms='Mukendi Albert'), 'montant': 350,  'planification': 'Trimestrielle', 'date_appartition': date.today() - timedelta(days=15)},
-        {'locataires': Locataire.objects.get(noms='Kabongo Raphaël'), 'montant': 300,  'planification': 'Mensuelle',  'date_appartition': date.today() - timedelta(days=45)},
-        {'locataires': Locataire.objects.get(noms='Kazadi Michel'), 'montant': 380,  'planification': 'Semestrielle', 'date_appartition': date.today() - timedelta(days=90)},
+        {'locataire': Locataire.objects.get(noms='Kakudji Pierre'), 'montant': 450,  'planification': 'Mensuelle',  'date_apparition': date.today() - timedelta(days=30)},
+        {'locataire': Locataire.objects.get(noms='Mukendi Albert'), 'montant': 350,  'planification': 'Trimestrielle', 'date_apparition': date.today() - timedelta(days=15)},
+        {'locataire': Locataire.objects.get(noms='Kabongo Raphaël'), 'montant': 300,  'planification': 'Mensuelle',  'date_apparition': date.today() - timedelta(days=45)},
+        {'locataire': Locataire.objects.get(noms='Kazadi Michel'), 'montant': 380,  'planification': 'Semestrielle', 'date_apparition': date.today() - timedelta(days=90)},
     ]
     for g in garanties_data:
         Garantie.objects.create(**g)

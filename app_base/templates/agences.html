@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.clickable-row').forEach(function(row) {
+    row.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('button')) return;
+      window.location.href = this.dataset.href;
+    });
+  });
+});
+</script>
+{% endblock %}
+
 {% block content %}
   <div class="content-wrapper">
     <div class="container-fluid">
@@ -41,7 +54,7 @@
             <tbody>
               {% for item in pages %}
               <tr class="clickable-row" data-href="{% url 'agence_detail' item.id %}">
-                <td>{{ item.id }}</td>
+                <td><a href="{% url 'agence_detail' item.id %}" class="text-decoration-none text-dark">{{ item.id }}</a></td>
                 <td><strong>{{ item.nom }}</strong></td>
                 <td>{{ item.numero_impot }}</td>
                 <td>{{ item.numero_fisc }}</td>

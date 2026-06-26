@@ -1,11 +1,11 @@
 from django.db import models
-from app_base.models import Locataire
+from app_base.models import Client
 
 
 # Create your models here.
 class Paiement(models.Model):
-    locataires = models.ForeignKey(Locataire, on_delete=models.CASCADE)
-    montant = models.IntegerField()
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    montant = models.DecimalField(max_digits=12, decimal_places=2)
     date_paie = models.DateField()
     date_normal= models.DateField()
     type_paie= models.CharField(max_length=100)
@@ -14,11 +14,11 @@ class Paiement(models.Model):
  
     def __str__(self):
         # Affiche des informations plus utiles dans l'admin
-        return f"Paiement de {self.locataires.noms} - {self.montant}"
+        return f"Paiement de {self.client.user.noms} - {self.montant}"
     
 class Impayes(models.Model):
-    locataires = models.ForeignKey(Locataire, on_delete=models.CASCADE)
-    impaye = models.IntegerField()
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    impaye = models.DecimalField(max_digits=12, decimal_places=2)
     situation = models.CharField(max_length=50)
     date_sortie= models.DateField()
     detail= models.CharField(max_length=100)
@@ -28,4 +28,4 @@ class Impayes(models.Model):
   
     def __str__(self):
         # Affiche des informations plus utiles dans l'admin
-        return f"Impayé de {self.locataires.noms} - {self.impaye}"
+        return f"Impayé de {self.client.user.noms} - {self.impaye}"

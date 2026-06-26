@@ -28,7 +28,9 @@ else
     python3 -m venv .venv
     source .venv/bin/activate
     echo "   Installation des dépendances..."
-    pip install -r requirements.txt
+    if [ -f "requirements.txt" ]; then
+        pip install -r requirements.txt
+    fi
 fi
 
 # Vérifier si Django est accessible
@@ -98,7 +100,7 @@ echo "✅ Anciens fichiers de migration supprimés."
 # ─── 4. Recréation des migrations ────────────────
 echo ""
 echo "🔄 Recréation des migrations..."
-python manage.py makemigrations
+python manage.py makemigrations app_base app_users app_paiements app_caisse app_report
 
 # ─── 5. Application des migrations ───────────────
 echo ""
@@ -115,13 +117,11 @@ echo "========================================="
 echo "  ✅ Données chargées avec succès !"
 echo "========================================="
 echo ""
-echo "   Utilisateurs créés :"
+echo "   Utilisateurs créés (mot de passe par défaut : demo123) :"
 echo "   - Superadmin   : superadmin / admin123"
-echo "   - Admin (staff) : admin / demo123"
-echo "   - Manager (staff): manager1 / demo123"
-echo "   - Agent        : agent1 / demo123"
-echo "   - Propriétaire : proprio1 / demo123"
-echo "   - Comptable    : compta1 / demo123"
-echo "   - Superviseur  : super1 / demo123"
+echo "   - Manager      : manager1"
+echo "   - Agent        : agent1"
+echo "   - Propriétaire : proprio1"
+echo "   - Client       : client1"
 echo ""
 echo "   Connexion : http://127.0.0.1:8000/user/login/"

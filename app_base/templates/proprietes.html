@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <th>Type</th>
                 <th>Ville</th>
                 <th>Agent</th>
-                <th>Appartement</th>
                 <th>Gestion</th>
                 {% if request.user.is_staff %}
                 <th class="text-center">Actions</th>
@@ -55,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td><strong>{{ item.type_propriete.nom }}</strong></td>
                 <td>{{ item.ville }}</td>
                 <td>{{ item.agent }}</td>
-                <td>{{ item.appartement.identifiant }}</td>
                 <td>
                   {% if item.gestion %}
                     <span class="badge bg-success text-white">Oui</span>

@@ -6,6 +6,15 @@ from immo_travel.views import home_views
 urlpatterns = [
     path('', home_views.HomeView.as_view(), name='home'),
     
+    # Redirections pour compatibilité (anciens noms)
+    path('logements/', views.LogementListView.as_view(), name='appartements'),
+    path('logement/<int:pk>/', views.LogementDetailView.as_view(), name='appartement_detail'),
+    path('logement/add/', views.LogementCreateView.as_view(), name='ajouter_appartement'),
+    path('logement/<int:pk>/edit/', views.LogementUpdateView.as_view(), name='modifier_appartement'),
+    path('logement/<int:pk>/delete/', views.LogementDeleteView.as_view(), name='supprimer_appartement'),
+    path('locataires/', views.ClientListView.as_view(), name='locataires'),
+    path('locataire/<int:pk>/', views.ClientDetailView.as_view(), name='locataire'),
+    
     # Agences
     path('agences/', views.AgenceListView.as_view(), name='agences'),
     path('agence/<int:pk>/', views.AgenceDetailView.as_view(), name='agence_detail'),
@@ -34,9 +43,28 @@ urlpatterns = [
     path('propriete/<int:pk>/edit/', views.ProprieteUpdateView.as_view(), name='modifier_propriete'),
     path('propriete/<int:pk>/delete/', views.ProprieteDeleteView.as_view(), name='supprimer_propriete'),
 
-    # Pages statiques
-    path('garanties/', views.garanties, name='garanties'),
-    path('appartements/', views.appartements, name='appartements'),
-    path('locataires/', views.locataires, name='locataires'),
-    path('proprietaires/', views.proprietaires, name='proprietaires'),
+    # Clients (anciennement Locataires)
+    path('clients/', views.ClientListView.as_view(), name='clients'),
+    path('client/<int:pk>/', views.ClientDetailView.as_view(), name='client_detail'),
+    path('client/add/', views.ClientCreateView.as_view(), name='ajouter_client'),
+    path('client/<int:pk>/edit/', views.ClientUpdateView.as_view(), name='modifier_client'),
+    path('client/<int:pk>/delete/', views.ClientDeleteView.as_view(), name='supprimer_client'),
+
+    # Proprietaires
+    path('proprietaires/', views.ProprietaireListView.as_view(), name='proprietaires'),
+    path('proprietaire/<int:pk>/', views.ProprietaireDetailView.as_view(), name='proprietaire_detail'),
+    path('proprietaire/add/', views.ProprietaireCreateView.as_view(), name='ajouter_proprietaire'),
+    path('proprietaire/<int:pk>/edit/', views.ProprietaireUpdateView.as_view(), name='modifier_proprietaire'),
+    path('proprietaire/<int:pk>/delete/', views.ProprietaireDeleteView.as_view(), name='supprimer_proprietaire'),
+
+    # Contrats
+    path('contrats/', views.ContratListView.as_view(), name='contrats'),
+    path('contrat/add/', views.ContratCreateView.as_view(), name='ajouter_contrat'),
+    path('contrat/<int:pk>/edit/', views.ContratUpdateView.as_view(), name='modifier_contrat'),
+    path('contrat/<int:pk>/delete/', views.ContratDeleteView.as_view(), name='supprimer_contrat'),
+
+    # Garanties
+    path('garanties/', views.GarantieListView.as_view(), name='garanties'),
+    path('garantie/add/', views.GarantieCreateView.as_view(), name='ajouter_garantie'),
+    path('garantie/<int:pk>/edit/', views.GarantieUpdateView.as_view(), name='modifier_garantie'),
 ]

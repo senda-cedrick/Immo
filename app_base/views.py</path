@@ -7,7 +7,6 @@ from .forms import (
     TypeProprieteForm, ProprieteForm, LogementForm,
     ContratForm, GarantieForm, MaintenanceForm
 )
-from django.db.models import Sum
 from .models import (
     Agence, Personnel, Proprietaire, Client,
     TypePropriete, Propriete, Logement, Contrat, Garantie, Maintenance
@@ -32,73 +31,30 @@ def dashboard(request):
 
 class AgenceListView(LoginRequiredMixin, ListView):
     model = Agence
-    template_name = 'agences.html'
+    template_name = 'app_base/agences.html'
     context_object_name = 'agences'
     paginate_by = 10
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        query = self.request.GET.get('q')
-        if query:
-            qs = qs.filter(nom__icontains=query)
-        return qs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        agences = context['agences']
-        # Ajouter les champs calculés pour chaque agence dans la page courante
-        for agence in agences:
-            agence.effectif = agence.personnel.count()
-            proprietes_ids = agence.proprietes.values_list('id', flat=True)
-            revenu = Contrat.objects.filter(
-                propriete_id__in=proprietes_ids,
-                statut='ACTIF'
-            ).aggregate(total=Sum('montant'))['total'] or 0
-            agence.revenu = revenu
-        return context
-
-
 class AgenceDetailView(LoginRequiredMixin, DetailView):
     model = Agence
-    template_name = 'agence_detail.html'
+    template_name = 'app_base/agence_detail.html'
     context_object_name = 'agence'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        agence = context['agence']
-        agence.effectif = agence.personnel.count()
-        proprietes_ids = agence.proprietes.values_list('id', flat=True)
-        revenu = Contrat.objects.filter(
-            propriete_id__in=proprietes_ids,
-            statut='ACTIF'
-        ).aggregate(total=Sum('montant'))['total'] or 0
-        agence.revenu = revenu
-
-        context['personnels'] = agence.personnel.select_related('user').all()
-        context['proprietes'] = agence.proprietes.select_related('type_propriete').all()
-        context['contrats'] = Contrat.objects.filter(
-            propriete__agence=agence
-        ).select_related('client', 'propriete').order_by('-date_debut')[:10]
-        context['total_personnel'] = agence.effectif
-        context['total_proprietes'] = agence.proprietes.count()
-        context['total_contrats_actifs'] = agence.proprietes.filter(contrats__statut='ACTIF').count()
-        return context
 
 class AgenceCreateView(LoginRequiredMixin, CreateView):
     model = Agence
     form_class = AgenceForm
-    template_name = 'agence_form.html'
+    template_name = 'app_base/agence_form.html'
     success_url = reverse_lazy('agences')
 
 class AgenceUpdateView(LoginRequiredMixin, UpdateView):
     model = Agence
     form_class = AgenceForm
-    template_name = 'agence_form.html'
+    template_name = 'app_base/agence_form.html'
     success_url = reverse_lazy('agences')
 
 class AgenceDeleteView(LoginRequiredMixin, DeleteView):
     model = Agence
-    template_name = 'agence_confirm_delete.html'
+    template_name = 'app_base/agence_confirm_delete.html'
     success_url = reverse_lazy('agences')
     success_message = "Agence supprimée avec succès."
 
@@ -107,7 +63,7 @@ class AgenceDeleteView(LoginRequiredMixin, DeleteView):
 
 class PersonnelListView(LoginRequiredMixin, ListView):
     model = Personnel
-    template_name = 'app_base/personnel_list.html'
+    template_name = 'app_base/personnels.html'
     context_object_name = 'personnels'
     paginate_by = 10
 
@@ -139,7 +95,7 @@ class PersonnelDeleteView(LoginRequiredMixin, DeleteView):
 
 class ProprietaireListView(LoginRequiredMixin, ListView):
     model = Proprietaire
-    template_name = 'app_base/proprietaire_list.html'
+    template_name = 'app_base/proprietaires.html'
     context_object_name = 'proprietaires'
     paginate_by = 10
 
@@ -169,7 +125,7 @@ class ProprietaireDeleteView(LoginRequiredMixin, DeleteView):
 
 class ClientListView(LoginRequiredMixin, ListView):
     model = Client
-    template_name = 'app_base/client_list.html'
+    template_name = 'app_base/locataires.html'
     context_object_name = 'clients'
     paginate_by = 10
 
@@ -199,7 +155,7 @@ class ClientDeleteView(LoginRequiredMixin, DeleteView):
 
 class TypeProprieteListView(LoginRequiredMixin, ListView):
     model = TypePropriete
-    template_name = 'app_base/typepropriete_list.html'
+    template_name = 'app_base/type_proprietes.html'
     context_object_name = 'type_proprietes'
     paginate_by = 10
 
@@ -229,7 +185,7 @@ class TypeProprieteDeleteView(LoginRequiredMixin, DeleteView):
 
 class ProprieteListView(LoginRequiredMixin, ListView):
     model = Propriete
-    template_name = 'app_base/propriete_list.html'
+    template_name = 'app_base/proprietes.html'
     context_object_name = 'proprietes'
     paginate_by = 10
 
@@ -259,7 +215,7 @@ class ProprieteDeleteView(LoginRequiredMixin, DeleteView):
 
 class LogementListView(LoginRequiredMixin, ListView):
     model = Logement
-    template_name = 'app_base/logement_list.html'
+    template_name = 'app_base/appartements.html'
     context_object_name = 'logements'
     paginate_by = 10
 
@@ -319,7 +275,7 @@ class ContratDeleteView(LoginRequiredMixin, DeleteView):
 
 class GarantieListView(LoginRequiredMixin, ListView):
     model = Garantie
-    template_name = 'app_base/garantie_list.html'
+    template_name = 'app_base/garanties.html'
     context_object_name = 'garanties'
     paginate_by = 10
 

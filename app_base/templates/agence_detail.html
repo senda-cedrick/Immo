@@ -4,38 +4,232 @@
   <div class="content-wrapper">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="col-12">
           <div class="glass-card">
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <h5 class="mb-0"><i class="mdi mdi-domain"></i> Détail de l'agence</h5>
-              <a href="{% url 'agences' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
-            </div>
-
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <p><strong>ID :</strong> {{ agence.id }}</p>
-                <p><strong>Nom :</strong> {{ agence.nom }}</p>
-                <p><strong>N° Impôt :</strong> {{ agence.numero_impot }}</p>
-                <p><strong>N° Fiscal :</strong> {{ agence.numero_fisc }}</p>
-              </div>
-              <div class="col-md-6">
-                <p><strong>Effectif :</strong> {{ agence.effectif }}</p>
-                <p><strong>Revenu :</strong> {{ agence.revenu|floatformat:0 }}</p>
-                <p><strong>Email :</strong> {{ agence.email }}</p>
-                <p><strong>Statut :</strong>
-                  {% if agence.active %}
-                    <span class="badge bg-success text-white">Active</span>
-                  {% else %}
-                    <span class="badge bg-danger text-white">Inactive</span>
-                  {% endif %}
-                </p>
+              <h5 class="mb-0"><i class="mdi mdi-domain"></i> Détail de l'agence : {{ agence.nom }}</h5>
+              <div class="d-flex gap-2">
+                <a href="{% url 'agences' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+                <a href="{% url 'modifier_agence' agence.id %}" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-pencil"></i> Modifier</a>
+                <a href="{% url 'supprimer_agence' agence.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette agence ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
               </div>
             </div>
 
-            <div class="d-flex justify-content-end gap-2">
-              <a href="{% url 'modifier_agence' agence.id %}" class="btn btn-outline-warning"><i class="mdi mdi-pencil"></i> Modifier</a>
-              <a href="{% url 'supprimer_agence' agence.id %}" class="btn btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette agence ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
+            <!-- Statistiques -->
+            <div class="row mb-4">
+              <div class="col-md-3">
+                <div class="card bg-primary text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Personnel</h6>
+                      <h3 class="mb-0">{{ total_personnel }}</h3>
+                    </div>
+                    <i class="mdi mdi-account-multiple" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-success text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Propriétés</h6>
+                      <h3 class="mb-0">{{ total_proprietes }}</h3>
+                    </div>
+                    <i class="mdi mdi-home-city" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-info text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Contrats actifs</h6>
+                      <h3 class="mb-0">{{ total_contrats_actifs }}</h3>
+                    </div>
+                    <i class="mdi mdi-file-document" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-warning text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Revenu</h6>
+                      <h3 class="mb-0">{{ agence.revenu|floatformat:0 }}</h3>
+                    </div>
+                    <i class="mdi mdi-cash" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            <!-- Informations -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-information"></i> Informations générales</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td class="fw-semibold text-muted" style="width: 150px;">ID :</td>
+                    <td>{{ agence.id }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Nom :</td>
+                    <td><strong>{{ agence.nom }}</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">N° Impôt :</td>
+                    <td>{{ agence.numero_impot|default:"—" }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">N° Fiscal :</td>
+                    <td>{{ agence.numero_fisc|default:"—" }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Email :</td>
+                    <td>{{ agence.email }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Téléphone :</td>
+                    <td>{{ agence.telephone }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Adresse :</td>
+                    <td>{{ agence.adresse }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Statut :</td>
+                    <td>
+                      {% if agence.active %}
+                        <span class="badge bg-success text-white"><i class="mdi mdi-check-circle"></i> Active</span>
+                      {% else %}
+                        <span class="badge bg-danger text-white"><i class="mdi mdi-close-circle"></i> Inactive</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-calendar"></i> Dates</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td class="fw-semibold text-muted" style="width: 150px;">Créée le :</td>
+                    <td>{{ agence.created_at|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Dernière modification :</td>
+                    <td>{{ agence.updated_at|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <!-- Personnel -->
+            <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-account-multiple"></i> Personnel ({{ total_personnel }})</h6>
+            <div class="table-responsive mb-4">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nom & Prénoms</th>
+                    <th>Sexe</th>
+                    <th>Téléphone</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for p in personnels %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><strong>{{ p.user.noms }}</strong></td>
+                    <td>{{ p.get_sexe_display }}</td>
+                    <td>{{ p.telephone }}</td>
+                    <td>{{ p.user.email }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="5" class="text-muted">Aucun personnel dans cette agence.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Propriétés -->
+            <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-home-city"></i> Propriétés ({{ total_proprietes }})</h6>
+            <div class="table-responsive mb-4">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Type</th>
+                    <th>Adresse</th>
+                    <th>Ville</th>
+                    <th>Superficie</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for p in proprietes %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ p.type_propriete.nom }}</td>
+                    <td>{{ p.adresse|truncatechars:30 }}</td>
+                    <td>{{ p.ville }}</td>
+                    <td>{{ p.superficie }} m²</td>
+                    <td>
+                      <span class="badge {% if p.statut == 'DISPONIBLE' %}bg-success{% elif p.statut == 'LOUE' %}bg-primary{% elif p.statut == 'VENDU' %}bg-secondary{% else %}bg-warning{% endif %}">
+                        {{ p.get_statut_display }}
+                      </span>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="6" class="text-muted">Aucune propriété dans cette agence.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Contrats récents -->
+            <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-file-document"></i> Derniers contrats</h6>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Référence</th>
+                    <th>Type</th>
+                    <th>Client</th>
+                    <th>Propriété</th>
+                    <th>Montant</th>
+                    <th>Début</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for c in contrats %}
+                  <tr>
+                    <td><strong>{{ c.reference }}</strong></td>
+                    <td>{{ c.get_type_display }}</td>
+                    <td>{{ c.client.user.noms }}</td>
+                    <td>{{ c.propriete.adresse|truncatechars:20 }}</td>
+                    <td>{{ c.montant|floatformat:0 }}</td>
+                    <td>{{ c.date_debut|date:"d/m/Y" }}</td>
+                    <td>
+                      <span class="badge {% if c.statut == 'ACTIF' %}bg-success{% elif c.statut == 'BROUILLON' %}bg-secondary{% elif c.statut == 'TERMINE' %}bg-info{% else %}bg-danger{% endif %}">
+                        {{ c.get_statut_display }}
+                      </span>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="7" class="text-muted">Aucun contrat pour cette agence.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
           </div>
         </div>
       </div>

@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
         </form>
 
-        {% if pages %}
+        {% if agences %}
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead>
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
               </tr>
             </thead>
             <tbody>
-              {% for item in pages %}
+              {% for item in agences %}
               <tr class="clickable-row" data-href="{% url 'agence_detail' item.id %}">
                 <td><a href="{% url 'agence_detail' item.id %}" class="text-decoration-none text-dark">{{ item.id }}</a></td>
                 <td><strong>{{ item.nom }}</strong></td>

@@ -1,85 +1,119 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
-         <!-- ici LIST-->
-        <div class="main-panel">
-          <div class="content-wrapper bg-secondary">
-            <div class="row">
-              <div class="col-12 grid-margin stretch-card">
-                <div class="card corona-gradient-card ">
-                  <div class="card-body py-0 px-0 px-sm-3">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12 grid-margin stretch-card">
-                <div class="card bg-secondary">
-                  <div class="card-body">
-                    <h3 class="card-title text-dark">Liste d'Appartements</h3>
-                    <!-- add search + buttons-->
-                    <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch bg-secondary text-dark">
-                      <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-                        <span class="mdi mdi-menu"></span>
-                      </button>
-                      <ul class="navbar-nav w-100">
-                        <li class="nav-item w-100">
-                          <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
-                            <input type="text" class="form-control form-control-sm w-25 bg-white" placeholder="Search appartements">
-                          </form>
-                        </li>
-                      </ul>
-                      <ul class="navbar-nav navbar-nav-right">
-                        <li class="nav-item dropdown d-none d-lg-block">
-                          <a class="nav-link btn btn-primary text-white create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Nouvel Appartement</a>
-                        </li>
-                      </ul>
-                    </div>
-                    
 
-                    <p class="card-description"> Add class <code>.table-dark</code>
-                    </p>
-                    <!-- Affichage liste et fonction-->
-                    <div class="table-responsive">
-                      <table class="table table- bg-white">
-                        <thead>
-                          <tr>
-                            <th> # </th>
-                            <th> Id_Appartement </th>
-                            <th> identifiant </th>
-                            <th> prix </th>
-                            <th> status </th>
-                            <th> created_at </th>
-                            <th> updated_at </th>
-                            <th> Action </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% for ap in appartements %}
-                          <tr>
-                            <td>{{ ap.id_appartement }}</td>
-                            <td>{{ ap.identifiant }}</td>
-                            <td>{{ ap.prix }}</td>
-                            <td>{{ ap.status }}</td>
-                            <td>{{ ap.created_at }}</td>
-                            <td>{{ ap.updated_at }}</td>
-                            <td>
-                              <a href="#">
-                                <i class="mdi mdi-rename-box text-primary"></i>
-                              </a>_
-                              <a href="#">
-                                <i class="mdi mdi-delete text-danger"></i>
-                              </a>
-                            </td>
-                          </tr>
-                          {% endfor %}
-                          <!-- / -->
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.clickable-row').forEach(function(row) {
+    row.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('button')) return;
+      window.location.href = this.dataset.href;
+    });
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="mb-0"><i class="mdi mdi-home-floor-3"></i> Appartements</h5>
+          <a href="{% url 'ajouter_appartement' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-plus"></i> Nouvel appartement</a>
+        </div>
+
+        <form method="get" action="{% url 'appartements' %}" class="row g-3 mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control" placeholder="Rechercher un appartement..." value="{{ request.GET.q }}">
+              <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i> Rechercher</button>
             </div>
           </div>
+        </form>
+
+        {% if pages %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Identifiant</th>
+                <th>Propriété</th>
+                <th>Prix</th>
+                <th>Étage</th>
+                <th>Statut</th>
+                {% if request.user.is_staff %}
+                <th class="text-center">Actions</th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in pages %}
+              <tr class="clickable-row" data-href="{% url 'appartement_detail' item.id %}">
+                <td><a href="{% url 'appartement_detail' item.id %}" class="text-decoration-none text-dark">{{ item.id }}</a></td>
+                <td><strong>{{ item.identifiant }}</strong></td>
+                <td>{{ item.propriete.type_propriete.nom }} - {{ item.propriete.ville }}</td>
+                <td>{{ item.prix|floatformat:0 }}</td>
+                <td>{{ item.etage|default:"—" }}</td>
+                <td>{{ item.status }}</td>
+                {% if request.user.is_staff %}
+                <td class="text-center">
+                  <div class="btn-group" role="group">
+                    <a href="{% url 'modifier_appartement' item.id %}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="mdi mdi-pencil"></i></a>
+                    <a href="{% url 'supprimer_appartement' item.id %}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Supprimer cet appartement ?')"><i class="mdi mdi-delete"></i></a>
+                  </div>
+                </td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">Aucun appartement trouvé.</div>
+        {% endif %}
+
+        {% if is_paginated %}
+        <nav aria-label="Page navigation" class="mt-3">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Premier">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Précédent">
+                <span aria-hidden="true">&lsaquo;</span>
+              </a>
+            </li>
+            {% endif %}
+
+            {% for num in paginator.page_range %}
+              {% if page_obj.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+              {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{ num }}</a></li>
+              {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Suivant">
+                <span aria-hidden="true">&rsaquo;</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Dernier">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 {% endblock content %}

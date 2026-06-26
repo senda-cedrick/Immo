@@ -20,6 +20,13 @@ urlpatterns = [
     path('personnel/<int:pk>/edit/', views.PersonnelUpdateView.as_view(), name='modifier_personnel'),
     path('personnel/<int:pk>/delete/', views.PersonnelDeleteView.as_view(), name='supprimer_personnel'),
 
+    # Types de propriété
+    path('type-proprietes/', views.TypeProprieteListView.as_view(), name='type_proprietes'),
+    path('type-propriete/<int:pk>/', views.TypeProprieteDetailView.as_view(), name='type_propriete_detail'),
+    path('type-propriete/add/', views.TypeProprieteCreateView.as_view(), name='ajouter_type_propriete'),
+    path('type-propriete/<int:pk>/edit/', views.TypeProprieteUpdateView.as_view(), name='modifier_type_propriete'),
+    path('type-propriete/<int:pk>/delete/', views.TypeProprieteDeleteView.as_view(), name='supprimer_type_propriete'),
+
     # Pages statiques
     path('garanties/', views.garanties, name='garanties'),
     path('appartements/', views.appartements, name='appartements'),

@@ -35,8 +35,6 @@ class Personnel(models.Model):
         return self.noms 
 
 class Proprietaire(models.Model):
-   
-    # id = models.BigAutoField(primary_key=True) est ajouté automatiquement
     noms = models.CharField(max_length=50)
     bienconfie = models.IntegerField(blank=True, null=True)
     bienlocatif = models.IntegerField(blank=True, null=True)
@@ -50,8 +48,6 @@ class Proprietaire(models.Model):
         return self.noms 
 
 class Appartement(models.Model):
-       
-    # id = models.BigAutoField(primary_key=True) est ajouté automatiquement
     identifiant = models.CharField(max_length=50)
     prix =  models.DecimalField(max_digits=10, decimal_places=2, default=0)
     status =  models.CharField(max_length=50)

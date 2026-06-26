@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto">
+          <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0"><i class="mdi mdi-home-group"></i> Détail du type de propriété</h5>
+              <a href="{% url 'type_proprietes' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <p><strong>ID :</strong> {{ type_propriete.id }}</p>
+                <p><strong>Nom :</strong> {{ type_propriete.nom }}</p>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <a href="{% url 'modifier_type_propriete' type_propriete.id %}" class="btn btn-outline-warning"><i class="mdi mdi-pencil"></i> Modifier</a>
+              <a href="{% url 'supprimer_type_propriete' type_propriete.id %}" class="btn btn-outline-danger" onclick="return confirm('Supprimer ce type de propriété ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

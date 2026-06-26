@@ -1,5 +1,5 @@
 from django import forms
-from .models import Agence, Personnel
+from .models import Agence, Personnel, TypePropriete
 
 class AgenceForm(forms.ModelForm):
     class Meta:
@@ -26,4 +26,12 @@ class PersonnelForm(forms.ModelForm):
             'status': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Actif'}),
             'agence': forms.Select(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ex: j.dupont@immo.cd'}),
+        }
+
+class TypeProprieteForm(forms.ModelForm):
+    class Meta:
+        model = TypePropriete
+        fields = ['nom']
+        widgets = {
+            'nom': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Maison'}),
         }

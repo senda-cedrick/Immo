@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto">
+          <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0"><i class="mdi mdi-home"></i> Détail de la propriété</h5>
+              <a href="{% url 'proprietes' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <p><strong>ID :</strong> {{ propriete.id }}</p>
+                <p><strong>Type :</strong> {{ propriete.type_propriete.nom }}</p>
+                <p><strong>Ville :</strong> {{ propriete.ville }}</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Agent :</strong> {{ propriete.agent }}</p>
+                <p><strong>Appartement :</strong> {{ propriete.appartement.identifiant }}</p>
+                <p><strong>Gestion :</strong>
+                  {% if propriete.gestion %}
+                    <span class="badge bg-success text-white">Oui</span>
+                  {% else %}
+                    <span class="badge bg-danger text-white">Non</span>
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <a href="{% url 'modifier_propriete' propriete.id %}" class="btn btn-outline-warning"><i class="mdi mdi-pencil"></i> Modifier</a>
+              <a href="{% url 'supprimer_propriete' propriete.id %}" class="btn btn-outline-danger" onclick="return confirm('Supprimer cette propriété ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

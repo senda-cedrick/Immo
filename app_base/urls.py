@@ -27,6 +27,13 @@ urlpatterns = [
     path('type-propriete/<int:pk>/edit/', views.TypeProprieteUpdateView.as_view(), name='modifier_type_propriete'),
     path('type-propriete/<int:pk>/delete/', views.TypeProprieteDeleteView.as_view(), name='supprimer_type_propriete'),
 
+    # Propriétés
+    path('proprietes/', views.ProprieteListView.as_view(), name='proprietes'),
+    path('propriete/<int:pk>/', views.ProprieteDetailView.as_view(), name='propriete_detail'),
+    path('propriete/add/', views.ProprieteCreateView.as_view(), name='ajouter_propriete'),
+    path('propriete/<int:pk>/edit/', views.ProprieteUpdateView.as_view(), name='modifier_propriete'),
+    path('propriete/<int:pk>/delete/', views.ProprieteDeleteView.as_view(), name='supprimer_propriete'),
+
     # Pages statiques
     path('garanties/', views.garanties, name='garanties'),
     path('appartements/', views.appartements, name='appartements'),

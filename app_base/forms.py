@@ -1,5 +1,5 @@
 from django import forms
-from .models import Agence, Personnel, TypePropriete
+from .models import Agence, Personnel, TypePropriete, Propriete, Appartement
 
 class AgenceForm(forms.ModelForm):
     class Meta:
@@ -34,4 +34,16 @@ class TypeProprieteForm(forms.ModelForm):
         fields = ['nom']
         widgets = {
             'nom': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Maison'}),
+        }
+
+class ProprieteForm(forms.ModelForm):
+    class Meta:
+        model = Propriete
+        fields = ['type_propriete', 'ville', 'agent', 'gestion', 'appartement']
+        widgets = {
+            'type_propriete': forms.Select(attrs={'class': 'form-control'}),
+            'ville': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Kinshasa/Gombe'}),
+            'agent': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Mbuyi Kalenga'}),
+            'gestion': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'appartement': forms.Select(attrs={'class': 'form-control'}),
         }

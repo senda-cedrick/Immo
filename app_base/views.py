@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .forms import AgenceForm, PersonnelForm, TypeProprieteForm
-from .models import Agence, Personnel, TypePropriete
+from .forms import AgenceForm, PersonnelForm, TypeProprieteForm, ProprieteForm
+from .models import Agence, Personnel, TypePropriete, Propriete
 from django.core.paginator import Paginator
 
 class HomeView(TemplateView):
@@ -166,4 +166,51 @@ class TypeProprieteDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "Le type de propriété a été supprimé avec succès !")
+        return super().delete(request, *args, **kwargs)
+
+
+class ProprieteListView(ListView):
+    model = Propriete
+    template_name = 'proprietes.html'
+    context_object_name = 'pages'
+    paginate_by = 10
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Propriete.objects.filter(agent__icontains=query).order_by('-id')
+        return Propriete.objects.all().order_by('-id')
+
+class ProprieteDetailView(DetailView):
+    model = Propriete
+    template_name = 'propriete_detail.html'
+    context_object_name = 'propriete'
+
+class ProprieteCreateView(CreateView):
+    model = Propriete
+    form_class = ProprieteForm
+    template_name = 'propriete_form.html'
+    success_url = reverse_lazy('proprietes')
+
+    def form_valid(self, form):
+        messages.success(self.request, "La propriété a été ajoutée avec succès !")
+        return super().form_valid(form)
+
+class ProprieteUpdateView(UpdateView):
+    model = Propriete
+    form_class = ProprieteForm
+    template_name = 'propriete_form.html'
+    success_url = reverse_lazy('proprietes')
+
+    def form_valid(self, form):
+        messages.success(self.request, "La propriété a été modifiée avec succès !")
+        return super().form_valid(form)
+
+class ProprieteDeleteView(DeleteView):
+    model = Propriete
+    template_name = 'propriete_confirm_delete.html'
+    success_url = reverse_lazy('proprietes')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "La propriété a été supprimée avec succès !")
         return super().delete(request, *args, **kwargs)

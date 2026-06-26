@@ -105,6 +105,14 @@
               <span class="menu-title">Types de propriété</span>
             </a>
           </li>
+          <li class="nav-item menu-items {% if 'propriete' in request.path and 'type-propriete' not in request.path %}active{% endif %}">
+            <a class="nav-link" href="{% url 'proprietes' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-home"></i>
+              </span>
+              <span class="menu-title">Propriétés</span>
+            </a>
+          </li>
           <li class="nav-item menu-items {% if 'appartement' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'appartements' %}">
               <span class="menu-icon">

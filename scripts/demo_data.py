@@ -120,9 +120,9 @@ def create_demo_data():
     # 3. AGENCES (app_base)
     # ──────────────────────────────────────────────
     agences_data = [
-        {'id_agence': 1, 'nom': 'Agence Centre-Ville',  'numero_impot': 'A123456', 'numero_fisc': 'F123456', 'effectif': 15, 'revenu': 45000000, 'email': 'centre@immo.cd', 'active': True},
-        {'id_agence': 2, 'nom': 'Agence Gombe',         'numero_impot': 'A789012', 'numero_fisc': 'F789012', 'effectif': 10, 'revenu': 32000000, 'email': 'gombe@immo.cd', 'active': True},
-        {'id_agence': 3, 'nom': 'Agence Limete',        'numero_impot': 'A345678', 'numero_fisc': 'F345678', 'effectif': 8,  'revenu': 18000000, 'email': 'limete@immo.cd', 'active': True},
+        {'nom': 'Agence Centre-Ville',  'numero_impot': 'A123456', 'numero_fisc': 'F123456', 'effectif': 15, 'revenu': 45000000, 'email': 'centre@immo.cd', 'active': True},
+        {'nom': 'Agence Gombe',         'numero_impot': 'A789012', 'numero_fisc': 'F789012', 'effectif': 10, 'revenu': 32000000, 'email': 'gombe@immo.cd', 'active': True},
+        {'nom': 'Agence Limete',        'numero_impot': 'A345678', 'numero_fisc': 'F345678', 'effectif': 8,  'revenu': 18000000, 'email': 'limete@immo.cd', 'active': True},
     ]
     agences = [Agence.objects.create(**a) for a in agences_data]
     print(f"✅ {len(agences)} agences créées.")
@@ -131,12 +131,12 @@ def create_demo_data():
     # 4. PERSONNEL (app_base)
     # ──────────────────────────────────────────────
     personnel_data = [
-        {'id_personnel': 1, 'noms': 'Kabasele Tshimanga', 'sexe': 'M', 'role': 'Directeur',       'status': 'Actif',  'agence': agences[0], 'email': 'kabasele@immo.cd'},
-        {'id_personnel': 2, 'noms': 'Mbuyi Kalenga',      'sexe': 'M', 'role': 'Agent Commercial', 'status': 'Actif',  'agence': agences[0], 'email': 'mbuyi@immo.cd'},
-        {'id_personnel': 3, 'noms': 'Ngalula Mwamba',     'sexe': 'F', 'role': 'Secrétaire',       'status': 'Actif',  'agence': agences[1], 'email': 'ngalula@immo.cd'},
-        {'id_personnel': 4, 'noms': 'Ilunga Kayembe',     'sexe': 'M', 'role': 'Agent Immobilier', 'status': 'Actif',  'agence': agences[1], 'email': 'ilunga@immo.cd'},
-        {'id_personnel': 5, 'noms': 'Tshibola Ntumba',    'sexe': 'F', 'role': 'Comptable',        'status': 'Actif',  'agence': agences[2], 'email': 'tshibola@immo.cd'},
-        {'id_personnel': 6, 'noms': 'Mwepu Kazadi',       'sexe': 'M', 'role': 'Agent de Terrain', 'status': 'Actif',  'agence': agences[2], 'email': 'mwepu@immo.cd'},
+        {'noms': 'Kabasele Tshimanga', 'sexe': 'M', 'role': 'Directeur',       'status': 'Actif',  'agence': agences[0], 'email': 'kabasele@immo.cd'},
+        {'noms': 'Mbuyi Kalenga',      'sexe': 'M', 'role': 'Agent Commercial', 'status': 'Actif',  'agence': agences[0], 'email': 'mbuyi@immo.cd'},
+        {'noms': 'Ngalula Mwamba',     'sexe': 'F', 'role': 'Secrétaire',       'status': 'Actif',  'agence': agences[1], 'email': 'ngalula@immo.cd'},
+        {'noms': 'Ilunga Kayembe',     'sexe': 'M', 'role': 'Agent Immobilier', 'status': 'Actif',  'agence': agences[1], 'email': 'ilunga@immo.cd'},
+        {'noms': 'Tshibola Ntumba',    'sexe': 'F', 'role': 'Comptable',        'status': 'Actif',  'agence': agences[2], 'email': 'tshibola@immo.cd'},
+        {'noms': 'Mwepu Kazadi',       'sexe': 'M', 'role': 'Agent de Terrain', 'status': 'Actif',  'agence': agences[2], 'email': 'mwepu@immo.cd'},
     ]
     for pdata in personnel_data:
         Personnel.objects.create(**pdata)
@@ -146,11 +146,11 @@ def create_demo_data():
     # 5. PROPRIETAIRES (app_base)
     # ──────────────────────────────────────────────
     proprietaires_data = [
-        {'id_proprietaire': 1, 'noms': 'M. Tshisekedi Félix',       'bienconfie': 3,  'bienlocatif': 5,  'catalogue': 'Résidentiel', 'email': 'tshisekedi@mail.com'},
-        {'id_proprietaire': 2, 'noms': 'Mme Bemba Gertrude',        'bienconfie': 2,  'bienlocatif': 3,  'catalogue': 'Commercial',  'email': 'bemba@mail.com'},
-        {'id_proprietaire': 3, 'noms': 'M. Katumbi Moïse',          'bienconfie': 4,  'bienlocatif': 7,  'catalogue': 'Mixte',       'email': 'katumbi@mail.com'},
-        {'id_proprietaire': 4, 'noms': 'Mme Masangu Sylvie',        'bienconfie': 1,  'bienlocatif': 2,  'catalogue': 'Résidentiel', 'email': 'masangu@mail.com'},
-        {'id_proprietaire': 5, 'noms': 'M. Mbiye Charles',          'bienconfie': 2,  'bienlocatif': 4,  'catalogue': 'Commercial',  'email': 'mbiye@mail.com'},
+        {'noms': 'M. Tshisekedi Félix',       'bienconfie': 3,  'bienlocatif': 5,  'catalogue': 'Résidentiel', 'email': 'tshisekedi@mail.com'},
+        {'noms': 'Mme Bemba Gertrude',        'bienconfie': 2,  'bienlocatif': 3,  'catalogue': 'Commercial',  'email': 'bemba@mail.com'},
+        {'noms': 'M. Katumbi Moïse',          'bienconfie': 4,  'bienlocatif': 7,  'catalogue': 'Mixte',       'email': 'katumbi@mail.com'},
+        {'noms': 'Mme Masangu Sylvie',        'bienconfie': 1,  'bienlocatif': 2,  'catalogue': 'Résidentiel', 'email': 'masangu@mail.com'},
+        {'noms': 'M. Mbiye Charles',          'bienconfie': 2,  'bienlocatif': 4,  'catalogue': 'Commercial',  'email': 'mbiye@mail.com'},
     ]
     for pr in proprietaires_data:
         Proprietaire.objects.create(**pr)
@@ -160,14 +160,14 @@ def create_demo_data():
     # 6. APPARTEMENTS (app_base)
     # ──────────────────────────────────────────────
     appartements_data = [
-        {'id_appartement': 1, 'identifiant': 'APT-001', 'prix': '450',   'status': 'Libre'},
-        {'id_appartement': 2, 'identifiant': 'APT-002', 'prix': '350',   'status': 'Occupé'},
-        {'id_appartement': 3, 'identifiant': 'APT-003', 'prix': '500',   'status': 'Libre'},
-        {'id_appartement': 4, 'identifiant': 'APT-004', 'prix': '300',   'status': 'Occupé'},
-        {'id_appartement': 5, 'identifiant': 'APT-005', 'prix': '600',   'status': 'En rénovation'},
-        {'id_appartement': 6, 'identifiant': 'APT-006', 'prix': '420',   'status': 'Libre'},
-        {'id_appartement': 7, 'identifiant': 'APT-007', 'prix': '380',   'status': 'Occupé'},
-        {'id_appartement': 8, 'identifiant': 'APT-008', 'prix': '550',   'status': 'Réservé'},
+        {'identifiant': 'APT-001', 'prix': '450',   'status': 'Libre'},
+        {'identifiant': 'APT-002', 'prix': '350',   'status': 'Occupé'},
+        {'identifiant': 'APT-003', 'prix': '500',   'status': 'Libre'},
+        {'identifiant': 'APT-004', 'prix': '300',   'status': 'Occupé'},
+        {'identifiant': 'APT-005', 'prix': '600',   'status': 'En rénovation'},
+        {'identifiant': 'APT-006', 'prix': '420',   'status': 'Libre'},
+        {'identifiant': 'APT-007', 'prix': '380',   'status': 'Occupé'},
+        {'identifiant': 'APT-008', 'prix': '550',   'status': 'Réservé'},
     ]
     for a in appartements_data:
         Appartement.objects.create(**a)
@@ -177,11 +177,11 @@ def create_demo_data():
     # 7. PROPRIETES (app_base)
     # ──────────────────────────────────────────────
     proprietes_data = [
-        {'id_propriete': 1, 'type_propiete': 'Immeuble', 'ville': 'Kinshasa/Gombe',      'Agent': 'Mbuyi Kalenga',    'gestion': True,  'appartements': Appartement.objects.get(id_appartement=1)},
-        {'id_propriete': 2, 'type_propiete': 'Villa',    'ville': 'Kinshasa/Ngaliema',    'Agent': 'Ilunga Kayembe',   'gestion': True,  'appartements': Appartement.objects.get(id_appartement=2)},
-        {'id_propriete': 3, 'type_propiete': 'Immeuble', 'ville': 'Kinshasa/Limete',      'Agent': 'Mwepu Kazadi',     'gestion': True,  'appartements': Appartement.objects.get(id_appartement=3)},
-        {'id_propriete': 4, 'type_propiete': 'Studio',   'ville': 'Kinshasa/Kalamu',      'Agent': 'Mbuyi Kalenga',    'gestion': False, 'appartements': Appartement.objects.get(id_appartement=4)},
-        {'id_propriete': 5, 'type_propiete': 'Duplex',   'ville': 'Kinshasa/Gombe',       'Agent': 'Ilunga Kayembe',   'gestion': True,  'appartements': Appartement.objects.get(id_appartement=5)},
+        {'type_propiete': 'Immeuble', 'ville': 'Kinshasa/Gombe',      'Agent': 'Mbuyi Kalenga',    'gestion': True,  'appartements': Appartement.objects.get(identifiant='APT-001')},
+        {'type_propiete': 'Villa',    'ville': 'Kinshasa/Ngaliema',    'Agent': 'Ilunga Kayembe',   'gestion': True,  'appartements': Appartement.objects.get(identifiant='APT-002')},
+        {'type_propiete': 'Immeuble', 'ville': 'Kinshasa/Limete',      'Agent': 'Mwepu Kazadi',     'gestion': True,  'appartements': Appartement.objects.get(identifiant='APT-003')},
+        {'type_propiete': 'Studio',   'ville': 'Kinshasa/Kalamu',      'Agent': 'Mbuyi Kalenga',    'gestion': False, 'appartements': Appartement.objects.get(identifiant='APT-004')},
+        {'type_propiete': 'Duplex',   'ville': 'Kinshasa/Gombe',       'Agent': 'Ilunga Kayembe',   'gestion': True,  'appartements': Appartement.objects.get(identifiant='APT-005')},
     ]
     for p in proprietes_data:
         Propriete.objects.create(**p)
@@ -191,12 +191,12 @@ def create_demo_data():
     # 8. LOCATAIRES (app_base)
     # ──────────────────────────────────────────────
     locataires_data = [
-        {'id_locataire': 1, 'noms': 'Kakudji Pierre',          'telephone': '+243811000001', 'contrat': 'BAIL-001', 'loye': 450, 'regularite': 'Régulier', 'email': 'kakudji@mail.com'},
-        {'id_locataire': 2, 'noms': 'Mukendi Albert',          'telephone': '+243811000002', 'contrat': 'BAIL-002', 'loye': 350, 'regularite': 'Régulier', 'email': 'mukendi@mail.com'},
-        {'id_locataire': 3, 'noms': 'Tshitenge Joséphine',     'telephone': '+243811000003', 'contrat': 'BAIL-003', 'loye': 500, 'regularite': 'Irégulier', 'email': 'tshitenge@mail.com'},
-        {'id_locataire': 4, 'noms': 'Kabongo Raphaël',         'telephone': '+243811000004', 'contrat': 'BAIL-004', 'loye': 300, 'regularite': 'Régulier', 'email': 'kabongo@mail.com'},
-        {'id_locataire': 5, 'noms': 'Mwabila Esther',          'telephone': '+243811000005', 'contrat': 'BAIL-005', 'loye': 420, 'regularite': 'Nouveau', 'email': 'mwabila@mail.com'},
-        {'id_locataire': 6, 'noms': 'Kazadi Michel',           'telephone': '+243811000006', 'contrat': 'BAIL-006', 'loye': 380, 'regularite': 'Régulier', 'email': 'kazadi@mail.com'},
+        {'noms': 'Kakudji Pierre',          'telephone': '+243811000001', 'contrat': 'BAIL-001', 'loye': 450, 'regularite': 'Régulier', 'email': 'kakudji@mail.com'},
+        {'noms': 'Mukendi Albert',          'telephone': '+243811000002', 'contrat': 'BAIL-002', 'loye': 350, 'regularite': 'Régulier', 'email': 'mukendi@mail.com'},
+        {'noms': 'Tshitenge Joséphine',     'telephone': '+243811000003', 'contrat': 'BAIL-003', 'loye': 500, 'regularite': 'Irégulier', 'email': 'tshitenge@mail.com'},
+        {'noms': 'Kabongo Raphaël',         'telephone': '+243811000004', 'contrat': 'BAIL-004', 'loye': 300, 'regularite': 'Régulier', 'email': 'kabongo@mail.com'},
+        {'noms': 'Mwabila Esther',          'telephone': '+243811000005', 'contrat': 'BAIL-005', 'loye': 420, 'regularite': 'Nouveau', 'email': 'mwabila@mail.com'},
+        {'noms': 'Kazadi Michel',           'telephone': '+243811000006', 'contrat': 'BAIL-006', 'loye': 380, 'regularite': 'Régulier', 'email': 'kazadi@mail.com'},
     ]
     for l in locataires_data:
         Locataire.objects.create(**l)
@@ -206,11 +206,11 @@ def create_demo_data():
     # 9. LOGEMENTS (app_base)
     # ──────────────────────────────────────────────
     logements_data = [
-        {'id_logement': 1, 'identifiant': Appartement.objects.get(id_appartement=1), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(id_proprietaire=1), 'agent': Propriete.objects.get(id_propriete=1)},
-        {'id_logement': 2, 'identifiant': Appartement.objects.get(id_appartement=2), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(id_proprietaire=2), 'agent': Propriete.objects.get(id_propriete=2)},
-        {'id_logement': 3, 'identifiant': Appartement.objects.get(id_appartement=3), 'status': 'Libre',         'proprietaire': Proprietaire.objects.get(id_proprietaire=1), 'agent': Propriete.objects.get(id_propriete=3)},
-        {'id_logement': 4, 'identifiant': Appartement.objects.get(id_appartement=4), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(id_proprietaire=3), 'agent': Propriete.objects.get(id_propriete=4)},
-        {'id_logement': 5, 'identifiant': Appartement.objects.get(id_appartement=5), 'status': 'En rénovation', 'proprietaire': Proprietaire.objects.get(id_proprietaire=4), 'agent': Propriete.objects.get(id_propriete=5)},
+        {'identifiant': Appartement.objects.get(identifiant='APT-001'), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(noms='M. Tshisekedi Félix'),       'agent': Propriete.objects.get(type_propiete='Immeuble', ville='Kinshasa/Gombe')},
+        {'identifiant': Appartement.objects.get(identifiant='APT-002'), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(noms='Mme Bemba Gertrude'),        'agent': Propriete.objects.get(type_propiete='Villa', ville='Kinshasa/Ngaliema')},
+        {'identifiant': Appartement.objects.get(identifiant='APT-003'), 'status': 'Libre',         'proprietaire': Proprietaire.objects.get(noms='M. Tshisekedi Félix'),       'agent': Propriete.objects.get(type_propiete='Immeuble', ville='Kinshasa/Limete')},
+        {'identifiant': Appartement.objects.get(identifiant='APT-004'), 'status': 'Occupé',        'proprietaire': Proprietaire.objects.get(noms='M. Katumbi Moïse'),          'agent': Propriete.objects.get(type_propiete='Studio', ville='Kinshasa/Kalamu')},
+        {'identifiant': Appartement.objects.get(identifiant='APT-005'), 'status': 'En rénovation', 'proprietaire': Proprietaire.objects.get(noms='Mme Masangu Sylvie'),        'agent': Propriete.objects.get(type_propiete='Duplex', ville='Kinshasa/Gombe')},
     ]
     for lg in logements_data:
         Logement.objects.create(**lg)
@@ -220,10 +220,10 @@ def create_demo_data():
     # 10. GARANTIES (app_base)
     # ──────────────────────────────────────────────
     garanties_data = [
-        {'id_garantie': 1, 'locataires': Locataire.objects.get(id_locataire=1), 'montant': 450,  'planification': 'Mensuelle',  'date_appartition': date.today() - timedelta(days=30)},
-        {'id_garantie': 2, 'locataires': Locataire.objects.get(id_locataire=2), 'montant': 350,  'planification': 'Trimestrielle', 'date_appartition': date.today() - timedelta(days=15)},
-        {'id_garantie': 3, 'locataires': Locataire.objects.get(id_locataire=4), 'montant': 300,  'planification': 'Mensuelle',  'date_appartition': date.today() - timedelta(days=45)},
-        {'id_garantie': 4, 'locataires': Locataire.objects.get(id_locataire=6), 'montant': 380,  'planification': 'Semestrielle', 'date_appartition': date.today() - timedelta(days=90)},
+        {'locataires': Locataire.objects.get(noms='Kakudji Pierre'), 'montant': 450,  'planification': 'Mensuelle',  'date_appartition': date.today() - timedelta(days=30)},
+        {'locataires': Locataire.objects.get(noms='Mukendi Albert'), 'montant': 350,  'planification': 'Trimestrielle', 'date_appartition': date.today() - timedelta(days=15)},
+        {'locataires': Locataire.objects.get(noms='Kabongo Raphaël'), 'montant': 300,  'planification': 'Mensuelle',  'date_appartition': date.today() - timedelta(days=45)},
+        {'locataires': Locataire.objects.get(noms='Kazadi Michel'), 'montant': 380,  'planification': 'Semestrielle', 'date_appartition': date.today() - timedelta(days=90)},
     ]
     for g in garanties_data:
         Garantie.objects.create(**g)
@@ -233,11 +233,11 @@ def create_demo_data():
     # 11. PAIEMENTS (app_paiements)
     # ──────────────────────────────────────────────
     paiements_data = [
-        {'id_paie': 1, 'locataires': Locataire.objects.get(id_locataire=1), 'Montant': 450, 'date_paie': date.today() - timedelta(days=5),  'date_normal': date.today() - timedelta(days=10), 'type_paie': 'Espèces'},
-        {'id_paie': 2, 'locataires': Locataire.objects.get(id_locataire=2), 'Montant': 350, 'date_paie': date.today() - timedelta(days=2),  'date_normal': date.today() - timedelta(days=5),  'type_paie': 'Virement'},
-        {'id_paie': 3, 'locataires': Locataire.objects.get(id_locataire=1), 'Montant': 450, 'date_paie': date.today() - timedelta(days=35), 'date_normal': date.today() - timedelta(days=40), 'type_paie': 'Mobile Money'},
-        {'id_paie': 4, 'locataires': Locataire.objects.get(id_locataire=4), 'Montant': 300, 'date_paie': date.today() - timedelta(days=1),  'date_normal': date.today() - timedelta(days=5),  'type_paie': 'Espèces'},
-        {'id_paie': 5, 'locataires': Locataire.objects.get(id_locataire=6), 'Montant': 380, 'date_paie': date.today() - timedelta(days=3),  'date_normal': date.today() - timedelta(days=7),  'type_paie': 'Virement'},
+        {'locataires': Locataire.objects.get(noms='Kakudji Pierre'), 'montant': 450, 'date_paie': date.today() - timedelta(days=5),  'date_normal': date.today() - timedelta(days=10), 'type_paie': 'Espèces'},
+        {'locataires': Locataire.objects.get(noms='Mukendi Albert'), 'montant': 350, 'date_paie': date.today() - timedelta(days=2),  'date_normal': date.today() - timedelta(days=5),  'type_paie': 'Virement'},
+        {'locataires': Locataire.objects.get(noms='Kakudji Pierre'), 'montant': 450, 'date_paie': date.today() - timedelta(days=35), 'date_normal': date.today() - timedelta(days=40), 'type_paie': 'Mobile Money'},
+        {'locataires': Locataire.objects.get(noms='Kabongo Raphaël'), 'montant': 300, 'date_paie': date.today() - timedelta(days=1),  'date_normal': date.today() - timedelta(days=5),  'type_paie': 'Espèces'},
+        {'locataires': Locataire.objects.get(noms='Kazadi Michel'), 'montant': 380, 'date_paie': date.today() - timedelta(days=3),  'date_normal': date.today() - timedelta(days=7),  'type_paie': 'Virement'},
     ]
     for p in paiements_data:
         Paiement.objects.create(**p)
@@ -247,9 +247,9 @@ def create_demo_data():
     # 12. IMPAYES (app_paiements)
     # ──────────────────────────────────────────────
     impayes_data = [
-        {'id_impaye': 1, 'locataires': Locataire.objects.get(id_locataire=3), 'impaye': 500,  'situation': 'En retard', 'date_sortie': date.today() + timedelta(days=15), 'detail': 'Loyer mois en cours'},
-        {'id_impaye': 2, 'locataires': Locataire.objects.get(id_locataire=1), 'impaye': 150,  'situation': 'Partiel',   'date_sortie': date.today() + timedelta(days=30), 'detail': 'Reste sur charge'},
-        {'id_impaye': 3, 'locataires': Locataire.objects.get(id_locataire=5), 'impaye': 420,  'situation': 'En retard', 'date_sortie': date.today() + timedelta(days=7),  'detail': 'Premier mois non payé'},
+        {'locataires': Locataire.objects.get(noms='Tshitenge Joséphine'), 'impaye': 500,  'situation': 'En retard', 'date_sortie': date.today() + timedelta(days=15), 'detail': 'Loyer mois en cours'},
+        {'locataires': Locataire.objects.get(noms='Kakudji Pierre'), 'impaye': 150,  'situation': 'Partiel',   'date_sortie': date.today() + timedelta(days=30), 'detail': 'Reste sur charge'},
+        {'locataires': Locataire.objects.get(noms='Mwabila Esther'), 'impaye': 420,  'situation': 'En retard', 'date_sortie': date.today() + timedelta(days=7),  'detail': 'Premier mois non payé'},
     ]
     for i in impayes_data:
         Impayes.objects.create(**i)
@@ -259,11 +259,11 @@ def create_demo_data():
     # 13. CAISSE (app_caisse)
     # ──────────────────────────────────────────────
     caisse_data = [
-        {'id_caisse': 1, 'type_caisse': 'Entrée', 'status_caisse': 'Validé',   'cout': 450, 'paiement': Paiement.objects.get(id_paie=1), 'details': 'Loyer APT-001 payé par Pierre Kakudji'},
-        {'id_caisse': 2, 'type_caisse': 'Entrée', 'status_caisse': 'Validé',   'cout': 350, 'paiement': Paiement.objects.get(id_paie=2), 'details': 'Loyer APT-002 payé par Albert Mukendi'},
-        {'id_caisse': 3, 'type_caisse': 'Entrée', 'status_caisse': 'En attente', 'cout': 450, 'paiement': Paiement.objects.get(id_paie=3), 'details': 'Loyer mois précédent APT-001'},
-        {'id_caisse': 4, 'type_caisse': 'Entrée', 'status_caisse': 'Validé',   'cout': 300, 'paiement': Paiement.objects.get(id_paie=4), 'details': 'Loyer APT-004 payé par Raphaël Kabongo'},
-        {'id_caisse': 5, 'type_caisse': 'Sortie', 'status_caisse': 'Validé',   'cout': 80,  'paiement': Paiement.objects.get(id_paie=1), 'details': 'Commission agence sur loyer Kakudji'},
+        {'id_caisse': 1, 'type_caisse': 'Entrée', 'status_caisse': 'Validé',   'cout': 450, 'paiement': Paiement.objects.get(locataires__noms='Kakudji Pierre', montant=450, type_paie='Espèces'), 'details': 'Loyer APT-001 payé par Pierre Kakudji'},
+        {'id_caisse': 2, 'type_caisse': 'Entrée', 'status_caisse': 'Validé',   'cout': 350, 'paiement': Paiement.objects.get(locataires__noms='Mukendi Albert'), 'details': 'Loyer APT-002 payé par Albert Mukendi'},
+        {'id_caisse': 3, 'type_caisse': 'Entrée', 'status_caisse': 'En attente', 'cout': 450, 'paiement': Paiement.objects.get(locataires__noms='Kakudji Pierre', montant=450, type_paie='Mobile Money'), 'details': 'Loyer mois précédent APT-001'},
+        {'id_caisse': 4, 'type_caisse': 'Entrée', 'status_caisse': 'Validé',   'cout': 300, 'paiement': Paiement.objects.get(locataires__noms='Kabongo Raphaël'), 'details': 'Loyer APT-004 payé par Raphaël Kabongo'},
+        {'id_caisse': 5, 'type_caisse': 'Sortie', 'status_caisse': 'Validé',   'cout': 80,  'paiement': Paiement.objects.get(locataires__noms='Kakudji Pierre', montant=450, type_paie='Espèces'), 'details': 'Commission agence sur loyer Kakudji'},
     ]
     for c in caisse_data:
         Caisse.objects.create(**c)

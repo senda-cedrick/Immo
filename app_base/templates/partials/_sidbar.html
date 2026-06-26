@@ -1,8 +1,16 @@
 {% load static %}
 <nav class="sidebar sidebar-offcanvas bg-secondary" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top bg-secondary text-dark">
-          <a class="sidebar-brand brand-logo text-dark" href="{% url 'login' %}"><img src="{% static 'assets/images/logo.svg' %}" alt="logo" /></a>
-          <a class="sidebar-brand brand-logo-mini text-dark" href="{% url 'home' %}"><img src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo text-dark" href="{% url 'home' %}">
+            <span style="font-size: 1.5rem; font-weight: 700;">
+              <i class="mdi mdi-home-city"></i> Immo
+            </span>
+          </a>
+          <a class="sidebar-brand brand-logo-mini text-dark" href="{% url 'home' %}">
+            <span style="font-size: 1rem; font-weight: 700;">
+              <i class="mdi mdi-home-city"></i>
+            </span>
+          </a>
         </div>
         <ul class="nav">
           <li class="nav-item profile">
@@ -13,42 +21,42 @@
                   <span class="count bg-success"></span>
                 </div>
                 <div class="profile-name">
-                  <h5 class="mb-0 font-weight-normal">{{ user.noms }}</h5>
-                  <span>{{ user.username }}</span>
+                  <h5 class="mb-0 font-weight-normal" style="color: #333;">{{ user.noms }}</h5>
+                  <span style="color: #666;">@{{ user.username }}</span>
                 </div>
               </div>
               <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
               <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
-                <a href="#" class="dropdown-item preview-item">
-                  <div class="preview-thumbnail">
-                    <div class="preview-icon bg-dark rounded-circle">
-                      <i class="mdi mdi-settings text-primary"></i>
-                    </div>
-                  </div>
-                  <div class="preview-item-content">
-                    <p class="preview-subject ellipsis mb-1 text-small">Parametres</p>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
                 <a href="{% url 'page_modifpassword' %}" class="dropdown-item preview-item">
                   <div class="preview-thumbnail">
                     <div class="preview-icon bg-dark rounded-circle">
-                      <i class="mdi mdi-onepassword  text-info"></i>
+                      <i class="mdi mdi-lock text-info"></i>
                     </div>
                   </div>
                   <div class="preview-item-content">
-                    <p class="preview-subject ellipsis mb-1 text-small">Modifer Pass</p>
+                    <p class="preview-subject ellipsis mb-1 text-small">Modifier mot de passe</p>
                   </div>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="/user/users/" class="dropdown-item preview-item">
+                <a href="{% url 'users' %}" class="dropdown-item preview-item">
                   <div class="preview-thumbnail">
                     <div class="preview-icon bg-dark rounded-circle">
-                      <i class="mdi mdi-calendar-today text-success"></i>
+                      <i class="mdi mdi-account-group text-success"></i>
                     </div>
                   </div>
                   <div class="preview-item-content">
                     <p class="preview-subject ellipsis mb-1 text-small">Utilisateurs</p>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="{% url 'logout' %}" class="dropdown-item preview-item">
+                  <div class="preview-thumbnail">
+                    <div class="preview-icon bg-dark rounded-circle">
+                      <i class="mdi mdi-logout text-danger"></i>
+                    </div>
+                  </div>
+                  <div class="preview-item-content">
+                    <p class="preview-subject ellipsis mb-1 text-small">Déconnexion</p>
                   </div>
                 </a>
               </div>
@@ -65,31 +73,39 @@
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
-          <li class="nav-item menu-items {% if 'agences' in request.path %}active{% endif %}">
+          <li class="nav-item menu-items {% if 'agence' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'agences' %}">
               <span class="menu-icon">
-                <i class="mdi mdi-account-multiple-plus"></i>
+                <i class="mdi mdi-domain"></i>
               </span>
               <span class="menu-title">Agences</span>
             </a>
           </li>
-          <li class="nav-item menu-items {% if 'personnels' in request.path %}active{% endif %}">
+          <li class="nav-item menu-items {% if 'personnel' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'personnels' %}">
               <span class="menu-icon">
-                <i class="mdi mdi-account-multiple-plus"></i>
+                <i class="mdi mdi-account-star"></i>
               </span>
               <span class="menu-title">Personnel</span>
             </a>
           </li>
-          <li class="nav-item menu-items {% if 'proprietaires' in request.path %}active{% endif %}">
+          <li class="nav-item menu-items {% if 'proprietaire' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'proprietaires' %}">
               <span class="menu-icon">
-                <i class="mdi mdi-account-key"></i>
+                <i class="mdi mdi-account-tie"></i>
               </span>
-              <span class="menu-title">Proprietaires</span>
+              <span class="menu-title">Propriétaires</span>
             </a>
           </li>
-          <li class="nav-item menu-items {% if 'locataires' in request.path %}active{% endif %}">
+          <li class="nav-item menu-items {% if 'appartement' in request.path %}active{% endif %}">
+            <a class="nav-link" href="{% url 'appartements' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-home-floor-3"></i>
+              </span>
+              <span class="menu-title">Appartements</span>
+            </a>
+          </li>
+          <li class="nav-item menu-items {% if 'locataire' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'locataires' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-account-multiple"></i>
@@ -97,15 +113,15 @@
               <span class="menu-title">Locataires</span>
             </a>
           </li>
-          <li class="nav-item menu-items {% if 'locations' in request.path %}active{% endif %}">
-            <a class="nav-link" href="#">
+          <li class="nav-item menu-items {% if 'garantie' in request.path %}active{% endif %}">
+            <a class="nav-link" href="{% url 'garanties' %}">
               <span class="menu-icon">
-                <i class="mdi mdi-home-city"></i>
+                <i class="mdi mdi-shield-check"></i>
               </span>
-              <span class="menu-title">Locations disponibles</span>
+              <span class="menu-title">Garanties</span>
             </a>
           </li>
-          <li class="nav-item menu-items {% if 'paiements' in request.path %}active{% endif %}">
+          <li class="nav-item menu-items">
             <a class="nav-link" href="#">
               <span class="menu-icon">
                 <i class="mdi mdi-credit-card"></i>
@@ -113,63 +129,42 @@
               <span class="menu-title">Paiements</span>
             </a>
           </li>
-          <li class="nav-item menu-items {% if 'impayes' in request.path %}active{% endif %}">
+          <li class="nav-item menu-items">
             <a class="nav-link" href="#">
               <span class="menu-icon">
-                <i class="mdi mdi-book-multiple"></i>
+                <i class="mdi mdi-alert-circle-outline"></i>
               </span>
-              <span class="menu-title">Impayés et Préavis</span>
+              <span class="menu-title">Impayés</span>
             </a>
           </li>
-          <li class="nav-item menu-items {% if 'garanties' in request.path %}active{% endif %}">
-            <a class="nav-link" href="{% url 'garanties' %}">
-              <span class="menu-icon">
-                <i class="mdi mdi-folder-outline"></i>
-              </span>
-              <span class="menu-title">Gestion des garanties</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items {% if 'caisse' in request.path %}active{% endif %}">
+          <li class="nav-item menu-items">
             <a class="nav-link" href="#">
               <span class="menu-icon">
-                <i class="mdi mdi-cash"></i>
+                <i class="mdi mdi-cash-register"></i>
               </span>
-              <span class="menu-title">Gestion de la caisse</span>
+              <span class="menu-title">Caisse</span>
             </a>
           </li>
-          <li class="nav-item menu-items {% if 'graphique' in request.path %}active{% endif %}">
-            <a class="nav-link" href="#">
-              <span class="menu-icon">
-                <i class="mdi mdi-chart-bar"></i>
-              </span>
-              <span class="menu-title">Graphique</span>
-            </a>
+          <li class="nav-item nav-category">
+            <span class="nav-link">Administration</span>
           </li>
           <li class="nav-item menu-items {% if lutilisateur %}active{% endif %}">
-            <a class="nav-link" href="/user/users/">
+            <a class="nav-link" href="{% url 'users' %}">
               <span class="menu-icon">
-                <i class="mdi mdi-account-convert"></i>
+                <i class="mdi mdi-account-group"></i>
               </span>
               <span class="menu-title">Utilisateurs</span>
             </a>
           </li>
           {% if request.user.is_superuser or request.user.is_staff or request.user.is_manager %}
-          <li class="nav-item menu-items {% if 'profiles' in request.path %}active{% endif %}">
+          <li class="nav-item menu-items {% if 'profile' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'profile_list' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-shield-account"></i>
               </span>
-              <span class="menu-title">Gestion des Profils</span>
+              <span class="menu-title">Profils</span>
             </a>
           </li>
           {% endif %}
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="http://www.bootstrapdash.com/demo/corona-free/jquery/documentation/documentation.html">
-              <span class="menu-icon">
-                <i class="mdi mdi-file-document-box"></i>
-              </span>
-              <span class="menu-title">Documentation</span>
-            </a>
-          </li>
         </ul>
 </nav>

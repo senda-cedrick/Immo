@@ -1,95 +1,56 @@
+{% extends "base.html" %}
 {% load static %}
 
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Corona Admin</title>
-    <!-- plugins:css -->
-    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-    <!-- End layout styles -->
-    <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
-  </head>
-  <body>
-    <div class="container-scroller">
-      <div class="container-fluid page-body-wrapper full-page-wrapper">
-        <div class="row w-100 m-0">
-          <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
-            <div class="card col-lg-4 mx-auto">
-              <div class="card-body px-5 py-5">
-                <div class="text-center mb-4">
-                  <i class="mdi mdi-account-plus" style="font-size: 48px; color: #4B49AC;"></i>
-                  <h3 class="card-title mt-2">Créer un compte</h3>
-                  <p class="text-muted">Inscrivez-vous pour accéder à la plateforme</p>
-                </div>
-                <form method="post" action="{% url 'adduser' %}" enctype="multipart/form-data">
-                  {% csrf_token %}
-                  <div class="form-group">
-                    <label>Utilisateur <span class="text-danger">*</span></label>
-                    <input name="username" type="text" class="form-control p_input" placeholder="Entrez le nom d'utilisateur" required>
-                  </div>
-                  <div class="form-group">
-                    <label>Noms complets <span class="text-danger">*</span></label>
-                    <input name="noms" type="text" class="form-control p_input" placeholder="Entrez votre nom complet" required>
-                  </div>
-                  <div class="form-group">
-                    <label>EMAIL</label>
-                    <input name="email" type="email" class="form-control p_input" placeholder="Entrez votre adresse mail">
-                  </div>
-                  <div class="form-group">
-                    <label>PHOTO</label>
-                    <input name="image_url" type="file" class="form-control p_input" accept=".jpg,.png">
-                  </div>
-                  <div class="form-group">
-                    <label>PROFILE <span class="text-danger">*</span></label>
-                    <select name="profile" class="form-control">
-                      {% for p in profiles %}
-                        <option value="{{p.id}}">{{p}}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label>Mot de passe <span class="text-danger">*</span></label>
-                    <input name="password" type="password" class="form-control p_input" value="rdc@2026" required>
-                    <small class="text-muted">Mot de passe par défaut: rdc@2026 (modifiable après connexion)</small>
-                  </div>
-                  <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-block enter-btn">S'inscrire</button>
-                  </div>
-                  <p class="sign-up text-center mt-3">Vous avez déjà un compte ? <a href="{% url 'login' %}">Connectez-vous</a></p>
-                </form>
-              </div>
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto">
+          <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0"><i class="mdi mdi-account-plus"></i> Créer un compte</h5>
+              <a href="{% url 'users' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
             </div>
+
+            <form method="post" action="{% url 'adduser' %}" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group mb-3">
+                <label>Utilisateur <span class="text-danger">*</span></label>
+                <input name="username" type="text" class="form-control" placeholder="Entrez le nom d'utilisateur" required>
+              </div>
+              <div class="form-group mb-3">
+                <label>Noms complets <span class="text-danger">*</span></label>
+                <input name="noms" type="text" class="form-control" placeholder="Entrez votre nom complet" required>
+              </div>
+              <div class="form-group mb-3">
+                <label>EMAIL</label>
+                <input name="email" type="email" class="form-control" placeholder="Entrez votre adresse mail">
+              </div>
+              <div class="form-group mb-3">
+                <label>PHOTO</label>
+                <input name="image_url" type="file" class="form-control" accept=".jpg,.png">
+              </div>
+              <div class="form-group mb-3">
+                <label>PROFILE <span class="text-danger">*</span></label>
+                <select name="profile" class="form-control">
+                  {% for p in profiles %}
+                    <option value="{{p.id}}">{{p}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group mb-3">
+                <label>Mot de passe <span class="text-danger">*</span></label>
+                <input name="password" type="password" class="form-control" value="rdc@2026" required>
+                <small class="text-muted">Mot de passe par défaut : rdc@2026 (modifiable après connexion)</small>
+              </div>
+              <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'users' %}" class="btn btn-outline-light me-2"><i class="mdi mdi-close"></i> Annuler</a>
+                <button type="submit" class="btn btn-success"><i class="mdi mdi-check"></i> Ajouter</button>
+              </div>
+            </form>
           </div>
-          <!-- content-wrapper ends -->
         </div>
-        <!-- row ends -->
       </div>
-      <!-- page-body-wrapper ends -->
     </div>
-    <!-- container-scroller -->
-    <!-- plugins:js -->
-    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
-    <script src="{% static 'assets/js/off-canvas.js' %}"></script>
-    <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
-    <script src="{% static 'assets/js/misc.js' %}"></script>
-    <script src="{% static 'assets/js/settings.js' %}"></script>
-    <script src="{% static 'assets/js/todolist.js' %}"></script>
-    <!-- endinject -->
-  </body>
-</html>
+  </div>
+{% endblock content %}

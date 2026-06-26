@@ -9,16 +9,20 @@
             </button>
             <ul class="navbar-nav w-100">
               <li class="nav-item w-100">
-                <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
-                  <input type="text" class="form-control bg-white" placeholder="Search products">
+                <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search" method="get" action="{% url 'users' %}">
+                  <input type="text" name="q" class="form-control bg-white" placeholder="Rechercher un utilisateur...">
                 </form>
               </li>
             </ul>
             <ul class="navbar-nav navbar-nav-right">
               <li class="nav-item dropdown d-none d-lg-block">
-                <a class="nav-link btn btn-primary text-white create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Creer Users</a>
+                <a class="nav-link btn btn-primary text-white create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Créer Utilisateur</a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="createbuttonDropdown">
-                  
+                  <a class="dropdown-item" href="{% url 'user_add' %}"><i class="mdi mdi-account-plus"></i> Nouvel utilisateur</a>
+                  <a class="dropdown-item" href="{% url 'users' %}"><i class="mdi mdi-account-multiple"></i> Liste des utilisateurs</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'profile_list' %}"><i class="mdi mdi-shield-account"></i> Gestion des profils</a>
+                </div>
               </li>
               <li class="nav-item nav-settings d-none d-lg-block">
                 <a class="nav-link" href="#">
@@ -38,8 +42,8 @@
                       <img src="{% static 'assets/images/faces/face4.jpg' %}" alt="image" class="rounded-circle profile-pic">
                     </div>
                     <div class="preview-item-content">
-                      <p class="preview-subject ellipsis mb-1">Mark send you a message</p>
-                      <p class="text-muted mb-0"> 1 Minutes ago </p>
+                      <p class="preview-subject ellipsis mb-1">Vous avez 3 nouveaux messages</p>
+                      <p class="text-muted mb-0"> Il y a 5 minutes </p>
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
@@ -48,8 +52,8 @@
                       <img src="{% static 'assets/images/faces/face2.jpg' %}" alt="image" class="rounded-circle profile-pic">
                     </div>
                     <div class="preview-item-content">
-                      <p class="preview-subject ellipsis mb-1">Cregh send you a message</p>
-                      <p class="text-muted mb-0"> 15 Minutes ago </p>
+                      <p class="preview-subject ellipsis mb-1">Rappel : échéance de loyer</p>
+                      <p class="text-muted mb-0"> Il y a 1 heure </p>
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
@@ -58,12 +62,12 @@
                       <img src="{% static 'assets/images/faces/face3.jpg' %}" alt="image" class="rounded-circle profile-pic">
                     </div>
                     <div class="preview-item-content">
-                      <p class="preview-subject ellipsis mb-1">Profile picture updated</p>
-                      <p class="text-muted mb-0"> 18 Minutes ago </p>
+                      <p class="preview-subject ellipsis mb-1">Mise à jour du profil</p>
+                      <p class="text-muted mb-0"> Il y a 1 jour </p>
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
-                  <p class="p-3 mb-0 text-center">4 new messages</p>
+                  <p class="p-3 mb-0 text-center">Voir tous les messages</p>
                 </div>
               </li>
               <li class="nav-item dropdown border-left">
@@ -81,8 +85,8 @@
                       </div>
                     </div>
                     <div class="preview-item-content">
-                      <p class="preview-subject mb-1">Event today</p>
-                      <p class="text-muted ellipsis mb-0"> Just a reminder that you have an event today </p>
+                      <p class="preview-subject mb-1">Événement aujourd'hui</p>
+                      <p class="text-muted ellipsis mb-0"> Rappel : visite d'un bien immobilier </p>
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
@@ -93,8 +97,8 @@
                       </div>
                     </div>
                     <div class="preview-item-content">
-                      <p class="preview-subject mb-1">Settings</p>
-                      <p class="text-muted ellipsis mb-0"> Update dashboard </p>
+                      <p class="preview-subject mb-1">Paramètres</p>
+                      <p class="text-muted ellipsis mb-0"> Mise à jour du tableau de bord </p>
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
@@ -105,12 +109,12 @@
                       </div>
                     </div>
                     <div class="preview-item-content">
-                      <p class="preview-subject mb-1">Launch Admin</p>
-                      <p class="text-muted ellipsis mb-0"> New admin wow! </p>
+                      <p class="preview-subject mb-1">Lancer l'administration</p>
+                      <p class="text-muted ellipsis mb-0"> Accédez à l'interface d'administration </p>
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
-                  <p class="p-3 mb-0 text-center">See all notifications</p>
+                  <p class="p-3 mb-0 text-center">Voir toutes les notifications</p>
                 </div>
               </li>
               <li class="nav-item dropdown">
@@ -122,32 +126,30 @@
                   </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
-                  <h6 class="p-3 mb-0">Profile</h6>
+                  <h6 class="p-3 mb-0">Profil</h6>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
+                  <a class="dropdown-item preview-item" href="{% url 'page_modifpassword' %}">
                     <div class="preview-thumbnail">
                       <div class="preview-icon bg-dark rounded-circle">
-                        <i class="mdi mdi-settings text-success"></i>
+                        <i class="mdi mdi-lock text-info"></i>
                       </div>
                     </div>
                     <div class="preview-item-content">
-                      <p class="preview-subject mb-1">Parametres</p>
+                      <p class="preview-subject mb-1">Modifier le mot de passe</p>
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item preview-item" href="{% url 'logout' %}">
                     <div class="preview-thumbnail">
-                       {% if user != None %}
                       <div class="preview-icon bg-dark rounded-circle">
                         <i class="mdi mdi-logout text-danger"></i>
                       </div>
                     </div>
                     <div class="preview-item-content">
-                    <p class="preview-subject mb-1"> Se deconnecter</p>
+                      <p class="preview-subject mb-1">Se déconnecter</p>
                     </div>
                   </a>
                 </div>
-                  {% endif %}
               </li>
             </ul>
             <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">

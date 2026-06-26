@@ -1,89 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Premium Design for Users Management -->
-<style>
-    /* Glass‑morphism card */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-        padding: 2rem;
-        margin-top: 2rem;
-    }
-    .glass-card h5 {
-        color: #fff;
-    }
-    .glass-card .form-control,
-    .glass-card .btn {
-        border-radius: 8px;
-    }
-    .badge-profile {
-        font-size: 0.85rem;
-        padding: 0.45em 0.75em;
-    }
-    .table thead th {
-        color: #fff;
-        background-color: rgba(255,255,255,0.1);
-    }
-    .table tbody td {
-        color: #fff;
-    }
-    .table tbody tr:hover {
-        background-color: rgba(255,255,255,0.08);
-    }
-    .pagination .page-link {
-        background-color: rgba(255,255,255,0.2);
-        color: #fff;
-        border: none;
-    }
-    .pagination .page-item.active .page-link {
-        background-color: #fff;
-        color: #1e3c72;
-    }
-    /* Custom styles for action button icons */
-    .btn-group .btn .mdi {
-        transition: color 0.2s ease-in-out;
-    }
-    .btn-outline-warning .mdi {
-        color: #ffc107; /* Jaune */
-    }
-    .btn-outline-info .mdi {
-        color: #0dcaf0; /* Cyan */
-    }
-    .btn-outline-danger .mdi {
-        color: #dc3545; /* Rouge */
-    }
-    .btn-group .btn:hover .mdi {
-        color: #fff; /* Blanc au survol */
-    }
-    .user-photo {
-        width: 40px;
-        height: 40px;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-    .clickable-row {
-        cursor: pointer;
-    }
-    /* Style pour le footer pour correspondre au design */
-    footer {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 12px 12px 0 0; /* Coins arrondis seulement en haut */
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 -8px 32px 0 rgba(31, 38, 135, 0.37);
-        margin-top: 2rem;
-        padding: 1.5rem;
-        color: #fff;
-        text-align: center;
-    }
-</style>
-
-<div class="container-fluid">
-    <div class="glass-card">
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="glass-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="mb-0"><i class="mdi mdi-account-multiple"></i> Gestion des utilisateurs</h5>
             <div>
@@ -93,12 +13,12 @@
         </div>
 
         <form method="get" action="{% url 'users' %}" class="row g-3 mb-3">
-            <div class="col-md-12">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Rechercher un utilisateur..." value="{{ request.GET.q }}">
-                    <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i> Rechercher</button>
-                </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control" placeholder="Rechercher un utilisateur..." value="{{ request.GET.q }}">
+              <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i> Rechercher</button>
             </div>
+          </div>
         </form>
             {% if pages %}
                 <div class="table-responsive">
@@ -142,9 +62,9 @@
                                         <td>
                                             <a href="{% url 'active_user' u.id %}" class="text-decoration-none">
                                                 {% if u.is_active %}
-                                                    <span class="badge bg-success"><i class="mdi mdi-check-circle"></i> Actif</span>
+                                                    <span class="badge bg-success text-white"><i class="mdi mdi-check-circle"></i> Actif</span>
                                                 {% else %}
-                                                    <span class="badge bg-danger"><i class="mdi mdi-close-circle"></i> Inactif</span>
+                                                    <span class="badge bg-danger text-white"><i class="mdi mdi-close-circle"></i> Inactif</span>
                                                 {% endif %}
                                             </a>
                                         </td>
@@ -196,7 +116,7 @@
                             <li class="page-item disabled"><span class="page-link">&raquo;&raquo;</span></li>
                         {% endif %}
                     </ul>
-                    <div class="text-center text-light mt-2">
+                    <div class="text-center text-muted mt-2">
                         <small>Page {{ pages.number }} sur {{ pages.paginator.num_pages }} ({{ compte_str }})</small>
                     </div>
                 </nav>
@@ -205,8 +125,9 @@
                     Aucun utilisateur trouvé. Total : {{ compte }}
                 </div>
             {% endif %}
-    </div> <!-- Fin de glass-card -->
-</div> <!--! Fin de container-fluid -->
+      </div> <!-- Fin de glass-card -->
+    </div> <!--! Fin de container-fluid -->
+  </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

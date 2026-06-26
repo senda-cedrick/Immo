@@ -1,111 +1,62 @@
-
 {% extends "base.html" %}
 {% load static %}
-{% block content %}        
-        <div class="main-panel">
-          <div class="content-wrapper bg-secondary">
-            <div class="row">
-              <div class="col-12 grid-margin stretch-card">
-                <div class="card corona-gradient-card ">
-                  <div class="card-body py-0 px-0 px-sm-3">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12 grid-margin stretch-card">
-                <div class="card bg-secondary">
-                  <div class="card-body">
-                    <h3 class="card-title text-dark"> Agences que vous gérez </h3>
-                    <!-- add search + buttons-->
-                    <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch bg-secondary text-dark">
-                      <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-                        <span class="mdi mdi-menu"></span>
-                      </button>
-                      <ul class="navbar-nav w-100">
-                        <li class="nav-item w-100">
-                          <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search" method="get" action="{% url 'agences' %}">
-                            <input type="text" class="form-control form-control-sm w-25 bg-white" name="q" value="{{ request.GET.q }}" placeholder="Rechercher une agence...">
-                          </form>
-                        </li>
-                      </ul>
-                      <ul class="navbar-nav navbar-nav-right">
-                        <li class="nav-item dropdown d-none d-lg-block">
-                          <a href="{% url 'agence' %}" class="nav-link btn btn-primary text-white create-new-button">+ Nouvelle Agence</a>
-                        </li>
-                      </ul>
-                    </div>
-                    <!-- / -->
-                    <!-- Affichage liste et fonction-->
-                    <div class="table-responsive">
-                      <table class="table table-hover bg-white">
-                        <thead>
-                          <tr>
-                            <th> Id_Agence </th>
-                            <th> Nom </th>
-                            <th> Numero_impot </th>
-                            <th> Numero_fiscal </th>
-                            <th> Effectif </th>
-                            <th> Revenu </th>
-                            <th> Email </th>
-                            <th> Active </th>
-                            <th> Action </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% if pages %}
-                          {% for item in pages %}
-                          <tr>
-                            <td>{{ item.id_agence }}</td>
-                            <td>{{ item.nom }}</td>
-                            <td>{{ item.numero_impot }}</td>
-                            <td>{{ item.numero_fisc }}</td>
-                            <td>{{ item.effectif }}</td>
-                            <td>{{ item.revenu }}</td>
-                            <td>{{ item.email }}</td>
-                            <td>{{ item.active }}</td>
-                            <td>
-                              <a href="#"> {# {% url 'edit_agence' item.id %} #}
-                                <i class="mdi mdi-rename-box text-primary"></i>
-                              </a>_
-                              <a href="#"> {# {% url 'delete_agence' item.id %} #}
-                                <i class="mdi mdi-delete text-danger"></i>
-                              </a>
-                            </td>
-                          </tr>
-                          {% endfor %}
-                          {% endif %}
-                          <!-- / -->
-                        </tbody>
-                      </table>
-                    </div>
-                    <!-- Pagination -->
-                    <nav class="mt-4">
-                      {% if pages.has_other_pages %}
-                      <ul class="pagination justify-content-center">
-                        {% if pages.has_previous %}
-                          <li class="page-item"><a class="page-link" href="?page=1">&laquo; Première</a></li>
-                          <li class="page-item"><a class="page-link" href="?page={{ pages.previous_page_number }}">Précédente</a></li>
-                        {% endif %}
 
-                        {% for i in pages.paginator.page_range %}
-                          {% if pages.number == i %}
-                            <li class="page-item active"><span class="page-link">{{ i }}<span class="sr-only">(current)</span></span></li>
-                          {% else %}
-                            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                          {% endif %}
-                        {% endfor %}
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="mb-0"><i class="mdi mdi-domain"></i> Agences que vous gérez</h5>
+          <a href="{% url 'ajouter_agence' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-plus"></i> Nouvelle Agence</a>
+        </div>
 
-                        {% if pages.has_next %}
-                          <li class="page-item"><a class="page-link" href="?page={{ pages.next_page_number }}">Suivante</a></li>
-                          <li class="page-item"><a class="page-link" href="?page={{ pages.paginator.num_pages }}">Dernière &raquo;</a></li>
-                        {% endif %}
-                      </ul>
-                      {% endif %}
-                    </nav>
-                  </div>
-                </div>
-              </div>
+        <!-- Barre de recherche -->
+        <form method="get" action="{% url 'agences' %}" class="row g-3 mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control" placeholder="Rechercher une agence..." value="{{ request.GET.q }}">
+              <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i> Rechercher</button>
             </div>
           </div>
-{% endblock content %}
+        </form>
+
+        {% if pages %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>N° Impôt</th>
+                <th>N° Fiscal</th>
+                <th>Effectif</th>
+                <th>Revenu</th>
+                <th>Email</th>
+                <th>Statut</th>
+                {% if request.user.is_staff %}
+                <th class="text-center">Actions</th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in pages %}
+              <tr class="clickable-row" data-href="{% url 'agence_detail' item.id %}">
+                <td>{{ item.id }}</td>
+                <td><strong>{{ item.nom }}</strong></td>
+                <td>{{ item.numero_impot }}</td>
+                <td>{{ item.numero_fisc }}</td>
+                <td>{{ item.effectif }}</td>
+                <td>{{ item.revenu|floatformat:0 }}</td>
+                <td>{{ item.email }}</td>
+                <td>
+                  {% if item.active %}
+                    <span class="badge bg-success text-white"><i class="mdi mdi-check-circle"></i> Active</span>
+                  {% else %}
+                    <span class="badge bg-danger text-white"><i class="mdi mdi-close-circle"></i> Inactive</span>
+                  {% endif %}
+                </td>
+                {% if request.user.is_staff %}
+                <td class="text-center">
+                  <div class="btn-group" role="group">
+                    <a href="{% url 'modifier_agence' item.id %}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="mdi mdi-pencil"></i></a>
+                    <a href="{% url 'sup

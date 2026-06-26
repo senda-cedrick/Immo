@@ -40,12 +40,17 @@ fi
 # ─── 2. Suppression et recréation de la base de données PostgreSQL ──
 echo ""
 echo "🗄️  Connexion à PostgreSQL..."
-DB_NAME="immo_db"
-DB_USER="postgres"
-DB_PASS="admin"
-DB_HOST="localhost"
-DB_PORT="5432"
 
+# Charger les variables depuis un fichier .env s'il existe, sinon utiliser des valeurs par défaut
+if [ -f .env ]; then
+  export $(cat .env | xargs)
+fi
+
+DB_NAME=${DB_NAME:-immo_db}
+DB_USER=${DB_USER:-postgres}
+DB_PASS=${DB_PASS:-admin}
+DB_HOST=${DB_HOST:-localhost}
+DB_PORT=${DB_PORT:-5432}
 # Vérifier que PostgreSQL est accessible
 if command -v psql &> /dev/null; then
     echo "   ️ Suppression de la base de données '$DB_NAME'..."

@@ -34,16 +34,16 @@
                 <form method="post" action="{% url 'login' %}">
                    {% csrf_token %}
                   <div class="form-group">
-                    <label class="control-label" for="username">
+                    <label class="control-label text-dark fw-semibold" for="username">
                       <i class="mdi mdi-account"></i> Nom d'utilisateur
                     </label>
-                    <input type="text" class="form-control p_input" name="username" id="username" placeholder="Entrez votre nom d'utilisateur" required>
+                    <input type="text" class="form-control p_input bg-white text-dark" name="username" id="username" placeholder="Entrez votre nom d'utilisateur" required>
                   </div>
                   <div class="form-group">
-                    <label class="control-label" for="password">
+                    <label class="control-label text-dark fw-semibold" for="password">
                       <i class="mdi mdi-lock"></i> Mot de passe
                     </label>
-                    <input type="password" class="form-control p_input" name="password" id="password" placeholder="Entrez votre mot de passe" required>
+                    <input type="password" class="form-control p_input bg-white text-dark" name="password" id="password" placeholder="Entrez votre mot de passe" required>
                   </div>
 
                   {% if message %}

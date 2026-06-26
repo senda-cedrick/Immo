@@ -1,91 +1,120 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
-         <!-- ici LIST-->
-        <div class="main-panel">
-          <div class="content-wrapper bg-secondary">
-            <div class="row">
-              <div class="col-12 grid-margin stretch-card">
-                <div class="card corona-gradient-card ">
-                  <div class="card-body py-0 px-0 px-sm-3">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12 grid-margin stretch-card">
-                <div class="card bg-secondary">
-                  <div class="card-body">
-                    <h3 class="card-title text-dark"> Personnels que vous gérez </h3>
-                    <!-- add search + buttons-->
-                    <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch bg-secondary text-dark">
-                      <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-                        <span class="mdi mdi-menu"></span>
-                      </button>
-                      <ul class="navbar-nav w-100">
-                        <li class="nav-item w-100">
-                          <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
-                            <input type="text" class="form-control form-control-sm w-25 bg-white" placeholder="Search locataires">
-                          </form>
-                        </li>
-                      </ul>
-                      <ul class="navbar-nav navbar-nav-right">
-                        <li class="nav-item dropdown d-none d-lg-block">
-                          <a class="nav-link btn btn-primary text-white create-new-button" href="{% url 'personnel' %}">+ Nouveau personnel</a>
-                        </li>
-                      </ul>
-                    </div>
-                    
 
-                    <p class="card-description"> Add class <code>.table-dark</code>
-                    </p>
-                    <!-- Affichage liste et fonction-->
-                    <div class="table-responsive">
-                      <table class="table table- bg-white">
-                        <thead>
-                          <tr>
-                            <th> # </th>
-                            <th> id_personnel </th>
-                            <th> noms </th>
-                            <th> sexe </th>
-                            <th> role </th>
-                            <th> status </th>
-                            <th> agence </th>
-                            <th> email </th>
-                            <th> created_at </th>
-                            <th> updated_at </th>
-                            <th> Action </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% for pe in personnels %}
-                          <tr>
-                            <td>{{ pe.id_personnel }}</td>
-                            <td>{{ pe.noms }}</td>
-                            <td>{{ pe.sexe }}</td>
-                            <td>{{ pe.role }}</td>
-                            <td>{{ pe.status }}</td>
-                            <td>{{ pe.agence }}</td>
-                            <td>{{ pe.email }}</td>
-                            <td>{{ pe.created_at }}</td>
-                            <td>{{ pe.updated_at }}</td>
-                            <td>
-                              <a href="#">
-                                <i class="mdi mdi-rename-box text-primary"></i>
-                              </a>_
-                              <a href="#">
-                                <i class="mdi mdi-delete text-danger"></i>
-                              </a>
-                            </td>
-                          </tr>
-                          {% endfor %}
-                          <!-- / -->
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.clickable-row').forEach(function(row) {
+    row.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('button')) return;
+      window.location.href = this.dataset.href;
+    });
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="mb-0"><i class="mdi mdi-account-group"></i> Personnel que vous gérez</h5>
+          <a href="{% url 'ajouter_personnel' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-plus"></i> Nouveau Personnel</a>
+        </div>
+
+        <!-- Barre de recherche -->
+        <form method="get" action="{% url 'personnels' %}" class="row g-3 mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control" placeholder="Rechercher un personnel..." value="{{ request.GET.q }}">
+              <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i> Rechercher</button>
             </div>
           </div>
+        </form>
+
+        {% if pages %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Noms</th>
+                <th>Sexe</th>
+                <th>Rôle</th>
+                <th>Statut</th>
+                <th>Email</th>
+                {% if request.user.is_staff %}
+                <th class="text-center">Actions</th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in pages %}
+              <tr class="clickable-row" data-href="{% url 'personnel_detail' item.id %}">
+                <td><a href="{% url 'personnel_detail' item.id %}" class="text-decoration-none text-dark">{{ item.id }}</a></td>
+                <td><strong>{{ item.noms }}</strong></td>
+                <td>{{ item.get_sexe_display }}</td>
+                <td>{{ item.role }}</td>
+                <td>{{ item.status|default:"—" }}</td>
+                <td>{{ item.email }}</td>
+                {% if request.user.is_staff %}
+                <td class="text-center">
+                  <div class="btn-group" role="group">
+                    <a href="{% url 'modifier_personnel' item.id %}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="mdi mdi-pencil"></i></a>
+                    <a href="{% url 'supprimer_personnel' item.id %}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce membre du personnel ?')"><i class="mdi mdi-delete"></i></a>
+                  </div>
+                </td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">Aucun personnel trouvé.</div>
+        {% endif %}
+
+        {% if is_paginated %}
+        <nav aria-label="Page navigation" class="mt-3">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Premier">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Précédent">
+                <span aria-hidden="true">&lsaquo;</span>
+              </a>
+            </li>
+            {% endif %}
+
+            {% for num in paginator.page_range %}
+              {% if page_obj.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+              {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{ num }}</a></li>
+              {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Suivant">
+                <span aria-hidden="true">&rsaquo;</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Dernier">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 {% endblock content %}

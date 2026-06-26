@@ -1,5 +1,5 @@
 from django import forms
-from .models import Agence
+from .models import Agence, Personnel
 
 class AgenceForm(forms.ModelForm):
     class Meta:
@@ -13,4 +13,17 @@ class AgenceForm(forms.ModelForm):
             'revenu': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Ex: 45000000'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ex: contact@agence.cd'}),
             'active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+class PersonnelForm(forms.ModelForm):
+    class Meta:
+        model = Personnel
+        fields = ['noms', 'sexe', 'role', 'status', 'agence', 'email']
+        widgets = {
+            'noms': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Jean Dupont'}),
+            'sexe': forms.Select(attrs={'class': 'form-control'}),
+            'role': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Comptable'}),
+            'status': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Actif'}),
+            'agence': forms.Select(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ex: j.dupont@immo.cd'}),
         }

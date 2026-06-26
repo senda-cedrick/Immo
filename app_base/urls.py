@@ -4,27 +4,25 @@ from immo_travel.views import home_views
 
 
 urlpatterns = [
-    path('', home_views.HomeView.as_view(), name='home'), # Cette route captera le http://127.0.0.1:8000/
+    path('', home_views.HomeView.as_view(), name='home'),
     
-    # Page show __
+    # Agences
     path('agences/', views.AgenceListView.as_view(), name='agences'),
     path('agence/<int:pk>/', views.AgenceDetailView.as_view(), name='agence_detail'),
-    path('garanties/', views.garanties, name='garanties'),
-    path('appartements/', views.appartements, name='appartements'),
-    path('locataires/', views.locataires, name='locataires'),
-    path('personnels/', views.personnels, name='personnels'),
-    path('proprietaires/', views.proprietaires, name='proprietaires'),
-    
-    # --- / -----
-    
-    #Page Forms_create___
     path('agence/add/', views.AgenceCreateView.as_view(), name='ajouter_agence'),
     path('agence/<int:pk>/edit/', views.AgenceUpdateView.as_view(), name='modifier_agence'),
     path('agence/<int:pk>/delete/', views.AgenceDeleteView.as_view(), name='supprimer_agence'),
-    # path('appartement/add', views.appartement, name='appartement'),
-    # path('garantie/add', views.garantie, name='garantie'),
-    # path('locataire/add', views.locataire, name='locataire'),
-    # path('personnel/add', views.personnel, name='personnel'),
-    # path('proprietaire/add', views.proprietaire, name='proprietaire'),
 
+    # Personnel
+    path('personnels/', views.PersonnelListView.as_view(), name='personnels'),
+    path('personnel/<int:pk>/', views.PersonnelDetailView.as_view(), name='personnel_detail'),
+    path('personnel/add/', views.PersonnelCreateView.as_view(), name='ajouter_personnel'),
+    path('personnel/<int:pk>/edit/', views.PersonnelUpdateView.as_view(), name='modifier_personnel'),
+    path('personnel/<int:pk>/delete/', views.PersonnelDeleteView.as_view(), name='supprimer_personnel'),
+
+    # Pages statiques
+    path('garanties/', views.garanties, name='garanties'),
+    path('appartements/', views.appartements, name='appartements'),
+    path('locataires/', views.locataires, name='locataires'),
+    path('proprietaires/', views.proprietaires, name='proprietaires'),
 ]

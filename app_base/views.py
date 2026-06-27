@@ -7,7 +7,7 @@ from .forms import (
     TypeProprieteForm, ProprieteForm, LogementForm,
     ContratForm, GarantieForm, MaintenanceForm
 )
-from django.db.models import Sum
+from django.db.models import Sum, Count, Q
 from .models import (
     Agence, Personnel, Proprietaire, Client,
     TypePropriete, Propriete, Logement, Contrat, Garantie, Maintenance
@@ -37,25 +37,18 @@ class AgenceListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs = super().get_queryset().annotate(
+            effectif=Count('personnel', distinct=True),
+            revenu=Sum(
+                'proprietes__contrats__montant',
+                filter=Q(proprietes__contrats__statut='ACTIF'),
+                default=0
+            )
+        )
         query = self.request.GET.get('q')
         if query:
             qs = qs.filter(nom__icontains=query)
         return qs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        agences = context['agences']
-        # Ajouter les champs calculés pour chaque agence dans la page courante
-        for agence in agences:
-            agence.effectif = agence.personnel.count()
-            proprietes_ids = agence.proprietes.values_list('id', flat=True)
-            revenu = Contrat.objects.filter(
-                propriete_id__in=proprietes_ids,
-                statut='ACTIF'
-            ).aggregate(total=Sum('montant'))['total'] or 0
-            agence.revenu = revenu
-        return context
 
 
 class AgenceDetailView(LoginRequiredMixin, DetailView):
@@ -229,13 +222,32 @@ class TypeProprieteDeleteView(LoginRequiredMixin, DeleteView):
 
 class ProprieteListView(LoginRequiredMixin, ListView):
     model = Propriete
-    template_name = 'app_base/propriete_list.html'
+    template_name = 'proprietes.html'
     context_object_name = 'proprietes'
     paginate_by = 10
 
+    def get_queryset(self):
+        qs = super().get_queryset().select_related('agence', 'proprietaire__user', 'type_propriete', 'agent__user')
+        query = self.request.GET.get('q')
+        if query:
+            qs = qs.filter(
+                Q(adresse__icontains=query) |
+                Q(ville__icontains=query) |
+                Q(proprietaire__user__noms__icontains=query) |
+                Q(type_propriete__nom__icontains=query)
+            )
+        return qs
+
 class ProprieteDetailView(LoginRequiredMixin, DetailView):
     model = Propriete
-    template_name = 'app_base/propriete_detail.html'
+    template_name = 'app_base/propriete_detail.html' # Assurez-vous que ce template existe
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        propriete = context['propriete']
+        context['logements'] = propriete.logements.all()
+        context['contrats'] = propriete.contrats.select_related('client__user', 'agent__user').all()
+        return context
 
 class ProprieteCreateView(LoginRequiredMixin, CreateView):
     model = Propriete
@@ -259,7 +271,7 @@ class ProprieteDeleteView(LoginRequiredMixin, DeleteView):
 
 class LogementListView(LoginRequiredMixin, ListView):
     model = Logement
-    template_name = 'app_base/logement_list.html'
+    template_name = 'logements.html'
     context_object_name = 'logements'
     paginate_by = 10
 

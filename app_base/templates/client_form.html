@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto">
+          <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0">
+                <i class="mdi mdi-account"></i>
+                {% if object %}Modifier le client{% else %}Nouveau Client{% endif %}
+              </h5>
+              <a href="{% url 'clients' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+            </div>
+
+            <form method="post" class="forms-sample">
+              {% csrf_token %}
+
+              <div class="form-group mb-3">
+                <label for="{{ form.user.id_for_label }}" class="text-dark fw-semibold"><i class="mdi mdi-account-outline"></i> Utilisateur</label>
+                {{ form.user }}
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="{{ form.telephone.id_for_label }}" class="text-dark fw-semibold"><i class="mdi mdi-phone"></i> Téléphone</label>
+                    {{ form.telephone }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="{{ form.agence.id_for_label }}" class="text-dark fw-semibold"><i class="mdi mdi-domain"></i> Agence</label>
+                    {{ form.agence }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="{{ form.adresse.id_for_label }}" class="text-dark fw-semibold"><i class="mdi mdi-map-marker"></i> Adresse</label>
+                {{ form.adresse }}
+              </div>
+
+              <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'clients' %}" class="btn btn-outline-light me-2"><i class="mdi mdi-close"></i> Annuler</a>
+                <button type="submit" class="btn btn-success"><i class="mdi mdi-check"></i> {% if object %}Modifier{% else %}Ajouter{% endif %}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

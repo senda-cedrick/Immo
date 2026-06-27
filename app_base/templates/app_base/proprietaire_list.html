@@ -19,45 +19,47 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="container-fluid">
       <div class="glass-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h5 class="mb-0"><i class="mdi mdi-tag-multiple"></i> Types de propriété</h5>
-          <a href="{% url 'ajouter_type_propriete' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-plus"></i> Nouveau type</a>
+          <h5 class="mb-0"><i class="mdi mdi-account-star"></i> Propriétaires</h5>
+          <a href="{% url 'ajouter_proprietaire' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-plus"></i> Nouveau propriétaire</a>
         </div>
 
-        <form method="get" action="{% url 'type_proprietes' %}" class="row g-3 mb-3">
+        <form method="get" action="{% url 'proprietaires' %}" class="row g-3 mb-3">
           <div class="col-md-6">
             <div class="input-group">
-              <input type="text" name="q" class="form-control" placeholder="Rechercher un type de propriété..." value="{{ request.GET.q }}">
+              <input type="text" name="q" class="form-control" placeholder="Rechercher un propriétaire..." value="{{ request.GET.q }}">
               <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i> Rechercher</button>
             </div>
           </div>
         </form>
 
-        {% if type_proprietes %}
+        {% if proprietaires %}
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Nb propriétés</th>
+                <th>Nom complet</th>
+                <th>Téléphone</th>
+                <th>Adresse</th>
+                <th>Agence</th>
                 {% if request.user.is_staff %}
                 <th class="text-center">Actions</th>
                 {% endif %}
               </tr>
             </thead>
             <tbody>
-              {% for item in type_proprietes %}
-              <tr class="clickable-row" data-href="{% url 'type_propriete_detail' item.id %}">
-                <td><a href="{% url 'type_propriete_detail' item.id %}" class="text-decoration-none text-dark">{{ item.id }}</a></td>
-                <td><strong>{{ item.nom }}</strong></td>
-                <td>{{ item.description|truncatechars:50|default:"—" }}</td>
-                <td>{{ item.proprietes.count }}</td>
+              {% for proprietaire in proprietaires %}
+              <tr class="clickable-row" data-href="{% url 'proprietaire_detail' proprietaire.id %}">
+                <td><a href="{% url 'proprietaire_detail' proprietaire.id %}" class="text-decoration-none text-dark">{{ proprietaire.id }}</a></td>
+                <td><strong>{{ proprietaire.user.noms }}</strong></td>
+                <td>{{ proprietaire.telephone }}</td>
+                <td>{{ proprietaire.adresse|truncatechars:30 }}</td>
+                <td>{{ proprietaire.agence.nom }}</td>
                 {% if request.user.is_staff %}
                 <td class="text-center">
                   <div class="btn-group" role="group">
-                    <a href="{% url 'modifier_type_propriete' item.id %}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="mdi mdi-pencil"></i></a>
-                    <a href="{% url 'supprimer_type_propriete' item.id %}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Supprimer ce type de propriété ?')"><i class="mdi mdi-delete"></i></a>
+                    <a href="{% url 'modifier_proprietaire' proprietaire.id %}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="mdi mdi-pencil"></i></a>
+                    <a href="{% url 'supprimer_proprietaire' proprietaire.id %}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Supprimer ce propriétaire ?')"><i class="mdi mdi-delete"></i></a>
                   </div>
                 </td>
                 {% endif %}
@@ -67,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </table>
         </div>
         {% else %}
-        <div class="alert alert-info">Aucun type de propriété trouvé.</div>
+        <div class="alert alert-info">Aucun propriétaire trouvé.</div>
         {% endif %}
 
         {% if is_paginated %}

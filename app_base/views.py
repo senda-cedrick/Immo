@@ -192,29 +192,30 @@ class ClientDeleteView(LoginRequiredMixin, DeleteView):
 
 class TypeProprieteListView(LoginRequiredMixin, ListView):
     model = TypePropriete
-    template_name = 'app_base/typepropriete_list.html'
+    template_name = 'type_proprietes.html'
     context_object_name = 'type_proprietes'
     paginate_by = 10
 
 class TypeProprieteDetailView(LoginRequiredMixin, DetailView):
     model = TypePropriete
-    template_name = 'app_base/typepropriete_detail.html'
+    template_name = 'type_propriete_detail.html'
+    context_object_name = 'type_propriete'
 
 class TypeProprieteCreateView(LoginRequiredMixin, CreateView):
     model = TypePropriete
     form_class = TypeProprieteForm
-    template_name = 'app_base/typepropriete_form.html'
+    template_name = 'type_propriete_form.html'
     success_url = reverse_lazy('type_proprietes')
 
 class TypeProprieteUpdateView(LoginRequiredMixin, UpdateView):
     model = TypePropriete
     form_class = TypeProprieteForm
-    template_name = 'app_base/typepropriete_form.html'
+    template_name = 'type_propriete_form.html'
     success_url = reverse_lazy('type_proprietes')
 
 class TypeProprieteDeleteView(LoginRequiredMixin, DeleteView):
     model = TypePropriete
-    template_name = 'app_base/typepropriete_confirm_delete.html'
+    template_name = 'type_propriete_confirm_delete.html'
     success_url = reverse_lazy('type_proprietes')
 
 

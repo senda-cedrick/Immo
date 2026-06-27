@@ -19,47 +19,51 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="container-fluid">
       <div class="glass-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h5 class="mb-0"><i class="mdi mdi-account-star"></i> Propriétaires</h5>
-          <a href="{% url 'ajouter_proprietaire' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-plus"></i> Nouveau propriétaire</a>
+          <h5 class="mb-0"><i class="mdi mdi-file-sign"></i> Contrats</h5>
+          <a href="{% url 'ajouter_contrat' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-plus"></i> Nouveau contrat</a>
         </div>
 
-        <form method="get" action="{% url 'proprietaires' %}" class="row g-3 mb-3">
+        <form method="get" action="{% url 'contrats' %}" class="row g-3 mb-3">
           <div class="col-md-6">
             <div class="input-group">
-              <input type="text" name="q" class="form-control" placeholder="Rechercher un propriétaire..." value="{{ request.GET.q }}">
+              <input type="text" name="q" class="form-control" placeholder="Rechercher un contrat..." value="{{ request.GET.q }}">
               <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i> Rechercher</button>
             </div>
           </div>
         </form>
 
-        {% if proprietaires %}
+        {% if contrats %}
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Nom complet</th>
-                <th>Téléphone</th>
-                <th>Adresse</th>
-                <th>Agence</th>
+                <th>Référence</th>
+                <th>Type</th>
+                <th>Client</th>
+                <th>Propriété</th>
+                <th>Montant</th>
+                <th>Statut</th>
                 {% if request.user.is_staff %}
                 <th class="text-center">Actions</th>
                 {% endif %}
               </tr>
             </thead>
             <tbody>
-              {% for proprietaire in proprietaires %}
-              <tr class="clickable-row" data-href="{% url 'proprietaire_detail' proprietaire.id %}">
-                <td><a href="{% url 'proprietaire_detail' proprietaire.id %}" class="text-decoration-none text-dark">{{ proprietaire.id }}</a></td>
-                <td><strong>{{ proprietaire.user.noms }}</strong></td>
-                <td>{{ proprietaire.telephone }}</td>
-                <td>{{ proprietaire.adresse|truncatechars:30 }}</td>
-                <td>{{ proprietaire.agence.nom }}</td>
+              {% for contrat in contrats %}
+              <tr class="clickable-row" data-href="{% url 'contrat_detail' contrat.id %}">
+                <td><a href="{% url 'contrat_detail' contrat.id %}" class="text-decoration-none text-dark">{{ contrat.id }}</a></td>
+                <td><strong>{{ contrat.reference }}</strong></td>
+                <td>{{ contrat.type }}</td>
+                <td>{{ contrat.client.user.noms }}</td>
+                <td>{{ contrat.propriete.adresse|truncatechars:20 }}</td>
+                <td>{{ contrat.montant|floatformat:0 }}</td>
+                <td>{{ contrat.statut }}</td>
                 {% if request.user.is_staff %}
                 <td class="text-center">
                   <div class="btn-group" role="group">
-                    <a href="{% url 'modifier_proprietaire' proprietaire.id %}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="mdi mdi-pencil"></i></a>
-                    <a href="{% url 'supprimer_proprietaire' proprietaire.id %}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Supprimer ce propriétaire ?')"><i class="mdi mdi-delete"></i></a>
+                    <a href="{% url 'modifier_contrat' contrat.id %}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="mdi mdi-pencil"></i></a>
+                    <a href="{% url 'supprimer_contrat' contrat.id %}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Supprimer ce contrat ?')"><i class="mdi mdi-delete"></i></a>
                   </div>
                 </td>
                 {% endif %}
@@ -69,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </table>
         </div>
         {% else %}
-        <div class="alert alert-info">Aucun propriétaire trouvé.</div>
+        <div class="alert alert-info">Aucun contrat trouvé.</div>
         {% endif %}
 
         {% if is_paginated %}

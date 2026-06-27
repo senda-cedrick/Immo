@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-11">
+          <div class="glass-card">
+            <div class="card-header bg-transparent border-0 pt-4 pb-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h4 class="mb-1 text-dark">
+                    <i class="mdi mdi-file-sign text-warning me-2"></i>
+                    {% if object %}Modifier le contrat{% else %}Nouveau Contrat{% endif %}
+                  </h4>
+                  <p class="text-muted small mb-0">Remplissez les informations du contrat</p>
+                </div>
+                <a href="{% url 'contrats' %}" class="btn btn-outline-light">
+                  <i class="mdi mdi-arrow-left"></i> Retour
+                </a>
+              </div>
+            </div>
+
+            <div class="card-body px-5 py-4">
+              <form method="post" class="forms-sample">
+                {% csrf_token %}
+
+                <div class="row g-4">
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      {{ form.reference }}
+                      <label for="{{ form.reference.id_for_label }}" class="text-muted">
+                        <i class="mdi mdi-barcode me-1"></i> Référence
+                      </label>
+                      {% if form.reference.errors %}
+                      <div class="text-danger small mt-1">{{ form.reference.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      {{ form.type }}
+                      <label for="{{ form.type.id_for_label }}" class="text-muted">
+                        <i class="mdi mdi-tag me-1"></i> Type
+                      </label>
+                      {% if form.type.errors %}
+                      <div class="text-danger small mt-1">{{ form.type.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      {{ form.propriete }}
+                      <label for="{{ form.propriete.id_for_label }}" class="text-muted">
+                        <i class="mdi mdi-home me-1"></i> Propriété
+                      </label>
+                      {% if form.propriete.errors %}
+                      <div class="text-danger small mt-1">{{ form.propriete.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      {{ form.client }}
+                      <label for="{{ form.client.id_for_label }}" class="text-muted">
+                        <i class="mdi mdi-account me-1"></i> Client
+                      </label>
+                      {% if form.client.errors %}
+                      <div class="text-danger small mt-1">{{ form.client.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      {{ form.proprietaire }}
+                      <label for="{{ form.proprietaire.id_for_label }}" class="text-muted">
+                        <i class="mdi mdi-account-star me-1"></i> Propriétaire
+                      </label>
+                      {% if form.proprietaire.errors %}
+                      <div class="text-danger small mt-1">{{ form.proprietaire.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      {{ form.agent }}
+                      <label for="{{ form.agent.id_for_label }}" class="text-muted">
+                        <i class="mdi mdi-account-tie me-1"></i> Agent
+                      </label>
+                      {% if form.agent.errors %}
+                      <div class="text-danger small mt-1">{{ form.agent.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      {{ form.date_debut }}
+                      <label for="{{ form.date_debut.id_for_label }}" class="text-muted">
+                        <i class="mdi mdi-calendar me-1"></i> Date début
+                      </label>
+                      {% if form.date_debut.errors %}
+                      <div class="text-danger small mt-1">{{ form.date_debut.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      {{ form.date_fin }}
+                      <label for="{{ form.date_fin.id_for_label }}" class="text-muted">
+                        <i class="mdi mdi-calendar-end me-1"></i> Date fin
+                      </label>
+                      {% if form.date_fin.errors %}
+                      <div class="text-danger small mt-1">{{ form.date_fin.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      {{ form.montant }}
+                      <label for="{{ form.montant.id_for_label }}" class="text-muted">
+                        <i class="mdi mdi-cash me-1"></i> Montant
+                      </label>
+                      {% if form.montant.errors %}
+                      <div class="text-danger small mt-1">{{ form.montant.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      {{ form.statut }}
+                      <label for="{{ form.statut.id_for_label }}" class="text-muted">
+                        <i class="mdi mdi-circle-edit-outline me-1"></i> Statut
+                      </label>
+                      {% if form.statut.errors %}
+                      <div class="text-danger small mt-1">{{ form.statut.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="form-floating">
+                      {{ form.conditions }}
+                      <label for="{{ form.conditions.id_for_label }}" class="text-muted">
+                        <i class="mdi mdi-text me-1"></i> Conditions
+                      </label>
+                      {% if form.conditions.errors %}
+                      <div class="text-danger small mt-1">{{ form.conditions.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-3 mt-5 pt-3 border-top">
+                  <a href="{% url 'contrats' %}" class="btn btn-outline-secondary px-4">
+                    <i class="mdi mdi-close me-1"></i> Annuler
+                  </a>
+                  <button type="submit" class="btn btn-primary px-4">
+                    <i class="mdi mdi-check me-1"></i> {% if object %}Modifier{% else %}Ajouter{% endif %}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

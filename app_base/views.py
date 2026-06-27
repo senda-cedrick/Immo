@@ -100,7 +100,7 @@ class AgenceDeleteView(LoginRequiredMixin, DeleteView):
 
 class PersonnelListView(LoginRequiredMixin, ListView):
     model = Personnel
-    template_name = 'app_base/personnel_list.html'
+    template_name = 'personnels.html'
     context_object_name = 'personnels'
     paginate_by = 10
 
@@ -302,29 +302,30 @@ class LogementDeleteView(LoginRequiredMixin, DeleteView):
 
 class ContratListView(LoginRequiredMixin, ListView):
     model = Contrat
-    template_name = 'app_base/contrat_list.html'
+    template_name = 'contrat_list.html'
     context_object_name = 'contrats'
     paginate_by = 10
 
 class ContratDetailView(LoginRequiredMixin, DetailView):
     model = Contrat
-    template_name = 'app_base/contrat_detail.html'
+    template_name = 'contrat_detail.html'
+    context_object_name = 'contrat'
 
 class ContratCreateView(LoginRequiredMixin, CreateView):
     model = Contrat
     form_class = ContratForm
-    template_name = 'app_base/contrat_form.html'
+    template_name = 'contrat_form.html'
     success_url = reverse_lazy('contrats')
 
 class ContratUpdateView(LoginRequiredMixin, UpdateView):
     model = Contrat
     form_class = ContratForm
-    template_name = 'app_base/contrat_form.html'
+    template_name = 'contrat_form.html'
     success_url = reverse_lazy('contrats')
 
 class ContratDeleteView(LoginRequiredMixin, DeleteView):
     model = Contrat
-    template_name = 'app_base/contrat_confirm_delete.html'
+    template_name = 'contrat_confirm_delete.html'
     success_url = reverse_lazy('contrats')
 
 

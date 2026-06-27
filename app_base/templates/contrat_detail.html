@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-10 col-lg-8 mx-auto">
+          <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0">
+                <i class="mdi mdi-file-sign"></i>
+                Détail du contrat
+              </h5>
+              <div>
+                <a href="{% url 'modifier_contrat' contrat.id %}" class="btn btn-outline-warning btn-sm me-2"><i class="mdi mdi-pencil"></i> Modifier</a>
+                <a href="{% url 'contrats' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="text-muted fw-semibold"><i class="mdi mdi-barcode"></i> Référence</label>
+                  <div class="fw-bold text-dark">{{ contrat.reference }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="text-muted fw-semibold"><i class="mdi mdi-tag"></i> Type</label>
+                  <div class="fw-bold text-dark">{{ contrat.type }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="text-muted fw-semibold"><i class="mdi mdi-account"></i> Client</label>
+                  <div class="fw-bold text-dark">{{ contrat.client.user.noms }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="text-muted fw-semibold"><i class="mdi mdi-home"></i> Propriété</label>
+                  <div class="fw-bold text-dark">{{ contrat.propriete.adresse }} - {{ contrat.propriete.ville }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="text-muted fw-semibold"><i class="mdi mdi-cash"></i> Montant</label>
+                  <div class="fw-bold text-dark">{{ contrat.montant|floatformat:0 }} USD</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="text-muted fw-semibold"><i class="mdi mdi-calendar"></i> Date début</label>
+                  <div class="fw-bold text-dark">{{ contrat.date_debut }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="text-muted fw-semibold"><i class="mdi mdi-calendar-end"></i> Date fin</label>
+                  <div class="fw-bold text-dark">{{ contrat.date_fin|default:"—" }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="text-muted fw-semibold"><i class="mdi mdi-circle-edit-outline"></i> Statut</label>
+                  <div class="fw-bold text-dark">{{ contrat.statut }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

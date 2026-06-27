@@ -132,7 +132,7 @@
       <span class="nav-link">Contrats & Documents</span>
     </li>
     <li class="nav-item menu-items {% if 'contrat' in request.path %}active{% endif %}" data-color="var(--c-contrat)">
-      <a class="nav-link" href="#">
+      <a class="nav-link" href="{% url 'contrats' %}">
         <span class="menu-icon"><i class="mdi mdi-file-document"></i></span>
         <span class="menu-title">Contrats</span>
       </a>

@@ -430,6 +430,20 @@ class GarantieUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'garantie_form.html'
     success_url = reverse_lazy('garanties')
 
+class GarantieDetailView(LoginRequiredMixin, DetailView):
+    model = Garantie
+    template_name = 'garantie_detail.html' # Vous devrez créer ce template
+    context_object_name = 'garantie'
+
+    def get_queryset(self):
+        return super().get_queryset().select_related('contrat__client__user')
+
+class GarantieDeleteView(LoginRequiredMixin, DeleteView):
+    model = Garantie
+    template_name = 'garantie_confirm_delete.html' # Vous devrez créer ce template
+    success_url = reverse_lazy('garanties')
+    success_message = "Garantie supprimée avec succès."
+
 
 # --- Vues pour Maintenance ---
 
@@ -445,6 +459,22 @@ class MaintenanceCreateView(LoginRequiredMixin, CreateView):
     template_name = 'maintenance_form.html'
     success_url = reverse_lazy('maintenances')
 
+class MaintenanceDetailView(LoginRequiredMixin, DetailView):
+    model = Maintenance
+    template_name = 'maintenance_detail.html' # Vous devrez créer ce template
+    context_object_name = 'maintenance'
+
+class MaintenanceUpdateView(LoginRequiredMixin, UpdateView):
+    model = Maintenance
+    form_class = MaintenanceForm
+    template_name = 'maintenance_form.html'
+    success_url = reverse_lazy('maintenances')
+
+class MaintenanceDeleteView(LoginRequiredMixin, DeleteView):
+    model = Maintenance
+    template_name = 'maintenance_confirm_delete.html' # Vous devrez créer ce template
+    success_url = reverse_lazy('maintenances')
+    success_message = "Maintenance supprimée avec succès."
 
 # --- Vues API pour le Javascript ---
 

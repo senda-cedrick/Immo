@@ -175,12 +175,28 @@ class Maintenance(models.Model):
         return f"Maintenance {self.propriete} - {self.date}"
 
 class Garantie(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='garanties')
+    STATUT_CHOIX = (
+        ('EN_ATTENTE', 'En attente'),
+        ('VERSEE', 'Versée'),
+        ('PARTIELLEMENT_UTILISEE', 'Partiellement utilisée'),
+        ('UTILISEE', 'Utilisée'),
+        ('REMBOURSEE', 'Remboursée'),
+    )
+    TYPE_GARANTIE_CHOIX = (
+        ('UNIQUE', 'Versement unique'),
+        ('MENSUELLE', 'Planification mensuelle'),
+        ('AUTRE', 'Autre'),
+    )
+
+    contrat = models.OneToOneField(Contrat, on_delete=models.CASCADE, related_name='garantie')
     montant = models.DecimalField(max_digits=10, decimal_places=2)
-    planification = models.CharField(max_length=50)
-    date_apparition = models.DateField()
+    type_garantie = models.CharField(max_length=20, choices=TYPE_GARANTIE_CHOIX, default='UNIQUE')
+    statut = models.CharField(max_length=30, choices=STATUT_CHOIX, default='EN_ATTENTE')
+    date_constitution = models.DateField(help_text="Date de versement ou de début de la garantie")
+    notes = models.TextField(blank=True, help_text="Conditions spécifiques ou notes sur la garantie")
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Garantie pour {self.client}"
+        return f"Garantie de {self.montant} pour le contrat {self.contrat.reference}"

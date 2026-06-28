@@ -1,5 +1,5 @@
 from django.db import models
-from app_base.models import Client, Contrat
+from app_base.models import Client, Contrat, Personnel
 
 
 # Create your models here.
@@ -19,6 +19,7 @@ class Paiement(models.Model):
 
     contrat = models.ForeignKey(Contrat, on_delete=models.CASCADE, related_name='paiements')
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    agent = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True, blank=True, related_name='paiements')
     montant = models.DecimalField(max_digits=12, decimal_places=2)
     date_paiement = models.DateField(null=True, blank=True, help_text="La date à laquelle le paiement a été effectué.")
     date_echeance = models.DateField(help_text="La date à laquelle le paiement est attendu.")

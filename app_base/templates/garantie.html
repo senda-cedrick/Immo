@@ -1,116 +1,91 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="content-wrapper bg-secondary">
-
-  <!-- Header -->
-  <div class="page-header bg-secondary">
-    <h3 class="page-title text-dark bg-secondary">Nouvelle garantie</h3>
-
-    <nav aria-label="breadcrumb bg-secondary">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item text-dark">
-          <a href="#">Forms</a>
-        </li>
-
-        <li class="breadcrumb-item active" aria-current="page">
-          Form elements
-        </li>
-      </ol>
-    </nav>
-  </div>
-
-  <!-- Formulaire centré -->
-  <div class="row justify-content-center mt-4 mb-5 bg-secondary">
-
-    <div class="col-md-6 grid-margin stretch-card
-    ">
-
-      <div class="card bg-white">
-
-        <div class="card-body">
-
-          <h4 class="card-title text-dark">Formulaire de garantie</h4>
-
-            <p class="card-description text-danger">
-              Remplissez touts les champs
-            </p>
-
-          <form class="forms-sample">
-
-            <div class="form-group">
-              <label for="locataires">
-                Locataires
-              </label>
-
-              <input type="text"
-                     class="form-control bg-secondary text-dark"
-                     id="locataires"
-                     placeholder="Entrez le locataire" name="locataires">
+<div class="content-wrapper">
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-xl-8 col-lg-10">
+        <div class="glass-card">
+          <div class="card-header bg-transparent border-0 pt-4 pb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h4 class="mb-1 text-dark">
+                  <i class="mdi mdi-shield-check text-success me-2"></i>
+                  Nouvelle Garantie
+                </h4>
+                <p class="text-muted small mb-0">Remplissez les informations de la garantie</p>
+              </div>
+              <a href="{% url 'garanties' %}" class="btn btn-outline-light">
+                <i class="mdi mdi-arrow-left"></i> Retour
+              </a>
             </div>
+          </div>
 
-            <div class="form-group">
-              <label for="montant">
-                Montant
-              </label>
+          <div class="card-body px-5 py-4">
+            <form method="post" class="forms-sample">
+              {% csrf_token %}
+              {{ form.non_field_errors }}
+              
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    {{ form.contrat }}
+                    <label for="{{ form.contrat.id_for_label }}" class="text-muted"><i class="mdi mdi-file-document-outline me-1"></i> Contrat</label>
+                    {{ form.contrat.errors }}
+                  </div>
+                </div>
 
-              <input type="integer"
-                     class="form-control bg-secondary text-dark"
-                     id="montant"
-                     placeholder="Entrez le montant" name="montant">
-            </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    {{ form.montant }}
+                    <label for="{{ form.montant.id_for_label }}" class="text-muted"><i class="mdi mdi-cash me-1"></i> Montant</label>
+                    {{ form.montant.errors }}
+                  </div>
+                </div>
 
-            <div class="form-group">
-              <label for="planification">
-                Planification
-              </label>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    {{ form.type_garantie }}
+                    <label for="{{ form.type_garantie.id_for_label }}" class="text-muted"><i class="mdi mdi-calendar-clock me-1"></i> Type de garantie</label>
+                    {{ form.type_garantie.errors }}
+                  </div>
+                </div>
 
-              <input type="text"
-                     class="form-control bg-secondary text-dark"
-                     id="planification"
-                     placeholder="Entrez la planification" name="planification">
-            </div>
-            <div class="form-group">
-              <label for="Date_apparution">
-                Date d'apparution
-              </label>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    {{ form.statut }}
+                    <label for="{{ form.statut.id_for_label }}" class="text-muted"><i class="mdi mdi-list-status me-1"></i> Statut</label>
+                    {{ form.statut.errors }}
+                  </div>
+                </div>
 
-              <input type="date"
-                     class="form-control bg-secondary text-dark"
-                     id="date_apparution"
-                     placeholder="Entrez la date d'apparution" name="date_apparution">
-            </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    {{ form.date_constitution }}
+                    <label for="{{ form.date_constitution.id_for_label }}" class="text-muted"><i class="mdi mdi-calendar me-1"></i> Date de constitution</label>
+                    {{ form.date_constitution.errors }}
+                  </div>
+                </div>
 
-            <div class="form-check form-check-flat form-check-primary">
+                <div class="col-12">
+                  {{ form.notes }}
+                  {{ form.notes.errors }}
+                </div>
+              </div>
 
-              <label class="form-check-label">
-
-                <input type="checkbox"
-                       class="form-check-input bg-secondary text-dark">
-
-                Remember me
-
-                <i class="input-helper"></i>
-
-              </label>
-
-            </div>
-
-            <button type="submit" class="btn btn-success mr-2 btn-round">
-              Ajouter
-            </button>
-
-            <a href="{% url 'garanties' %}" class="btn btn-danger btn-round">
-              Annuler
-            </a>
-
-          </form>
-
+              <div class="d-flex justify-content-end gap-3 mt-5 pt-3 border-top">
+                <a href="{% url 'garanties' %}" class="btn btn-outline-secondary px-4">
+                  <i class="mdi mdi-close me-1"></i> Annuler
+                </a>
+                <button type="submit" class="btn btn-primary px-4">
+                  <i class="mdi mdi-check me-1"></i> Ajouter
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-
       </div>
-
     </div>
-
   </div>
+</div>
 {% endblock content %}

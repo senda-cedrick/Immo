@@ -130,7 +130,7 @@ def print_users(request):
 
     agent = []
     propietaire = []
-    locataire = []
+    clients = []
     managers = []
     data_profiles = []
     
@@ -140,19 +140,19 @@ def print_users(request):
         if user.is_proprietaire:
             propietaire.append(user)
         if user.profile.id == 3 :
-            locataire.append(user)
+            clients.append(user)
         if user.is_manager:
             managers.append(user)
     
     data_profiles.append(agent)
     data_profiles.append(propietaire)
-    data_profiles.append(locataire)
+    data_profiles.append(clients)
     data_profiles.append(managers)
 
     ctx = {
         "agents" : agent,
         "propietaires" : propietaire,
-        "locataires" : locataire,
+        "clients" : clients,
         "managers" : managers,
         "date" : datetime.today()
     }    

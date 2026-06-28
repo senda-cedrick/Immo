@@ -104,12 +104,14 @@ class ContratForm(forms.ModelForm):
 class GarantieForm(forms.ModelForm):
     class Meta:
         model = Garantie
-        fields = '__all__'
+        fields = ['contrat', 'montant', 'type_garantie', 'statut', 'date_constitution', 'notes']
         widgets = {
-            'client': forms.Select(attrs={'class': 'form-control'}),
+            'contrat': forms.Select(attrs={'class': 'form-control'}),
             'montant': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'planification': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Mensuelle'}),
-            'date_apparition': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'type_garantie': forms.Select(attrs={'class': 'form-control'}),
+            'statut': forms.Select(attrs={'class': 'form-control'}),
+            'date_constitution': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Conditions spécifiques ou notes...'}),
         }
 
 class MaintenanceForm(forms.ModelForm):

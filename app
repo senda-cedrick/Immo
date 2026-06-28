@@ -215,29 +215,30 @@ class ProprieteDeleteView(LoginRequiredMixin, DeleteView):
 
 class LogementListView(LoginRequiredMixin, ListView):
     model = Logement
-    template_name = 'appartements.html'
+    template_name = 'logements.html'
     context_object_name = 'logements'
     paginate_by = 10
 
 class LogementDetailView(LoginRequiredMixin, DetailView):
     model = Logement
-    template_name = 'appartement_detail.html'
+    template_name = 'logement_detail.html'
+    context_object_name = 'logement'
 
 class LogementCreateView(LoginRequiredMixin, CreateView):
     model = Logement
     form_class = LogementForm
-    template_name = 'appartement_form.html'
+    template_name = 'logement_form.html'
     success_url = reverse_lazy('logements')
 
 class LogementUpdateView(LoginRequiredMixin, UpdateView):
     model = Logement
     form_class = LogementForm
-    template_name = 'appartement_form.html'
+    template_name = 'logement_form.html'
     success_url = reverse_lazy('logements')
 
 class LogementDeleteView(LoginRequiredMixin, DeleteView):
     model = Logement
-    template_name = 'appartement_confirm_delete.html'
+    template_name = 'logement_confirm_delete.html'
     success_url = reverse_lazy('logements')
 
 

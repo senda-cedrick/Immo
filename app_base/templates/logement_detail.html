@@ -7,11 +7,11 @@
         <div class="col-12">
           <div class="glass-card">
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <h5 class="mb-0"><i class="mdi mdi-home"></i> Détail de la propriété</h5>
+              <h5 class="mb-0"><i class="mdi mdi-home-floor-3"></i> Détail du logement : {{ logement.identifiant }}</h5>
               <div class="d-flex gap-2">
-                <a href="{% url 'proprietes' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
-                <a href="{% url 'modifier_propriete' propriete.id %}" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-pencil"></i> Modifier</a>
-                <a href="{% url 'supprimer_propriete' propriete.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Supprimer cette propriété ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
+                <a href="{% url 'logements' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+                <a href="{% url 'modifier_logement' logement.id %}" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-pencil"></i> Modifier</a>
+                <a href="{% url 'supprimer_logement' logement.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Supprimer ce logement ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
               </div>
             </div>
 
@@ -20,10 +20,10 @@
                 <div class="card bg-primary text-white p-3 rounded-3">
                   <div class="d-flex justify-content-between align-items-center">
                     <div>
-                      <h6 class="mb-0">Logements</h6>
-                      <h3 class="mb-0">{{ logements|length }}</h3>
+                      <h6 class="mb-0">Propriété</h6>
+                      <h3 class="mb-0">{{ logement.propriete.ville }}</h3>
                     </div>
-                    <i class="mdi mdi-home-floor-3" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                    <i class="mdi mdi-home" style="font-size: 2.5rem; opacity: 0.5;"></i>
                   </div>
                 </div>
               </div>
@@ -42,8 +42,8 @@
                 <div class="card bg-info text-white p-3 rounded-3">
                   <div class="d-flex justify-content-between align-items-center">
                     <div>
-                      <h6 class="mb-0">Superficie</h6>
-                      <h3 class="mb-0">{{ propriete.superficie|floatformat:0 }} m²</h3>
+                      <h6 class="mb-0">Surface</h6>
+                      <h3 class="mb-0">{{ logement.surface|floatformat:0 }} m²</h3>
                     </div>
                     <i class="mdi mdi-ruler-square" style="font-size: 2.5rem; opacity: 0.5;"></i>
                   </div>
@@ -53,10 +53,10 @@
                 <div class="card bg-warning text-white p-3 rounded-3">
                   <div class="d-flex justify-content-between align-items-center">
                     <div>
-                      <h6 class="mb-0">Pièces</h6>
-                      <h3 class="mb-0">{{ propriete.nb_pieces|default:"—" }}</h3>
+                      <h6 class="mb-0">Étage</h6>
+                      <h3 class="mb-0">{{ logement.etage|default:"—" }}</h3>
                     </div>
-                    <i class="mdi mdi-door-open" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                    <i class="mdi mdi-stairs" style="font-size: 2.5rem; opacity: 0.5;"></i>
                   </div>
                 </div>
               </div>
@@ -68,52 +68,48 @@
                 <table class="table table-borderless">
                   <tr>
                     <td class="fw-semibold text-muted" style="width: 40%;">ID</td>
-                    <td>{{ propriete.id }}</td>
+                    <td>{{ logement.id }}</td>
                   </tr>
                   <tr>
-                    <td class="fw-semibold text-muted">Type</td>
-                    <td>{{ propriete.type_propriete.nom }}</td>
+                    <td class="fw-semibold text-muted">Identifiant</td>
+                    <td><strong>{{ logement.identifiant }}</strong></td>
                   </tr>
                   <tr>
-                    <td class="fw-semibold text-muted">Ville</td>
-                    <td>{{ propriete.ville }}</td>
+                    <td class="fw-semibold text-muted">Étage</td>
+                    <td>{{ logement.etage|default:"—" }}</td>
                   </tr>
                   <tr>
-                    <td class="fw-semibold text-muted">Statut</td>
-                    <td>{{ propriete.get_statut_display }}</td>
+                    <td class="fw-semibold text-muted">Surface</td>
+                    <td>{{ logement.surface|floatformat:0 }} m²</td>
                   </tr>
                   <tr>
-                    <td class="fw-semibold text-muted">Agence</td>
-                    <td>{{ propriete.agence.nom }}</td>
-                  </tr>
-                  <tr>
-                    <td class="fw-semibold text-muted">Propriétaire</td>
-                    <td>{{ propriete.proprietaire.user.noms }}</td>
-                  </tr>
-                  <tr>
-                    <td class="fw-semibold text-muted">Agent</td>
-                    <td>{{ propriete.agent.user.noms|default:"—" }}</td>
+                    <td class="fw-semibold text-muted">Description</td>
+                    <td>{{ logement.description|default:"—"|linebreaksbr }}</td>
                   </tr>
                 </table>
               </div>
               <div class="col-md-6">
-                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-map-marker"></i> Localisation</h6>
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-map-marker"></i> Propriété associée</h6>
                 <table class="table table-borderless">
                   <tr>
-                    <td class="fw-semibold text-muted" style="width: 40%;">Adresse</td>
-                    <td>{{ propriete.adresse|linebreaksbr }}</td>
+                    <td class="fw-semibold text-muted" style="width: 40%;">Type</td>
+                    <td>{{ logement.propriete.type_propriete.nom }}</td>
                   </tr>
                   <tr>
-                    <td class="fw-semibold text-muted">Description</td>
-                    <td>{{ propriete.description|default:"—"|linebreaksbr }}</td>
+                    <td class="fw-semibold text-muted">Ville</td>
+                    <td>{{ logement.propriete.ville }}</td>
                   </tr>
                   <tr>
-                    <td class="fw-semibold text-muted">Créée le</td>
-                    <td>{{ propriete.created_at|date:"d/m/Y H:i" }}</td>
+                    <td class="fw-semibold text-muted">Adresse</td>
+                    <td>{{ logement.propriete.adresse|truncatechars:40 }}</td>
                   </tr>
                   <tr>
-                    <td class="fw-semibold text-muted">Modifiée le</td>
-                    <td>{{ propriete.updated_at|date:"d/m/Y H:i" }}</td>
+                    <td class="fw-semibold text-muted">Agence</td>
+                    <td>{{ logement.propriete.agence.nom }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Propriétaire</td>
+                    <td>{{ logement.propriete.proprietaire.user.noms|default:"—" }}</td>
                   </tr>
                 </table>
               </div>
@@ -121,39 +117,7 @@
 
             <div class="row mb-4">
               <div class="col-12">
-                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-home-floor-3"></i> Logements ({{ logements|length }})</h6>
-                <div class="table-responsive">
-                  <table class="table table-hover align-middle">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Identifiant</th>
-                        <th>Étage</th>
-                        <th>Surface</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for logement in logements %}
-                      <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td><strong>{{ logement.identifiant }}</strong></td>
-                        <td>{{ logement.etage|default:"—" }}</td>
-                        <td>{{ logement.surface|floatformat:0 }} m²</td>
-                      </tr>
-                      {% empty %}
-                      <tr>
-                        <td colspan="4" class="text-muted">Aucun logement pour cette propriété.</td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            <div class="row mb-4">
-              <div class="col-12">
-                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-file-document"></i> Contrats ({{ contrats|length }})</h6>
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-file-document"></i> Contrats de la propriété ({{ contrats|length }})</h6>
                 <div class="table-responsive">
                   <table class="table table-hover align-middle">
                     <thead>

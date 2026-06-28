@@ -4,30 +4,91 @@
   <div class="content-wrapper">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="col-12">
           <div class="glass-card">
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <h5 class="mb-0"><i class="mdi mdi-account-group"></i> Détail du personnel</h5>
-              <a href="{% url 'personnels' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
-            </div>
-
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <p><strong>ID :</strong> {{ personnel.id }}</p>
-                <p><strong>Noms :</strong> {{ personnel.noms }}</p>
-                <p><strong>Sexe :</strong> {{ personnel.get_sexe_display }}</p>
-                <p><strong>Rôle :</strong> {{ personnel.role }}</p>
-              </div>
-              <div class="col-md-6">
-                <p><strong>Statut :</strong> {{ personnel.status|default:"—" }}</p>
-                <p><strong>Agence :</strong> {{ personnel.agence }}</p>
-                <p><strong>Email :</strong> {{ personnel.email }}</p>
+              <h5 class="mb-0">
+                <i class="mdi mdi-account"></i>
+                Détail du personnel : {{ personnel.user.noms }}
+              </h5>
+              <div class="d-flex gap-2">
+                <a href="{% url 'personnels' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+                <a href="{% url 'modifier_personnel' personnel.id %}" class="btn btn-outline-warning btn-sm me-2"><i class="mdi mdi-pencil"></i> Modifier</a>
+                <a href="{% url 'supprimer_personnel' personnel.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce membre du personnel ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
               </div>
             </div>
 
-            <div class="d-flex justify-content-end gap-2">
-              <a href="{% url 'modifier_personnel' personnel.id %}" class="btn btn-outline-warning"><i class="mdi mdi-pencil"></i> Modifier</a>
-              <a href="{% url 'supprimer_personnel' personnel.id %}" class="btn btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce membre du personnel ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
+            <!-- Statistiques -->
+            <div class="row mb-4">
+              <div class="col-md-3">
+                <div class="card bg-primary text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Propriétés Gérées</h6>
+                      <h3 class="mb-0">{{ proprietes_gerees_count|default:"0" }}</h3>
+                    </div>
+                    <i class="mdi mdi-home-city" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-success text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Contrats Actifs</h6>
+                      <h3 class="mb-0">{{ contrats_actifs_count|default:"0" }}</h3>
+                    </div>
+                    <i class="mdi mdi-file-document" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <!-- Espace réservé pour une future statistique -->
+              </div>
+              <div class="col-md-3">
+                <!-- Espace réservé pour une future statistique -->
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-information"></i> Informations générales</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td class="fw-semibold text-muted" style="width: 150px;">ID :</td>
+                    <td>{{ personnel.id }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Noms :</td>
+                    <td><strong>{{ personnel.user.noms }}</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Sexe :</td>
+                    <td>{{ personnel.get_sexe_display }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Rôle :</td>
+                    <td>{{ personnel.role }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Agence :</td>
+                    <td>{{ personnel.agence.nom }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Email :</td>
+                    <td>{{ personnel.email }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Statut :</td>
+                    <td>
+                      <span class="badge {% if personnel.status == 'ACTIF' %}bg-success{% else %}bg-danger{% endif %}">{{ personnel.status|default:"—" }}</span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <!-- La colonne de droite est laissée vide pour le moment, prête à accueillir d'autres informations si nécessaire, comme les dates de création/modification. -->
+              </div>
             </div>
           </div>
         </div>

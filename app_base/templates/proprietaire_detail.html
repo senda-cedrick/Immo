@@ -1,49 +1,127 @@
 {% extends "base.html" %}
 {% load static %}
-
 {% block content %}
   <div class="content-wrapper">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-10 col-lg-8 mx-auto">
+        <div class="col-12">
           <div class="glass-card">
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <h5 class="mb-0">
-                <i class="mdi mdi-account-star"></i>
-                Détail du propriétaire
-              </h5>
-              <div>
-                <a href="{% url 'modifier_proprietaire' proprietaire.id %}" class="btn btn-outline-warning btn-sm me-2"><i class="mdi mdi-pencil"></i> Modifier</a>
+              <h5 class="mb-0"><i class="mdi mdi-account-star"></i> Détail du propriétaire : {{ proprietaire.user.noms }}</h5>
+              <div class="d-flex gap-2">
                 <a href="{% url 'proprietaires' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+                <a href="{% url 'modifier_proprietaire' proprietaire.id %}" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-pencil"></i> Modifier</a>
+                <a href="{% url 'supprimer_proprietaire' proprietaire.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Supprimer ce propriétaire ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
               </div>
             </div>
 
-            <div class="row g-3">
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label class="text-muted fw-semibold"><i class="mdi mdi-account-outline"></i> Nom complet</label>
-                  <div class="fw-bold text-dark">{{ proprietaire.user.noms }}</div>
+            <!-- Statistiques -->
+            <div class="row mb-4">
+              <div class="col-md-3">
+                <div class="card bg-primary text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Propriétés</h6>
+                      <h3 class="mb-0">{{ total_proprietes }}</h3>
+                    </div>
+                    <i class="mdi mdi-home-city" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label class="text-muted fw-semibold"><i class="mdi mdi-phone"></i> Téléphone</label>
-                  <div class="fw-bold text-dark">{{ proprietaire.telephone }}</div>
-                </div>
-              </div>
-              <div class="col-12">
-                <div class="mb-3">
-                  <label class="text-muted fw-semibold"><i class="mdi mdi-map-marker"></i> Adresse</label>
-                  <div class="fw-bold text-dark">{{ proprietaire.adresse }}</div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label class="text-muted fw-semibold"><i class="mdi mdi-domain"></i> Agence</label>
-                  <div class="fw-bold text-dark">{{ proprietaire.agence.nom }}</div>
+              <div class="col-md-3">
+                <div class="card bg-success text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Contrats</h6>
+                      <h3 class="mb-0">{{ total_contrats }}</h3>
+                    </div>
+                    <i class="mdi mdi-file-document" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
                 </div>
               </div>
             </div>
+
+            <!-- Informations -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-information"></i> Informations générales</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td class="fw-semibold text-muted" style="width: 150px;">ID :</td>
+                    <td>{{ proprietaire.id }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Nom :</td>
+                    <td><strong>{{ proprietaire.user.noms }}</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Email :</td>
+                    <td>{{ proprietaire.user.email }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Téléphone :</td>
+                    <td>{{ proprietaire.telephone }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Adresse :</td>
+                    <td>{{ proprietaire.adresse }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Agence :</td>
+                    <td>{{ proprietaire.agence.nom }}</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-calendar"></i> Dates</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td class="fw-semibold text-muted" style="width: 150px;">Créé le :</td>
+                    <td>{{ proprietaire.created_at|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Dernière modification :</td>
+                    <td>{{ proprietaire.updated_at|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <!-- Propriétés -->
+            <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-home-city"></i> Propriétés ({{ total_proprietes }})</h6>
+            <div class="table-responsive mb-4">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Type</th>
+                    <th>Adresse</th>
+                    <th>Ville</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for p in proprietes %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ p.type_propriete.nom }}</td>
+                    <td>{{ p.adresse|truncatechars:30 }}</td>
+                    <td>{{ p.ville }}</td>
+                    <td>
+                      <span class="badge {% if p.statut == 'DISPONIBLE' %}bg-success{% elif p.statut == 'LOUE' %}bg-primary{% elif p.statut == 'VENDU' %}bg-secondary{% else %}bg-warning{% endif %}">
+                        {{ p.get_statut_display }}
+                      </span>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="5" class="text-muted">Aucune propriété pour ce propriétaire.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
           </div>
         </div>
       </div>

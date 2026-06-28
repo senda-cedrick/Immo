@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="glass-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h5 class="mb-0"><i class="mdi mdi-home"></i> Logements</h5>
-          <a href="{% url 'ajouter_appartement' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-plus"></i> Nouveau logement</a>
+          <a href="{% url 'ajouter_logement' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-plus"></i> Nouveau logement</a>
         </div>
 
-        <form method="get" action="{% url 'appartements' %}" class="row g-3 mb-3">
+        <form method="get" action="{% url 'logements' %}" class="row g-3 mb-3">
           <div class="col-md-6">
             <div class="input-group">
               <input type="text" name="q" class="form-control" placeholder="Rechercher un logement..." value="{{ request.GET.q }}">
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
         </form>
 
-        {% if pages %}
+        {% if logements %}
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead>
@@ -48,9 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
               </tr>
             </thead>
             <tbody>
-              {% for item in pages %}
-              <tr class="clickable-row" data-href="{% url 'appartement_detail' item.id %}">
-                <td><a href="{% url 'appartement_detail' item.id %}" class="text-decoration-none text-dark">{{ item.id }}</a></td>
+              {% for item in logements %}
+              <tr class="clickable-row" data-href="{% url 'logement_detail' item.id %}">
+                <td><a href="{% url 'logement_detail' item.id %}" class="text-decoration-none text-dark">{{ item.id }}</a></td>
                 <td><strong>{{ item.identifiant }}</strong></td>
                 <td>{{ item.propriete.adresse }} - {{ item.propriete.ville }}</td>
                 <td>{{ item.etage|default:"—" }}</td>
@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 {% if request.user.is_staff %}
                 <td class="text-center">
                   <div class="btn-group" role="group">
-                    <a href="{% url 'modifier_appartement' item.id %}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="mdi mdi-pencil"></i></a>
-                    <a href="{% url 'supprimer_appartement' item.id %}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Supprimer ce logement ?')"><i class="mdi mdi-delete"></i></a>
+                    <a href="{% url 'modifier_logement' item.id %}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="mdi mdi-pencil"></i></a>
+                    <a href="{% url 'supprimer_logement' item.id %}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Supprimer ce logement ?')"><i class="mdi mdi-delete"></i></a>
                   </div>
                 </td>
                 {% endif %}

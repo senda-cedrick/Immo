@@ -1,43 +1,111 @@
 {% extends "base.html" %}
 {% load static %}
-
 {% block content %}
   <div class="content-wrapper">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-10 col-lg-8 mx-auto">
+        <div class="col-12">
           <div class="glass-card">
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <h5 class="mb-0">
-                <i class="mdi mdi-tag"></i>
-                Détail du type de propriété
-              </h5>
-              <div>
-                <a href="{% url 'modifier_type_propriete' type_propriete.id %}" class="btn btn-outline-warning btn-sm me-2"><i class="mdi mdi-pencil"></i> Modifier</a>
+              <h5 class="mb-0"><i class="mdi mdi-tag"></i> Détail du type de propriété : {{ type_propriete.nom }}</h5>
+              <div class="d-flex gap-2">
                 <a href="{% url 'type_proprietes' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+                <a href="{% url 'modifier_type_propriete' type_propriete.id %}" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-pencil"></i> Modifier</a>
+                <a href="{% url 'supprimer_type_propriete' type_propriete.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Supprimer ce type de propriété ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
               </div>
             </div>
 
-            <div class="row g-3">
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label class="text-muted fw-semibold"><i class="mdi mdi-tag-outline"></i> Nom</label>
-                  <div class="fw-bold text-dark">{{ type_propriete.nom }}</div>
+            <div class="row mb-4">
+              <div class="col-md-4">
+                <div class="card bg-primary text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Propriétés</h6>
+                      <h3 class="mb-0">{{ total_proprietes }}</h3>
+                    </div>
+                    <i class="mdi mdi-home-city" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
                 </div>
               </div>
-              <div class="col-12">
-                <div class="mb-3">
-                  <label class="text-muted fw-semibold"><i class="mdi mdi-text"></i> Description</label>
-                  <div class="fw-bold text-dark">{{ type_propriete.description|default:"Aucune description" }}</div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label class="text-muted fw-semibold"><i class="mdi mdi-home-group"></i> Nombre de propriétés</label>
-                  <div class="fw-bold text-dark">{{ type_propriete.proprietes.count }}</div>
+              <div class="col-md-4">
+                <div class="card bg-info text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Description</h6>
+                      <h3 class="mb-0 text-truncate">{{ type_propriete.description|default:"—"|truncatechars:20 }}</h3>
+                    </div>
+                    <i class="mdi mdi-text" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
                 </div>
               </div>
             </div>
+
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-information"></i> Détails</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td class="fw-semibold text-muted" style="width: 20%;">ID</td>
+                    <td>{{ type_propriete.id }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Nom</td>
+                    <td><strong>{{ type_propriete.nom }}</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Description</td>
+                    <td>{{ type_propriete.description|default:"Aucune description"|linebreaksbr }}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-home-city"></i> Propriétés ({{ total_proprietes }})</h6>
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Ville</th>
+                        <th>Adresse</th>
+                        <th>Superficie</th>
+                        <th>Agence</th>
+                        <th>Statut</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for p in proprietes %}
+                      <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong>{{ p.ville }}</strong></td>
+                        <td>{{ p.adresse|truncatechars:30 }}</td>
+                        <td>{{ p.superficie|floatformat:0 }} m²</td>
+                        <td>{{ p.agence.nom }}</td>
+                        <td>
+                          {% if p.statut == 'DISPONIBLE' %}
+                            <span class="badge bg-success text-white">{{ p.get_statut_display }}</span>
+                          {% elif p.statut == 'LOUE' %}
+                            <span class="badge bg-primary text-white">{{ p.get_statut_display }}</span>
+                          {% elif p.statut == 'VENDU' %}
+                            <span class="badge bg-secondary text-white">{{ p.get_statut_display }}</span>
+                          {% else %}
+                            <span class="badge bg-warning text-dark">{{ p.get_statut_display }}</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="6" class="text-muted">Aucune propriété de ce type.</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

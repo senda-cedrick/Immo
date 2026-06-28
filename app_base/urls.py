@@ -2,12 +2,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Redirections pour compatibilité (anciens noms)
-    path('logements/', views.LogementListView.as_view(), name='appartements'),
-    path('logement/<int:pk>/', views.LogementDetailView.as_view(), name='appartement_detail'),
-    path('logement/add/', views.LogementCreateView.as_view(), name='ajouter_appartement'),
-    path('logement/<int:pk>/edit/', views.LogementUpdateView.as_view(), name='modifier_appartement'),
-    path('logement/<int:pk>/delete/', views.LogementDeleteView.as_view(), name='supprimer_appartement'),
+    # Logements (nouveau nommage cohérent)
+    path('logements/', views.LogementListView.as_view(), name='logements'),
+    path('logement/<int:pk>/', views.LogementDetailView.as_view(), name='logement_detail'),
+    path('logement/add/', views.LogementCreateView.as_view(), name='ajouter_logement'),
+    path('logement/<int:pk>/edit/', views.LogementUpdateView.as_view(), name='modifier_logement'),
+    path('logement/<int:pk>/delete/', views.LogementDeleteView.as_view(), name='supprimer_logement'),
     path('locataires/', views.ClientListView.as_view(), name='locataires'),
     path('locataire/<int:pk>/', views.ClientDetailView.as_view(), name='locataire'),
     
@@ -64,9 +64,5 @@ urlpatterns = [
     path('garanties/', views.GarantieListView.as_view(), name='garanties'),
     path('garantie/add/', views.GarantieCreateView.as_view(), name='ajouter_garantie'),
     path('garantie/<int:pk>/edit/', views.GarantieUpdateView.as_view(), name='modifier_garantie'),
-
-    # Logements (nouveau nommage cohérent)
-    path('logements/', views.LogementListView.as_view(), name='logements'),
-    path('logement/<int:pk>/', views.LogementDetailView.as_view(), name='logement_detail'),
 
 ]

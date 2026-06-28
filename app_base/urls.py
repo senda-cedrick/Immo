@@ -65,4 +65,7 @@ urlpatterns = [
     path('garantie/add/', views.GarantieCreateView.as_view(), name='ajouter_garantie'),
     path('garantie/<int:pk>/edit/', views.GarantieUpdateView.as_view(), name='modifier_garantie'),
 
+    # --- API pour Javascript ---
+    path('api/get-logements/', views.get_logements_for_propriete, name='api_get_logements'),
+
 ]

@@ -119,9 +119,9 @@ class Contrat(models.Model):
     reference = models.CharField(max_length=50, unique=True)
     type = models.CharField(max_length=20, choices=TYPE_CHOIX)
     
-    propriete = models.ForeignKey(Propriete, on_delete=models.CASCADE, related_name='contrats')
+    propriete = models.ForeignKey(Propriete, on_delete=models.CASCADE, related_name='contrats', null=True, blank=True)
+    logement = models.ForeignKey(Logement, on_delete=models.CASCADE, related_name='contrats', null=True, blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='contrats')
-    proprietaire = models.ForeignKey(Proprietaire, on_delete=models.CASCADE, related_name='contrats')
     agent = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True, blank=True, related_name='contrats_geres')
     
     # Dates
@@ -146,6 +146,17 @@ class Contrat(models.Model):
 
     def __str__(self):
         return f"{self.reference} - {self.type}"
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                name='un_seul_bien_par_contrat',
+                check=(
+                    models.Q(propriete__isnull=False, logement__isnull=True) |
+                    models.Q(propriete__isnull=True, logement__isnull=False)
+                )
+            )
+        ]
 
 class Maintenance(models.Model):
     """NOUVEAU : Suivi des maintenances"""

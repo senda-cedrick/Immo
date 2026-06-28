@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import (
     AgenceForm, PersonnelForm, ProprietaireForm, ClientForm,
-    TypeProprieteForm, ProprieteForm, LogementForm,
+    TypeProprieteForm, ProprieteForm, LogementForm, 
     ContratForm, GarantieForm, MaintenanceForm
 )
 from django.db.models import Sum, Count, Q
@@ -14,6 +14,7 @@ from .models import (
     Agence, Personnel, Proprietaire, Client,
     TypePropriete, Propriete, Logement, Contrat, Garantie, Maintenance
 )
+from django.http import JsonResponse
 from app_paiements.models import Paiement
 
 # Supprimé car ces vues n'existaient pas
@@ -174,7 +175,7 @@ class ProprietaireDetailView(LoginRequiredMixin, DetailView):
         proprietes_list = Propriete.objects.filter(proprietaire=proprietaire).select_related('type_propriete')
         context['proprietes'] = proprietes_list
         context['total_proprietes'] = proprietes_list.count()
-        context['total_contrats'] = Contrat.objects.filter(proprietaire=proprietaire).count()
+        context['total_contrats'] = Contrat.objects.filter(propriete__proprietaire=proprietaire).count()
 
         return context
 
@@ -380,6 +381,17 @@ class ContratDetailView(LoginRequiredMixin, DetailView):
     template_name = 'contrat_detail.html'
     context_object_name = 'contrat'
 
+    def get_queryset(self):
+        return super().get_queryset().select_related(
+            'client__user', 'agent__user', 
+            'propriete__type_propriete', 'logement__propriete__type_propriete'
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['paiements'] = Paiement.objects.filter(contrat=self.object).order_by('-date_echeance')
+        return context
+
 class ContratCreateView(LoginRequiredMixin, CreateView):
     model = Contrat
     form_class = ContratForm
@@ -432,3 +444,19 @@ class MaintenanceCreateView(LoginRequiredMixin, CreateView):
     form_class = MaintenanceForm
     template_name = 'maintenance_form.html'
     success_url = reverse_lazy('maintenances')
+
+
+# --- Vues API pour le Javascript ---
+
+@login_required
+def get_logements_for_propriete(request):
+    """
+    API endpoint pour récupérer les logements d'une propriété.
+    Utilisé par le formulaire de contrat pour le dropdown dépendant.
+    """
+    propriete_id = request.GET.get('propriete_id')
+    if not propriete_id:
+        return JsonResponse({'logements': []})
+    
+    logements = Logement.objects.filter(propriete_id=propriete_id).values('id', 'identifiant')
+    return JsonResponse({'logements': list(logements)})

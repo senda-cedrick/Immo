@@ -208,10 +208,12 @@ def create_demo_data():
         # 10. CONTRATS (app_base)
         # ──────────────────────────────────────────────
         client1 = Client.objects.get(user__username='client1')
+        logement1 = Logement.objects.get(identifiant='A-101')
         contrats_data = [
             {
-                'reference': 'LOC-2024-001', 'type': 'LOCATION', 'propriete': proprietes[0],
-                'client': client1, 'proprietaire': proprio_obj, 'agent': agent_obj,
+                'reference': 'LOC-2024-001', 'type': 'LOCATION', 
+                'logement': logement1, 'propriete': None, # Lié au logement, pas à la propriété entière
+                'client': client1, 'agent': agent_obj,
                 'date_debut': date.today() - timedelta(days=100), 'montant': Decimal('450.00'),
                 'conditions': 'Loyer mensuel, payable avant le 5 de chaque mois.', 'statut': 'ACTIF'
             }

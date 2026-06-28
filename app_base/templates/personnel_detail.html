@@ -87,8 +87,51 @@
                 </table>
               </div>
               <div class="col-md-6">
-                <!-- La colonne de droite est laissée vide pour le moment, prête à accueillir d'autres informations si nécessaire, comme les dates de création/modification. -->
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-calendar"></i> Dates</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td class="fw-semibold text-muted" style="width: 150px;">Créé le :</td>
+                    <td>{{ personnel.created_at|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Dernière modification :</td>
+                    <td>{{ personnel.updated_at|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                </table>
               </div>
+            </div>
+
+            <!-- Propriétés gérées -->
+            <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-home-city"></i> Propriétés gérées ({{ proprietes_gerees_count }})</h6>
+            <div class="table-responsive mb-4">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Adresse</th>
+                    <th>Propriétaire</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for p in proprietes_gerees %}
+                  <tr>
+                    <td>{{ p.type_propriete.nom }}</td>
+                    <td>{{ p.adresse|truncatechars:30 }}</td>
+                    <td>{{ p.proprietaire.user.noms }}</td>
+                    <td>
+                      <span class="badge {% if p.statut == 'DISPONIBLE' %}bg-success{% elif p.statut == 'LOUE' %}bg-primary{% elif p.statut == 'VENDU' %}bg-secondary{% else %}bg-warning{% endif %}">
+                        {{ p.get_statut_display }}
+                      </span>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-muted text-center py-4">Ce membre du personnel ne gère aucune propriété.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

@@ -116,7 +116,7 @@ def create_demo_data():
                 defaults=defaults,
             )
             if created:
-                u.set_password('demo123')
+                u.set_password('demo')
                 u.save()
             users.append(u)
         # Créer un superuser si pas déjà fait

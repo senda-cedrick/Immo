@@ -12,8 +12,9 @@ urlpatterns = [
     
     # Route explicite pour le tableau de bord (page d'accueil)
     path('', dashboard, name='home'),
-    path('app/', include('app_base.urls')), # Les autres URLs de l'app sont préfixées par /app/
-    path('user/', include('app_users.urls')),
+     path('app/', include('app_base.urls')), # Les autres URLs de l'app sont préfixées par /app/
+     path('paiements/', include('app_paiements.urls')), # URLs pour la gestion des paiements
+     path('user/', include('app_users.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('api/auth/', include('knox.urls')),
     path('api/token/', MyTokenObtainPairView.as_view(), name='obtain_token'),

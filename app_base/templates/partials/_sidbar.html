@@ -149,7 +149,7 @@
       <span class="nav-link">Finance</span>
     </li>
     <li class="nav-item menu-items {% if 'paiement' in request.path %}active{% endif %}" data-color="var(--c-paiement)">
-      <a class="nav-link" href="#">
+      <a class="nav-link" href="{% url 'paiements' %}">
         <span class="menu-icon"><i class="mdi mdi-credit-card"></i></span>
         <span class="menu-title">Paiements</span>
       </a>

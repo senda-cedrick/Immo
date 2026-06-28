@@ -209,6 +209,35 @@ class ClientDetailView(LoginRequiredMixin, DetailView):
     model = Client
     template_name = 'client_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        client = self.get_object()
+
+        # Calculer les statistiques
+        context['total_contrats'] = Contrat.objects.filter(client=client).count()
+        context['total_paiements'] = Paiement.objects.filter(client=client).count()
+        context['contrats_actifs'] = Contrat.objects.filter(client=client, statut='ACTIF').count()
+
+        # Calculer le montant dû (paiements en retard ou non payés)
+        paiements_en_retard = Paiement.objects.filter(
+            client=client,
+            statut__in=['EN_ATTENTE', 'EN_RETARD']
+        )
+        context['montant_du'] = paiements_en_retard.aggregate(
+            total=Sum('montant')
+        )['total'] or 0
+
+        # Récupérer les contrats et paiements du client
+        context['contrats'] = Contrat.objects.filter(client=client).select_related(
+            'propriete', 'logement', 'agent__user'
+        ).order_by('-date_debut')[:10]
+
+        context['paiements'] = Paiement.objects.filter(client=client).select_related(
+            'contrat'
+        ).order_by('-date_paiement')[:10]
+
+        return context
+
 class ClientCreateView(LoginRequiredMixin, CreateView):
     model = Client
     form_class = ClientForm

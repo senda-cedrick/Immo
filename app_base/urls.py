@@ -1,11 +1,7 @@
 from django.urls import path
 from . import views
-from immo_travel.views import home_views
-
 
 urlpatterns = [
-    path('', home_views.HomeView.as_view(), name='home'),
-    
     # Redirections pour compatibilité (anciens noms)
     path('logements/', views.LogementListView.as_view(), name='appartements'),
     path('logement/<int:pk>/', views.LogementDetailView.as_view(), name='appartement_detail'),
@@ -68,4 +64,9 @@ urlpatterns = [
     path('garanties/', views.GarantieListView.as_view(), name='garanties'),
     path('garantie/add/', views.GarantieCreateView.as_view(), name='ajouter_garantie'),
     path('garantie/<int:pk>/edit/', views.GarantieUpdateView.as_view(), name='modifier_garantie'),
+
+    # Logements (nouveau nommage cohérent)
+    path('logements/', views.LogementListView.as_view(), name='logements'),
+    path('logement/<int:pk>/', views.LogementDetailView.as_view(), name='logement_detail'),
+
 ]

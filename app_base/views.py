@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import (
@@ -8,25 +9,36 @@ from .forms import (
     ContratForm, GarantieForm, MaintenanceForm
 )
 from django.db.models import Sum, Count, Q
+from django.utils import timezone
 from .models import (
     Agence, Personnel, Proprietaire, Client,
     TypePropriete, Propriete, Logement, Contrat, Garantie, Maintenance
 )
+from app_paiements.models import Paiement
 
 # Supprimé car ces vues n'existaient pas
 # def garanties(request): ...
 # def locataires(request): ...
 # def proprietaires(request): ...
 
+@login_required
 def dashboard(request):
     # Logique pour récupérer les statistiques du dashboard
     stats = {
-        'agences': Agence.objects.filter(active=True).count(),
-        'proprietes': Propriete.objects.count(),
-        'contrats_actifs': 0, # À implémenter avec le modèle Contrat
-        'paiements_en_retard': 0, # À implémenter avec le modèle Paiement
+        'nbagence': Agence.objects.filter(active=True).count(),
+        'nbpropriete': Propriete.objects.count(),
+        'nbclients': Client.objects.count(),
+        'nbproprietaires': Proprietaire.objects.count(),
+        'nbpersonnel': Personnel.objects.count(),
+        'nbappartements': Logement.objects.count(),
+        'nbcontrats': Contrat.objects.count(),
+        'nbpaiements': Paiement.objects.count(),
+        'nbcaisse': 0,  # À implémenter
+        'nbgaranties': Garantie.objects.count(),
+        'nblogements': Logement.objects.count(),
+        'derniers_paiements': Paiement.objects.select_related('client__user').order_by('-date_paiement')[:5]
     }
-    return render(request, 'dashboard.html', {'stats': stats})
+    return render(request, 'home.html', stats)
 
 # --- Vues pour Agence ---
 
@@ -106,24 +118,24 @@ class PersonnelListView(LoginRequiredMixin, ListView):
 
 class PersonnelDetailView(LoginRequiredMixin, DetailView):
     model = Personnel
-    template_name = 'app_base/personnel_detail.html'
+    template_name = 'personnel_detail.html'
     context_object_name = 'personnel'
 
 class PersonnelCreateView(LoginRequiredMixin, CreateView):
     model = Personnel
     form_class = PersonnelForm
-    template_name = 'app_base/personnel_form.html'
+    template_name = 'personnel_form.html'
     success_url = reverse_lazy('personnels')
 
 class PersonnelUpdateView(LoginRequiredMixin, UpdateView):
     model = Personnel
     form_class = PersonnelForm
-    template_name = 'app_base/personnel_form.html'
+    template_name = 'personnel_form.html'
     success_url = reverse_lazy('personnels')
 
 class PersonnelDeleteView(LoginRequiredMixin, DeleteView):
     model = Personnel
-    template_name = 'app_base/personnel_confirm_delete.html'
+    template_name = 'personnel_confirm_delete.html'
     success_url = reverse_lazy('personnels')
     success_message = "Personnel supprimé avec succès."
 
@@ -132,29 +144,29 @@ class PersonnelDeleteView(LoginRequiredMixin, DeleteView):
 
 class ProprietaireListView(LoginRequiredMixin, ListView):
     model = Proprietaire
-    template_name = 'app_base/proprietaire_list.html'
+    template_name = 'proprietaire_list.html'
     context_object_name = 'proprietaires'
     paginate_by = 10
 
 class ProprietaireDetailView(LoginRequiredMixin, DetailView):
     model = Proprietaire
-    template_name = 'app_base/proprietaire_detail.html'
+    template_name = 'proprietaire_detail.html'
 
 class ProprietaireCreateView(LoginRequiredMixin, CreateView):
     model = Proprietaire
     form_class = ProprietaireForm
-    template_name = 'app_base/proprietaire_form.html'
+    template_name = 'proprietaire_form.html'
     success_url = reverse_lazy('proprietaires')
 
 class ProprietaireUpdateView(LoginRequiredMixin, UpdateView):
     model = Proprietaire
     form_class = ProprietaireForm
-    template_name = 'app_base/proprietaire_form.html'
+    template_name = 'proprietaire_form.html'
     success_url = reverse_lazy('proprietaires')
 
 class ProprietaireDeleteView(LoginRequiredMixin, DeleteView):
     model = Proprietaire
-    template_name = 'app_base/proprietaire_confirm_delete.html'
+    template_name = 'proprietaire_confirm_delete.html'
     success_url = reverse_lazy('proprietaires')
 
 
@@ -162,18 +174,18 @@ class ProprietaireDeleteView(LoginRequiredMixin, DeleteView):
 
 class ClientListView(LoginRequiredMixin, ListView):
     model = Client
-    template_name = 'app_base/client_list.html'
+    template_name = 'clients.html'
     context_object_name = 'clients'
     paginate_by = 10
 
 class ClientDetailView(LoginRequiredMixin, DetailView):
     model = Client
-    template_name = 'app_base/client_detail.html'
+    template_name = 'client_detail.html'
 
 class ClientCreateView(LoginRequiredMixin, CreateView):
     model = Client
     form_class = ClientForm
-    template_name = 'app_base/client_form.html'
+    template_name = 'client_form.html'
     success_url = reverse_lazy('clients')
 
 class ClientUpdateView(LoginRequiredMixin, UpdateView):

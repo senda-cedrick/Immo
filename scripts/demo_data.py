@@ -224,25 +224,32 @@ def create_demo_data():
         # ──────────────────────────────────────────────
         contrat_actif = contrats[0]
         client_actif = contrat_actif.client
+        # Création de 3 paiements pour le contrat actif
         paiements_data = [
-            {'client': client_actif, 'montant': 450, 'date_paie': date.today() - timedelta(days=65), 'date_normal': date.today() - timedelta(days=70), 'type_paie': 'CASH'},
-            {'client': client_actif, 'montant': 450, 'date_paie': date.today() - timedelta(days=35), 'date_normal': date.today() - timedelta(days=40), 'type_paie': 'VIREMENT'},
-            {'client': client_actif, 'montant': 450, 'date_paie': date.today() - timedelta(days=5), 'date_normal': date.today() - timedelta(days=10), 'type_paie': 'MOBILE_MONEY'},
+            {
+                'contrat': contrat_actif, 'client': client_actif, 'montant': 450,
+                'date_paiement': date.today() - timedelta(days=65), 'date_echeance': date.today() - timedelta(days=70),
+                'type_paiement': 'LOYER', 'statut': 'PAYE'
+            },
+            {
+                'contrat': contrat_actif, 'client': client_actif, 'montant': 450,
+                'date_paiement': date.today() - timedelta(days=35), 'date_echeance': date.today() - timedelta(days=40),
+                'type_paiement': 'LOYER', 'statut': 'PAYE'
+            },
+            {
+                'contrat': contrat_actif, 'client': client_actif, 'montant': 450,
+                'date_paiement': None, 'date_echeance': date.today() - timedelta(days=10),
+                'type_paiement': 'LOYER', 'statut': 'EN_RETARD'
+            },
         ]
         for p in paiements_data:
-            # The 'defaults' will contain all keys from p, including 'client'
-            Paiement.objects.get_or_create(
-                client=p['client'],
-                date_paie=p['date_paie'],
-                montant=p['montant'],
-                defaults=p
-            )
+            Paiement.objects.create(**p)
         print(f"✅ {len(paiements_data)} paiements créés.")
 
         # ──────────────────────────────────────────────
         # 12. CAISSE (app_caisse)
         # ──────────────────────────────────────────────
-        first_payment = Paiement.objects.order_by('date_paie').first()
+        first_payment = Paiement.objects.filter(date_paiement__isnull=False).order_by('date_paiement').first()
         first_montant = first_payment.montant if first_payment else Decimal('0.00')
         caisse_data = [
             {

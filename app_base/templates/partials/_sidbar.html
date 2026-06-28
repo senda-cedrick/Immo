@@ -154,18 +154,12 @@
         <span class="menu-title">Paiements</span>
       </a>
     </li>
-    <li class="nav-item menu-items {% if 'impaye' in request.path %}active{% endif %}" data-color="var(--c-impayes)">
-      <a class="nav-link" href="#">
-        <span class="menu-icon"><i class="mdi mdi-alert-circle-outline"></i></span>
-        <span class="menu-title">Impayés</span>
-      </a>
-    </li>
-    <li class="nav-item menu-items {% if 'caisse' in request.path %}active{% endif %}" data-color="var(--c-caisse)">
-      <a class="nav-link" href="#">
-        <span class="menu-icon"><i class="mdi mdi-cash-register"></i></span>
-        <span class="menu-title">Caisse</span>
-      </a>
-    </li>
+          <li class="nav-item menu-items {% if 'caisse' in request.path %}active{% endif %}" data-color="var(--c-caisse)">
+            <a class="nav-link" href="{% url 'caisses' %}">
+              <span class="menu-icon"><i class="mdi mdi-cash-register"></i></span>
+              <span class="menu-title">Caisse</span>
+            </a>
+          </li>
 
     <!-- Section : Administration -->
     <li class="nav-item nav-category">

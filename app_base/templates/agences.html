@@ -37,27 +37,27 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>N° Impôt</th>
-                <th>N° Fiscal</th>
-                <th>Effectif</th>
-                <th>Revenu</th>
-                <th>Email</th>
-                <th>Statut</th>
-                {% if request.user.is_staff %}
-                <th class="text-center">Actions</th>
-                {% endif %}
-              </tr>
+               <tr>
+                 <th>ID</th>
+                 <th>Nom</th>
+                 <th>Téléphone</th>
+                 <th>Adresse</th>
+                 <th>Effectif</th>
+                 <th>Revenu</th>
+                 <th>Email</th>
+                 <th>Statut</th>
+                 {% if request.user.is_staff %}
+                 <th class="text-center">Actions</th>
+                 {% endif %}
+               </tr>
             </thead>
             <tbody>
               {% for item in agences %}
               <tr class="clickable-row" data-href="{% url 'agence_detail' item.id %}">
                 <td><a href="{% url 'agence_detail' item.id %}" class="text-decoration-none text-dark">{{ item.id }}</a></td>
                 <td><strong>{{ item.nom }}</strong></td>
-                <td>{{ item.numero_impot }}</td>
-                <td>{{ item.numero_fisc }}</td>
+                <td>{{ item.telephone }}</td>
+                <td>{{ item.adresse }}</td>
                 <td>{{ item.effectif }}</td>
                 <td>{{ item.revenu|floatformat:0 }}</td>
                 <td>{{ item.email }}</td>

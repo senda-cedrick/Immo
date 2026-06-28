@@ -26,17 +26,20 @@
                 {% csrf_token %}
 
                 <div class="row g-4">
-                  <div class="col-md-6">
-                    <div class="form-floating">
-                      {{ form.reference }}
-                      <label for="{{ form.reference.id_for_label }}" class="text-muted">
-                        <i class="mdi mdi-barcode me-1"></i> Référence
-                      </label>
-                      {% if form.reference.errors %}
-                      <div class="text-danger small mt-1">{{ form.reference.errors.0 }}</div>
-                      {% endif %}
-                    </div>
-                  </div>
+                   <div class="col-md-6">
+                     <div class="form-floating">
+                       {{ form.reference }}
+                       <label for="{{ form.reference.id_for_label }}" class="text-muted">
+                         <i class="mdi mdi-barcode me-1"></i> Référence
+                       </label>
+                       {% if form.reference.errors %}
+                       <div class="text-danger small mt-1">{{ form.reference.errors.0 }}</div>
+                       {% endif %}
+                     </div>
+                     <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="generate-reference-btn">
+                       <i class="mdi mdi-autorenew me-1"></i> Générer référence
+                     </button>
+                   </div>
 
                   <div class="col-md-6">
                     <div class="form-floating">
@@ -228,6 +231,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
     proprieteSelect.addEventListener('change', updateLogements);
     updateLogements(); // Exécuter au chargement pour l'état initial
+
+    // Génération automatique de la référence
+    const generateRefBtn = document.getElementById('generate-reference-btn');
+    const referenceInput = document.getElementById('id_reference');
+    const typeSelect = document.getElementById('id_type');
+
+    function generateReference() {
+        const selectedType = typeSelect.value;
+        if (!selectedType) {
+            alert('Veuillez d\'abord sélectionner un type de contrat.');
+            return;
+        }
+
+        // Appel AJAX pour générer la référence
+        fetch('/api/generate-contrat-reference/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ type: selectedType })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.reference) {
+                referenceInput.value = data.reference;
+            } else {
+                alert('Erreur lors de la génération de la référence.');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de la génération de la référence.');
+        });
+    }
+
+    // Générer la référence quand on clique sur le bouton
+    generateRefBtn.addEventListener('click', generateReference);
+
+    // Générer automatiquement quand le type change (si la référence est vide)
+    typeSelect.addEventListener('change', function() {
+        if (!referenceInput.value) {
+            generateReference();
+        }
+    });
 });
 </script>
 {% endblock extra_js %}

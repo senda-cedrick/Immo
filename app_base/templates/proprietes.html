@@ -36,31 +36,41 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead>
-              <tr>
-                <th>ID</th>
-                <th>Type</th>
-                <th>Ville</th>
-                <th>Agent</th>
-                <th>Gestion</th>
-                {% if request.user.is_staff %}
-                <th class="text-center">Actions</th>
-                {% endif %}
-              </tr>
+               <tr>
+                 <th>ID</th>
+                 <th>Type</th>
+                 <th>Adresse</th>
+                 <th>Ville</th>
+                 <th>Superficie</th>
+                 <th>Pièces</th>
+                 <th>Statut</th>
+                 <th>Propriétaire</th>
+                 {% if request.user.is_staff %}
+                 <th class="text-center">Actions</th>
+                 {% endif %}
+               </tr>
             </thead>
             <tbody>
               {% for item in proprietes %}
               <tr class="clickable-row" data-href="{% url 'propriete_detail' item.id %}">
                 <td><a href="{% url 'propriete_detail' item.id %}" class="text-decoration-none text-dark">{{ item.id }}</a></td>
                 <td><strong>{{ item.type_propriete.nom }}</strong></td>
+                <td>{{ item.adresse }}</td>
                 <td>{{ item.ville }}</td>
-                <td>{{ item.agent }}</td>
+                <td>{{ item.superficie }} m²</td>
+                <td>{{ item.nb_pieces }}</td>
                 <td>
-                  {% if item.gestion %}
-                    <span class="badge bg-success text-white">Oui</span>
+                  {% if item.statut == 'LOUE' %}
+                    <span class="badge bg-success text-white">Louée</span>
+                  {% elif item.statut == 'DISPONIBLE' %}
+                    <span class="badge bg-primary text-white">Disponible</span>
+                  {% elif item.statut == 'MAINTENANCE' %}
+                    <span class="badge bg-warning text-dark">Maintenance</span>
                   {% else %}
-                    <span class="badge bg-danger text-white">Non</span>
+                    <span class="badge bg-secondary text-white">{{ item.statut }}</span>
                   {% endif %}
                 </td>
+                <td>{{ item.proprietaire.user.noms }}</td>
                 {% if request.user.is_staff %}
                 <td class="text-center">
                   <div class="btn-group" role="group">

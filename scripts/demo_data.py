@@ -181,24 +181,43 @@ def create_demo_data():
         print(f"✅ {len(types_propriete)} types de propriété créés.")
 
         # ──────────────────────────────────────────────
-        # 8. PROPRIETES (app_base)
+        # 8. PROPRIETES (app_base) - Données diversifiées
         # ──────────────────────────────────────────────
         proprio_obj = Proprietaire.objects.first()
         agent_obj = Personnel.objects.filter(user__profile__name='Agent').first()
         proprietes_data = [
-            {'agence': agences[0], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[0], 'adresse': '100 Av. de la Liberté', 'ville': 'Kinshasa/Gombe', 'superficie': 1200, 'statut': 'LOUE', 'agent': agent_obj},
-            {'agence': agences[1], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[1], 'adresse': '200 Av. de la Paix', 'ville': 'Kinshasa/Ngaliema', 'superficie': 800, 'statut': 'DISPONIBLE'},
+            {'agence': agences[0], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[0], 'adresse': '100 Av. de la Liberté', 'ville': 'Kinshasa/Gombe', 'superficie': 1200, 'nb_pieces': 15, 'statut': 'LOUE', 'agent': agent_obj},
+            {'agence': agences[1], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[1], 'adresse': '200 Av. de la Paix', 'ville': 'Kinshasa/Ngaliema', 'superficie': 800, 'nb_pieces': 8, 'statut': 'DISPONIBLE'},
+            {'agence': agences[0], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[2], 'adresse': '300 Bd Lumumba', 'ville': 'Kinshasa/Lingwala', 'superficie': 600, 'nb_pieces': 6, 'statut': 'LOUE', 'agent': agent_obj},
+            {'agence': agences[1], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[3], 'adresse': '400 Rue Commerce', 'ville': 'Kinshasa/Kintambo', 'superficie': 400, 'nb_pieces': 4, 'statut': 'DISPONIBLE'},
+            {'agence': agences[0], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[0], 'adresse': '500 Av des Martyrs', 'ville': 'Kinshasa/Bandundu', 'superficie': 900, 'nb_pieces': 10, 'statut': 'MAINTENANCE', 'agent': agent_obj},
         ]
         proprietes = [Propriete.objects.get_or_create(adresse=p['adresse'], defaults=p)[0] for p in proprietes_data]
         print(f"✅ {len(proprietes_data)} propriétés créées.")
 
         # ──────────────────────────────────────────────
-        # 9. LOGEMENTS (app_base)
+        # 9. LOGEMENTS (app_base) - Données diversifiées
         # ──────────────────────────────────────────────
         logements_data = [
-            {'propriete': proprietes[0], 'identifiant': 'A-101', 'surface': 80, 'etage': 1},
-            {'propriete': proprietes[0], 'identifiant': 'A-102', 'surface': 85, 'etage': 1},
-            {'propriete': proprietes[0], 'identifiant': 'B-201', 'surface': 120, 'etage': 2},
+            # Logements pour la propriété 1 (100 Av. de la Liberté - Immeuble)
+            {'propriete': proprietes[0], 'identifiant': 'A-101', 'surface': 80, 'etage': 1, 'description': 'Studio avec balcon'},
+            {'propriete': proprietes[0], 'identifiant': 'A-102', 'surface': 85, 'etage': 1, 'description': 'Appartement 2 pièces'},
+            {'propriete': proprietes[0], 'identifiant': 'B-201', 'surface': 120, 'etage': 2, 'description': 'Grand appartement 3 pièces'},
+            {'propriete': proprietes[0], 'identifiant': 'B-202', 'surface': 95, 'etage': 2, 'description': 'Appartement avec vue'},
+            {'propriete': proprietes[0], 'identifiant': 'C-301', 'surface': 110, 'etage': 3, 'description': 'Penthouse luxueux'},
+
+            # Logements pour la propriété 2 (200 Av. de la Paix - Villa)
+            {'propriete': proprietes[1], 'identifiant': 'V-001', 'surface': 200, 'etage': 1, 'description': 'Maison complète avec jardin'},
+            {'propriete': proprietes[1], 'identifiant': 'V-002', 'surface': 150, 'etage': 1, 'description': 'Appartement indépendant'},
+
+            # Logements pour la propriété 3 (300 Bd Lumumba - Appartement)
+            {'propriete': proprietes[2], 'identifiant': 'APT-101', 'surface': 60, 'etage': 1, 'description': 'Studio économique'},
+            {'propriete': proprietes[2], 'identifiant': 'APT-102', 'surface': 65, 'etage': 1, 'description': 'Studio avec kitchenette'},
+            {'propriete': proprietes[2], 'identifiant': 'APT-201', 'surface': 75, 'etage': 2, 'description': 'Appartement 1 pièce'},
+
+            # Logements pour la propriété 4 (400 Rue Commerce - Studio)
+            {'propriete': proprietes[3], 'identifiant': 'ST-101', 'surface': 35, 'etage': 1, 'description': 'Studio compact'},
+            {'propriete': proprietes[3], 'identifiant': 'ST-102', 'surface': 40, 'etage': 1, 'description': 'Studio avec mezzanine'},
         ]
         for lg in logements_data:
             Logement.objects.get_or_create(propriete=lg['propriete'], identifiant=lg['identifiant'], defaults=lg)
@@ -249,28 +268,84 @@ def create_demo_data():
         print(f"✅ {len(paiements_data)} paiements créés.")
 
         # ──────────────────────────────────────────────
-        # 12. CAISSE (app_caisse)
+        # 12. CAISSE (app_caisse) - Données enrichies
         # ──────────────────────────────────────────────
-        first_payment = Paiement.objects.filter(date_paiement__isnull=False).order_by('date_paiement').first()
-        first_montant = first_payment.montant if first_payment else Decimal('0.00')
-        caisse_data = [
+        paiements = list(Paiement.objects.filter(date_paiement__isnull=False).order_by('date_paiement'))
+
+        # Créer des données de caisse variées pour démontrer toutes les fonctionnalités
+        caisse_data = []
+
+        # Entrées de caisse liées à des paiements (loyers perçus)
+        for i, paiement in enumerate(paiements[:3]):  # 3 premières entrées liées à des paiements
+            caisse_data.append({
+                'type_caisse': 'ENTREE',
+                'status_caisse': 'VALIDATED',
+                'cout': paiement.montant,
+                'paiement': paiement,
+                'details': f'Loyer perçu - Contrat {paiement.contrat.reference}'
+            })
+
+        # Autres entrées de caisse (revenus divers)
+        caisse_data.extend([
             {
                 'type_caisse': 'ENTREE',
                 'status_caisse': 'VALIDATED',
-                'cout': first_montant,
-                'paiement': first_payment,
-                'details': 'Loyer de Kakudji Pierre'
+                'cout': Decimal('200.00'),
+                'paiement': None,
+                'details': 'Frais de dossier - Nouveau client'
+            },
+            {
+                'type_caisse': 'ENTREE',
+                'status_caisse': 'PENDING',
+                'cout': Decimal('150.00'),
+                'paiement': None,
+                'details': 'Caution - Appartement A-102 (en attente de validation)'
+            },
+            {
+                'type_caisse': 'ENTREE',
+                'status_caisse': 'VALIDATED',
+                'cout': Decimal('75.00'),
+                'paiement': None,
+                'details': 'Frais de visite - Propriété 200 Av. de la Paix'
+            },
+        ])
+
+        # Sorties de caisse (dépenses)
+        caisse_data.extend([
+            {
+                'type_caisse': 'SORTIE',
+                'status_caisse': 'VALIDATED',
+                'cout': Decimal('120.00'),
+                'paiement': None,
+                'details': 'Remboursement caution - Client précédent'
             },
             {
                 'type_caisse': 'SORTIE',
                 'status_caisse': 'VALIDATED',
-                'cout': Decimal('50.00'),
+                'cout': Decimal('85.00'),
                 'paiement': None,
-                'details': 'Frais de nettoyage'
+                'details': 'Frais de réparation - Robinet fuite A-101'
             },
-        ]
+            {
+                'type_caisse': 'SORTIE',
+                'status_caisse': 'REJECTED',
+                'cout': Decimal('300.00'),
+                'paiement': None,
+                'details': 'Achat matériel - Refusé (budget dépassé)'
+            },
+            {
+                'type_caisse': 'SORTIE',
+                'status_caisse': 'PENDING',
+                'cout': Decimal('60.00'),
+                'paiement': None,
+                'details': 'Frais de ménage - En attente d\'approbation'
+            },
+        ])
+
+        # Créer toutes les entrées de caisse
         for c in caisse_data:
             Caisse.objects.create(**c)
+
         print(f"✅ {len(caisse_data)} entrées de caisse créées.")
 
         # ──────────────────────────────────────────────

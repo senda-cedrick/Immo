@@ -73,4 +73,5 @@ urlpatterns = [
 
     # API pour JS
     path('api/get_logements/', views.get_logements_for_propriete, name='api_get_logements'),
+    path('api/generate-contrat-reference/', views.generate_contrat_reference, name='api_generate_contrat_reference'),
 ]

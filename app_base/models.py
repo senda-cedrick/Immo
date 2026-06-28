@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Agence(models.Model):
@@ -115,8 +116,32 @@ class Contrat(models.Model):
         ('VENTE', 'Vente'),
         ('BAIL_COMMERCIAL', 'Bail commercial'),
     )
-    
+
     reference = models.CharField(max_length=50, unique=True)
+
+    @classmethod
+    def generate_reference(cls, contrat_type, year=None):
+        """
+        Génère une référence unique pour un contrat selon le format TYPE-ANNEE-NUMERO
+        Exemple: LOC-2024-001, VENT-2024-001, etc.
+        """
+        if year is None:
+            year = timezone.now().year
+
+        # Trouver le dernier numéro pour ce type et cette année
+        last_contrat = Contrat.objects.filter(
+            reference__startswith=f"{contrat_type[:3]}-{year}-"
+        ).order_by('-reference').first()
+
+        if last_contrat:
+            # Extraire le numéro et incrémenter
+            last_num = int(last_contrat.reference.split('-')[-1])
+            new_num = last_num + 1
+        else:
+            new_num = 1
+
+        # Formater avec zéros initiaux (3 chiffres)
+        return f"{contrat_type[:3]}-{year}-{new_num:03d}"
     type = models.CharField(max_length=20, choices=TYPE_CHOIX)
     
     propriete = models.ForeignKey(Propriete, on_delete=models.CASCADE, related_name='contrats', null=True, blank=True)

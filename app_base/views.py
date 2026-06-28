@@ -16,6 +16,7 @@ from .models import (
 )
 from django.http import JsonResponse
 from app_paiements.models import Paiement
+import json
 
 # Supprimé car ces vues n'existaient pas
 # def garanties(request): ...
@@ -516,6 +517,32 @@ def get_logements_for_propriete(request):
     propriete_id = request.GET.get('propriete_id')
     if not propriete_id:
         return JsonResponse({'logements': []})
-    
+
     logements = Logement.objects.filter(propriete_id=propriete_id).values('id', 'identifiant')
     return JsonResponse({'logements': list(logements)})
+
+@login_required
+def generate_contrat_reference(request):
+    """
+    API endpoint pour générer une référence de contrat automatique.
+    Utilisé par le formulaire de contrat pour générer des références uniques.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        contrat_type = data.get('type')
+
+        if not contrat_type:
+            return JsonResponse({'error': 'Type de contrat requis'}, status=400)
+
+        # Générer la référence en utilisant la méthode du modèle
+        reference = Contrat.generate_reference(contrat_type)
+
+        return JsonResponse({'reference': reference})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Données JSON invalides'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

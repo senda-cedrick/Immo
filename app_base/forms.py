@@ -88,8 +88,8 @@ class ContratForm(forms.ModelForm):
         model = Contrat
         fields = '__all__'
         widgets = {
-            'reference': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: CON-001'}),
-            'type': forms.Select(attrs={'class': 'form-control'}),
+            'reference': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: LOC-2024-001'}),
+            'type': forms.Select(attrs={'class': 'form-control', 'id': 'id_type'}),
             'propriete': forms.Select(attrs={'class': 'form-control'}),
             'logement': forms.Select(attrs={'class': 'form-control'}),
             'client': forms.Select(attrs={'class': 'form-control'}),

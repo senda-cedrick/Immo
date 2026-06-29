@@ -1,26 +1,258 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>EBAIL MANAGER</title> 
-    <!-- plugins:css -->
+    <title>EBAIL MANAGER - Connexion</title> 
     <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-    <!-- End layout styles -->
     <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
     <style>
-      .auth.login-bg .control-label { color: #fff !important; }
-      .auth.login-bg .form-control { background-color: #fff; color: #212529; }
+      /* ===== FOND ANIMÉ ===== */
+      .auth.login-bg {
+        background: linear-gradient(135deg, #0c0e14 0%, #1a1f2e 30%, #2d1b69 60%, #0c0e14 100%);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        position: relative;
+        overflow: hidden;
+      }
+      @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      /* Particules flottantes */
+      .auth.login-bg::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: 
+          radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.15), transparent),
+          radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.1), transparent),
+          radial-gradient(3px 3px at 60% 20%, rgba(255,255,255,0.12), transparent),
+          radial-gradient(2px 2px at 80% 80%, rgba(255,255,255,0.08), transparent),
+          radial-gradient(3px 3px at 10% 90%, rgba(255,255,255,0.1), transparent),
+          radial-gradient(2px 2px at 90% 10%, rgba(255,255,255,0.12), transparent),
+          radial-gradient(2px 2px at 50% 50%, rgba(255,255,255,0.06), transparent);
+        animation: floatParticles 20s ease-in-out infinite;
+        pointer-events: none;
+      }
+      @keyframes floatParticles {
+        0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+        50% { transform: translateY(-20px) scale(1.1); opacity: 1; }
+      }
+
+      /* ===== CARTE ===== */
+      .auth.login-bg .card {
+        background: rgba(25, 28, 36, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        animation: slideUp 0.6s ease-out;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Barre décorative en haut de la carte */
+      .auth.login-bg .card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #0090e7, #8f5fe8, #00d25b);
+        background-size: 200% 100%;
+        animation: shimmer 3s ease-in-out infinite;
+      }
+      @keyframes shimmer {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+
+      /* ===== ICÔNE ===== */
+      .auth.login-bg .login-icon {
+        width: 72px;
+        height: 72px;
+        background: linear-gradient(135deg, #4B49AC, #7c6cf0);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        box-shadow: 0 8px 24px rgba(75, 73, 172, 0.3);
+        animation: pulseIcon 2s ease-in-out infinite;
+      }
+      @keyframes pulseIcon {
+        0%, 100% { transform: scale(1); box-shadow: 0 8px 24px rgba(75, 73, 172, 0.3); }
+        50% { transform: scale(1.05); box-shadow: 0 12px 32px rgba(75, 73, 172, 0.5); }
+      }
+      .auth.login-bg .login-icon i {
+        font-size: 32px;
+        color: #fff;
+      }
+
+      /* ===== CHAMPS ===== */
+      .auth.login-bg .form-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+      }
+      .auth.login-bg .form-group label {
+        color: #c2c7d6 !important;
+        font-weight: 500;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .auth.login-bg .form-group label i {
+        font-size: 1rem;
+        color: #0090e7;
+      }
+      .auth.login-bg .form-control {
+        background: rgba(42, 48, 56, 0.8) !important;
+        border: 1.5px solid rgba(255,255,255,0.08) !important;
+        color: #e8ecf4 !important;
+        border-radius: 10px;
+        padding: 12px 16px;
+        height: auto;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+      }
+      .auth.login-bg .form-control:focus {
+        background: rgba(42, 48, 56, 0.95) !important;
+        border-color: #0090e7 !important;
+        box-shadow: 0 0 0 3px rgba(0, 144, 231, 0.15) !important;
+      }
+      .auth.login-bg .form-control::placeholder {
+        color: #6c7293;
+        font-size: 0.85rem;
+      }
+
+      /* ===== MOT DE PASSE TOGGLE ===== */
+      .password-wrapper {
+        position: relative;
+      }
+      .password-wrapper .form-control {
+        padding-right: 44px;
+      }
+      .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6c7293;
+        cursor: pointer;
+        padding: 4px;
+        font-size: 1.2rem;
+        transition: color 0.2s;
+      }
+      .password-toggle:hover {
+        color: #0090e7;
+      }
+
+      /* ===== BOUTON ===== */
+      .auth.login-bg .btn-primary {
+        background: linear-gradient(135deg, #0090e7, #0070b4);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .auth.login-bg .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 144, 231, 0.35);
+      }
+      .auth.login-bg .btn-primary:active {
+        transform: translateY(0);
+      }
+      .auth.login-bg .btn-primary:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* Spinner de chargement */
+      .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 2px;
+        margin-right: 8px;
+        vertical-align: middle;
+      }
+
+      /* ===== ALERTE ===== */
+      .auth.login-bg .alert-danger {
+        background: rgba(252, 66, 74, 0.12);
+        border: 1px solid rgba(252, 66, 74, 0.25);
+        border-radius: 10px;
+        color: #fc6b72;
+        font-size: 0.85rem;
+        padding: 12px 16px;
+        animation: shakeX 0.5s ease-in-out;
+      }
+      @keyframes shakeX {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-8px); }
+        40% { transform: translateX(8px); }
+        60% { transform: translateX(-5px); }
+        80% { transform: translateX(5px); }
+      }
+      .auth.login-bg .alert-danger .close {
+        color: #fc6b72;
+        opacity: 0.7;
+      }
+      .auth.login-bg .alert-danger .close:hover {
+        opacity: 1;
+      }
+
+      /* ===== LIEN ===== */
+      .auth.login-bg .sign-up {
+        color: #6c7293;
+        font-size: 0.85rem;
+      }
+      .auth.login-bg .sign-up a {
+        color: #0090e7;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .auth.login-bg .sign-up a:hover {
+        color: #4ebcff;
+        text-decoration: underline;
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 576px) {
+        .auth.login-bg .card {
+          margin: 16px;
+          border-radius: 12px;
+        }
+        .auth.login-bg .card-body {
+          padding: 1.5rem !important;
+        }
+        .auth.login-bg .login-icon {
+          width: 56px;
+          height: 56px;
+        }
+        .auth.login-bg .login-icon i {
+          font-size: 24px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -28,41 +260,56 @@
       <div class="container-fluid page-body-wrapper full-page-wrapper">
         <div class="row w-100 m-0">
           <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
-            <div class="card col-lg-4 mx-auto">
+            <div class="card col-lg-4 col-md-6 mx-auto">
               <div class="card-body px-5 py-5">
                 <div class="text-center mb-4">
-                  <i class="mdi mdi-home-city" style="font-size: 48px; color: #4B49AC;"></i>
-                  <h3 class="card-title mt-2">EBAIL MANAGER</h3>
-                  <p class="text-muted">Connectez-vous à votre compte</p>
-                </div>
-                <form method="post" action="{% url 'login' %}">
-                   {% csrf_token %}
-                  <div class="form-group">
-                    <label for="username" style="color:#fff; font-weight:600;">
-                      <i class="mdi mdi-account"></i> Nom d'utilisateur
-                    </label>
-                    <input type="text" class="form-control p_input bg-white text-dark" name="username" id="username" placeholder="Entrez votre nom d'utilisateur" required>
+                  <div class="login-icon">
+                    <i class="mdi mdi-home-city"></i>
                   </div>
+                  <h3 class="card-title mt-2" style="color: #fff; font-weight: 700;">EBAIL MANAGER</h3>
+                  <p class="text-muted" style="font-size: 0.9rem;">Connectez-vous à votre compte</p>
+                </div>
+
+                <form method="post" action="{% url 'login' %}" id="loginForm">
+                  {% csrf_token %}
+
                   <div class="form-group">
-                    <label for="password" style="color:#fff; font-weight:600;">
-                      <i class="mdi mdi-lock"></i> Mot de passe
+                    <label for="username">
+                      <i class="mdi mdi-account-outline"></i> Nom d'utilisateur
                     </label>
-                    <input type="password" class="form-control p_input bg-white text-dark" name="password" id="password" placeholder="Entrez votre mot de passe" required>
+                    <input type="text" class="form-control" name="username" id="username" 
+                           placeholder="Entrez votre nom d'utilisateur" required autofocus>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="password">
+                      <i class="mdi mdi-lock-outline"></i> Mot de passe
+                    </label>
+                    <div class="password-wrapper">
+                      <input type="password" class="form-control" name="password" id="password" 
+                             placeholder="Entrez votre mot de passe" required>
+                      <button type="button" class="password-toggle" id="togglePassword" 
+                              title="Afficher/Masquer le mot de passe">
+                        <i class="mdi mdi-eye-off-outline"></i>
+                      </button>
+                    </div>
                   </div>
 
                   {% if message %}
                   <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="mdi mdi-alert-circle"></i> {{message}}
+                    <i class="mdi mdi-alert-circle"></i> 
+                    <span id="errorMessage">{{ message }}</span>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div> 
                   {% endif %}
 
-                  <div class="text-center">
-                     <button type="submit" class="btn btn-primary btn-block enter-btn">
-                       <i class="mdi mdi-login"></i> Se connecter
-                     </button>
+                  <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                      <i class="mdi mdi-login"></i> 
+                      <span id="btnText">Se connecter</span>
+                    </button>
                   </div>
                   
                   <div class="text-center mt-3">
@@ -73,24 +320,72 @@
               </div>
             </div>
           </div>
-          <!-- content-wrapper ends -->
         </div>
-        <!-- row ends -->
       </div>
-      <!-- page-body-wrapper ends -->
     </div>
-    <!-- container-scroller -->
-    <!-- plugins:js -->
+
     <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
     <script src="{% static 'assets/js/off-canvas.js' %}"></script>
     <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
     <script src="{% static 'assets/js/misc.js'%}"></script>
     <script src="{% static 'assets/js/settings.js' %}"></script>
     <script src="{% static 'assets/js/todolist.js' %}"></script>
-    <!-- endinject -->
+
+    <script>
+      (function() {
+        'use strict';
+
+        // === Toggle mot de passe ===
+        const toggleBtn = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        if (toggleBtn && passwordInput) {
+          toggleBtn.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('i').className = type === 'password' 
+              ? 'mdi mdi-eye-off-outline' 
+              : 'mdi mdi-eye-outline';
+          });
+        }
+
+        // === Loading spinner sur le bouton ===
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const btnText = document.getElementById('btnText');
+
+        if (loginForm && loginBtn) {
+          loginForm.addEventListener('submit', function(e) {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username || !password) {
+              e.preventDefault();
+              return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Connexion en cours...';
+          });
+        }
+
+        // === Auto-effacer l'alerte après 5 secondes ===
+        const alertEl = document.querySelector('.alert-danger');
+        if (alertEl) {
+          setTimeout(function() {
+            if (alertEl && alertEl.classList.contains('show')) {
+              alertEl.classList.remove('show');
+              alertEl.classList.add('fade');
+              setTimeout(function() { alertEl.style.display = 'none'; }, 300);
+            }
+          }, 5000);
+        }
+
+        // === Focus sur le champ username si vide ===
+        const usernameField = document.getElementById('username');
+        if (usernameField && !usernameField.value) {
+          usernameField.focus();
+        }
+      })();
+    </script>
   </body>
 </html>

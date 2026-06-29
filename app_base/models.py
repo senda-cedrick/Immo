@@ -66,6 +66,14 @@ class TypePropriete(models.Model):
     def __str__(self):
         return self.nom
 
+class TypeLogement(models.Model):
+    """Type spécifique de logement (pour plus de granularité)"""
+    nom = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.nom
+
 class Propriete(models.Model):
     STATUT_CHOIX = (
         ('DISPONIBLE', 'Disponible'),
@@ -109,6 +117,9 @@ class Logement(models.Model):
     surface = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     etage = models.IntegerField(null=True, blank=True)
     description = models.TextField(blank=True)
+
+    # Type spécifique de logement (pour plus de granularité)
+    type_logement = models.ForeignKey(TypeLogement, on_delete=models.SET_NULL, null=True, blank=True)
 
     # Statut individuel pour chaque logement
     statut = models.CharField(max_length=20, choices=STATUT_CHOIX, default='DISPONIBLE')

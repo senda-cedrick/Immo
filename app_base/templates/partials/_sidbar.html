@@ -103,6 +103,12 @@
         <span class="menu-title">Types de propriété</span>
       </a>
     </li>
+    <li class="nav-item menu-items {% if 'type-logement' in request.path %}active{% endif %}" data-color="var(--c-logement)">
+      <a class="nav-link" href="{% url 'type_logements' %}">
+        <span class="menu-icon"><i class="mdi mdi-home-floor"></i></span>
+        <span class="menu-title">Types de logement</span>
+      </a>
+    </li>
 
     <!-- Section : Acteurs -->
     <li class="nav-item nav-category">

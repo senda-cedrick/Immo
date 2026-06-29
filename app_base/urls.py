@@ -50,6 +50,13 @@ urlpatterns = [
     path('type_proprietes/<int:pk>/modifier/', views.TypeProprieteUpdateView.as_view(), name='modifier_type_propriete'),
     path('type_proprietes/<int:pk>/supprimer/', views.TypeProprieteDeleteView.as_view(), name='supprimer_type_propriete'),
 
+    # Types de Logement
+    path('type_logements/', views.TypeLogementListView.as_view(), name='type_logements'),
+    path('type_logements/ajouter/', views.TypeLogementCreateView.as_view(), name='type_logement_create'),
+    path('type_logements/<int:pk>/', views.TypeLogementDetailView.as_view(), name='type_logement_detail'),
+    path('type_logements/<int:pk>/modifier/', views.TypeLogementUpdateView.as_view(), name='type_logement_update'),
+    path('type_logements/<int:pk>/supprimer/', views.TypeLogementDeleteView.as_view(), name='type_logement_delete'),
+
     # Contrats
     path('contrats/', views.ContratListView.as_view(), name='contrats'),
     path('contrats/ajouter/', views.ContratCreateView.as_view(), name='ajouter_contrat'),

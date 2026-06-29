@@ -5,14 +5,14 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import (
     AgenceForm, PersonnelForm, ProprietaireForm, ClientForm,
-    TypeProprieteForm, ProprieteForm, LogementForm, 
+    TypeProprieteForm, TypeLogementForm, ProprieteForm, LogementForm,
     ContratForm, GarantieForm, MaintenanceForm
 )
 from django.db.models import Sum, Count, Q
 from django.utils import timezone
 from .models import (
     Agence, Personnel, Proprietaire, Client,
-    TypePropriete, Propriete, Logement, Contrat, Garantie, Maintenance
+    TypePropriete, TypeLogement, Propriete, Logement, Contrat, Garantie, Maintenance
 )
 from django.http import JsonResponse
 from app_paiements.models import Paiement
@@ -26,6 +26,7 @@ import json
 @login_required
 def dashboard(request):
     # Logique pour récupérer les statistiques du dashboard
+    from app_caisse.models import Caisse
     stats = {
         'nbagence': Agence.objects.filter(active=True).count(),
         'nbpropriete': Propriete.objects.count(),
@@ -34,7 +35,7 @@ def dashboard(request):
         'nbpersonnel': Personnel.objects.count(),
         'nbcontrats': Contrat.objects.count(),
         'nbpaiements': Paiement.objects.count(),
-        'nbcaisse': 0,  # À implémenter
+        'nbcaisse': Caisse.objects.count(),
         'nbgaranties': Garantie.objects.count(),
         'nblogements': Logement.objects.count(),
         'derniers_paiements': Paiement.objects.select_related('client__user').order_by('-date_paiement')[:5]
@@ -265,6 +266,10 @@ class TypeProprieteListView(LoginRequiredMixin, ListView):
     context_object_name = 'type_proprietes'
     paginate_by = 10
 
+    def get_queryset(self):
+        # Optimisation des requêtes avec prefetch_related
+        return super().get_queryset().prefetch_related('propriete_set__logements')
+
 class TypeProprieteDetailView(LoginRequiredMixin, DetailView):
     model = TypePropriete
     template_name = 'type_propriete_detail.html'
@@ -275,7 +280,8 @@ class TypeProprieteDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['proprietes'] = self.object.propriete_set.select_related('type_propriete', 'agence').all()
+        type_propriete = self.get_object()
+        context['proprietes'] = type_propriete.propriete_set.select_related('type_propriete', 'agence').all()
         context['total_proprietes'] = context['proprietes'].count()
         return context
 
@@ -295,6 +301,50 @@ class TypeProprieteDeleteView(LoginRequiredMixin, DeleteView):
     model = TypePropriete
     template_name = 'type_propriete_confirm_delete.html'
     success_url = reverse_lazy('type_proprietes')
+
+# --- Vues pour TypeLogement ---
+
+class TypeLogementListView(LoginRequiredMixin, ListView):
+    model = TypeLogement
+    template_name = 'type_logements.html'
+    context_object_name = 'type_logements'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related('logement_set')
+
+class TypeLogementDetailView(LoginRequiredMixin, DetailView):
+    model = TypeLogement
+    template_name = 'type_logement_detail.html'
+    context_object_name = 'type_logement'
+
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related('logement_set')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        type_logement = self.get_object()
+        context['logements'] = type_logement.logement_set.select_related('propriete__type_propriete', 'propriete__agence').all()
+        context['total_logements'] = context['logements'].count()
+        return context
+
+class TypeLogementCreateView(LoginRequiredMixin, CreateView):
+    model = TypeLogement
+    form_class = TypeLogementForm
+    template_name = 'type_logement_form.html'
+    success_url = reverse_lazy('type_logements')
+
+class TypeLogementUpdateView(LoginRequiredMixin, UpdateView):
+    model = TypeLogement
+    form_class = TypeLogementForm
+    template_name = 'type_logement_form.html'
+    success_url = reverse_lazy('type_logements')
+
+class TypeLogementDeleteView(LoginRequiredMixin, DeleteView):
+    model = TypeLogement
+    template_name = 'type_logement_confirm_delete.html'
+    success_url = reverse_lazy('type_logements')
+
 
 
 # --- Vues pour Propriete ---
@@ -332,8 +382,9 @@ class ProprieteDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['logements'] = self.object.logements.all()
-        context['contrats'] = self.object.contrats.all()
+        propriete = self.get_object()
+        context['logements'] = propriete.logements.all()
+        context['contrats'] = propriete.contrats.all()
         return context
 
 class ProprieteCreateView(LoginRequiredMixin, CreateView):
@@ -376,7 +427,7 @@ class LogementDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        logement = self.object
+        logement = self.get_object()
         context['contrats'] = logement.propriete.contrats.select_related('client__user', 'agent__user').all()
         return context
 
@@ -419,7 +470,8 @@ class ContratDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['paiements'] = Paiement.objects.filter(contrat=self.object).order_by('-date_echeance')
+        contrat = self.get_object()
+        context['paiements'] = Paiement.objects.filter(contrat=contrat).order_by('-date_echeance')
         return context
 
 class ContratCreateView(LoginRequiredMixin, CreateView):

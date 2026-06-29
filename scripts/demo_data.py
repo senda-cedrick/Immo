@@ -36,7 +36,7 @@ from django.contrib.auth import get_user_model
 from app_users.models import Profile, LogUser
 from app_base.models import (
     Agence, Personnel, Proprietaire, Client,
-    TypePropriete, Propriete, Logement, Contrat, Garantie
+    TypePropriete, TypeLogement, Propriete, Logement, Contrat, Garantie
 )
 from app_paiements.models import Paiement
 from app_caisse.models import Caisse
@@ -176,9 +176,40 @@ def create_demo_data():
         # ──────────────────────────────────────────────
         # 7. TYPES DE PROPRIETE (app_base)
         # ──────────────────────────────────────────────
-        types_propriete_data = ['Immeuble', 'Villa', 'Appartement', 'Studio']
-        types_propriete = [TypePropriete.objects.get_or_create(nom=nom)[0] for nom in types_propriete_data]
-        print(f"✅ {len(types_propriete)} types de propriété créés.")
+        types_propriete_data = [
+            {'nom': 'Immeuble', 'description': 'Bâtiment multi-étages avec plusieurs appartements ou bureaux, souvent situé en zone urbaine.'},
+            {'nom': 'Villa', 'description': 'Maison individuelle de standing avec jardin, généralement située en zone résidentielle.'},
+            {'nom': 'Appartement', 'description': 'Unité résidentielle faisant partie d\'un bâtiment plus grand, idéale pour la location urbaine.'},
+            {'nom': 'Studio', 'description': 'Petit espace compact avec une seule pièce principale servant de salon, chambre et cuisine.'},
+        ]
+        types_propriete = []
+        for type_data in types_propriete_data:
+            type_obj, created = TypePropriete.objects.get_or_create(
+                nom=type_data['nom'],
+                defaults={'description': type_data['description']}
+            )
+            types_propriete.append(type_obj)
+        print(f"✅ {len(types_propriete)} types de propriété créés avec descriptions.")
+
+        # ──────────────────────────────────────────────
+        # 7.1. TYPES DE LOGEMENT (app_base) - Granularité supplémentaire
+        # ──────────────────────────────────────────────
+        types_logement_data = [
+            {'nom': 'Studio', 'description': 'Petit logement avec une seule pièce principale combinant salon, chambre et cuisine.'},
+            {'nom': 'Appartement standard', 'description': 'Logement classique avec salon séparé, chambre(s) et cuisine.'},
+            {'nom': 'Duplex', 'description': 'Logement sur deux niveaux avec escalier intérieur, souvent plus spacieux.'},
+            {'nom': 'Penthouse', 'description': 'Logement de luxe situé au dernier étage avec terrasse et vue panoramique.'},
+            {'nom': 'Maison individuelle', 'description': 'Logement indépendant avec accès direct à l\'extérieur et souvent un jardin.'},
+            {'nom': 'Loft', 'description': 'Grand espace ouvert avec hauts plafonds, souvent dans un bâtiment industriel reconverti.'},
+        ]
+        types_logement = []
+        for type_data in types_logement_data:
+            type_obj, created = TypeLogement.objects.get_or_create(
+                nom=type_data['nom'],
+                defaults={'description': type_data['description']}
+            )
+            types_logement.append(type_obj)
+        print(f"✅ {len(types_logement)} types de logement créés pour plus de granularité.")
 
         # ──────────────────────────────────────────────
         # 8. PROPRIETES (app_base) - Données diversifiées
@@ -222,6 +253,28 @@ def create_demo_data():
         for lg in logements_data:
             Logement.objects.get_or_create(propriete=lg['propriete'], identifiant=lg['identifiant'], defaults=lg)
         print(f"✅ {len(logements_data)} logements créés.")
+
+        # ──────────────────────────────────────────────
+        # 9.0.5. TYPES DE LOGEMENTS - Granularité supplémentaire
+        # ──────────────────────────────────────────────
+        # Associer des types spécifiques à chaque logement pour démontrer la granularité
+        Logement.objects.filter(identifiant='A-101').update(type_logement=types_logement[0])  # Studio
+        Logement.objects.filter(identifiant='A-102').update(type_logement=types_logement[1])  # Appartement standard
+        Logement.objects.filter(identifiant='B-201').update(type_logement=types_logement[1])  # Appartement standard
+        Logement.objects.filter(identifiant='B-202').update(type_logement=types_logement[2])  # Duplex
+        Logement.objects.filter(identifiant='C-301').update(type_logement=types_logement[3])  # Penthouse
+
+        Logement.objects.filter(identifiant='V-001').update(type_logement=types_logement[4])  # Maison individuelle
+        Logement.objects.filter(identifiant='V-002').update(type_logement=types_logement[1])  # Appartement standard
+
+        Logement.objects.filter(identifiant='APT-101').update(type_logement=types_logement[0])  # Studio
+        Logement.objects.filter(identifiant='APT-102').update(type_logement=types_logement[0])  # Studio
+        Logement.objects.filter(identifiant='APT-201').update(type_logement=types_logement[1])  # Appartement standard
+
+        Logement.objects.filter(identifiant='ST-101').update(type_logement=types_logement[0])  # Studio
+        Logement.objects.filter(identifiant='ST-102').update(type_logement=types_logement[5])  # Loft
+
+        print("✅ Types de logements attribués (démonstration de la granularité)")
 
         # ──────────────────────────────────────────────
         # 9.1. STATUTS DES LOGEMENTS - Démonstration de la diversité
@@ -294,6 +347,46 @@ def create_demo_data():
         ]
         contrats = [Contrat.objects.get_or_create(reference=c['reference'], defaults=c)[0] for c in contrats_data]
         print(f"✅ {len(contrats)} contrats créés.")
+
+        # ──────────────────────────────────────────────
+        # 10.5. GARANTIES (app_base) - Associées aux contrats
+        # ──────────────────────────────────────────────
+        garanties_data = [
+            {
+                'contrat': contrats[0],
+                'montant': Decimal('900.00'),
+                'type_garantie': 'UNIQUE',
+                'statut': 'VERSEE',
+                'date_constitution': date.today() - timedelta(days=95),
+                'notes': 'Caution de 2 mois de loyer pour le contrat LOC-2024-001'
+            },
+            {
+                'contrat': contrats[1],
+                'montant': Decimal('700.00'),
+                'type_garantie': 'UNIQUE',
+                'statut': 'VERSEE',
+                'date_constitution': date.today() - timedelta(days=75),
+                'notes': 'Caution de 2 mois de loyer pour le contrat LOC-2024-002'
+            },
+            {
+                'contrat': contrats[2],
+                'montant': Decimal('1100.00'),
+                'type_garantie': 'UNIQUE',
+                'statut': 'EN_ATTENTE',
+                'date_constitution': date.today() - timedelta(days=85),
+                'notes': 'Caution en attente de validation pour le contrat LOC-2024-003'
+            },
+            {
+                'contrat': contrats[3],
+                'montant': Decimal('1200.00'),
+                'type_garantie': 'UNIQUE',
+                'statut': 'VERSEE',
+                'date_constitution': date.today() - timedelta(days=65),
+                'notes': 'Caution de 2 mois de loyer pour le contrat LOC-2024-004'
+            }
+        ]
+        garanties = [Garantie.objects.create(**g) for g in garanties_data]
+        print(f"✅ {len(garanties)} garanties créées.")
 
         # ──────────────────────────────────────────────
         # 11. PAIEMENTS (app_paiements)
@@ -423,6 +516,7 @@ def create_demo_data():
         print(f"   - {Propriete.objects.count()} propriétés")
         print(f"   - {Logement.objects.count()} logements")
         print(f"   - {Contrat.objects.count()} contrats")
+        print(f"   - {Garantie.objects.count()} garanties")
         print(f"   - {Paiement.objects.count()} paiements")
         print(f"   - {Caisse.objects.count()} entrées de caisse")
 

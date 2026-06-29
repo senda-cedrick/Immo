@@ -1,6 +1,6 @@
 from django import forms
 from .models import (
-    Agence, Personnel, TypePropriete, Propriete, Logement, Client, Proprietaire,
+    Agence, Personnel, TypePropriete, TypeLogement, Propriete, Logement, Client, Proprietaire,
     Contrat, Garantie, Maintenance
 )
 
@@ -57,6 +57,15 @@ class TypeProprieteForm(forms.ModelForm):
         fields = ['nom']
         widgets = {
             'nom': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Maison'}),
+        }
+
+class TypeLogementForm(forms.ModelForm):
+    class Meta:
+        model = TypeLogement
+        fields = ['nom', 'description']
+        widgets = {
+            'nom': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Studio'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Description du type de logement'}),
         }
 
 class ProprieteForm(forms.ModelForm):

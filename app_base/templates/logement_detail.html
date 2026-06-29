@@ -107,10 +107,24 @@
                     <td class="fw-semibold text-muted">Agence</td>
                     <td>{{ logement.propriete.agence.nom }}</td>
                   </tr>
-                  <tr>
-                    <td class="fw-semibold text-muted">Propriétaire</td>
-                    <td>{{ logement.propriete.proprietaire.user.noms|default:"—" }}</td>
-                  </tr>
+                 <tr>
+                   <td class="fw-semibold text-muted">Propriétaire</td>
+                   <td>{{ logement.propriete.proprietaire.user.noms|default:"—" }}</td>
+                 </tr>
+                 <tr>
+                   <td class="fw-semibold text-muted">Statut</td>
+                   <td>
+                     {% if logement.statut == 'LOUE' %}
+                       <span class="badge bg-success text-white">Loué</span>
+                     {% elif logement.statut == 'DISPONIBLE' %}
+                       <span class="badge bg-primary text-white">Disponible</span>
+                     {% elif logement.statut == 'MAINTENANCE' %}
+                       <span class="badge bg-warning text-dark">Maintenance</span>
+                     {% else %}
+                       <span class="badge bg-secondary text-white">{{ logement.statut }}</span>
+                     {% endif %}
+                   </td>
+                 </tr>
                 </table>
               </div>
             </div>

@@ -224,17 +224,72 @@ def create_demo_data():
         print(f"✅ {len(logements_data)} logements créés.")
 
         # ──────────────────────────────────────────────
-        # 10. CONTRATS (app_base)
+        # 9.1. STATUTS DES LOGEMENTS - Démonstration de la diversité
+        # ──────────────────────────────────────────────
+        # Mettre à jour les statuts pour montrer que différents logements
+        # dans une même propriété peuvent avoir des statuts différents
+        Logement.objects.filter(identifiant='A-101').update(statut='LOUE')  # Loué (contrat actif)
+        Logement.objects.filter(identifiant='A-102').update(statut='DISPONIBLE')  # Disponible
+        Logement.objects.filter(identifiant='B-201').update(statut='LOUE')  # Loué
+        Logement.objects.filter(identifiant='B-202').update(statut='DISPONIBLE')  # Disponible
+        Logement.objects.filter(identifiant='C-301').update(statut='DISPONIBLE')  # Disponible
+
+        Logement.objects.filter(identifiant='V-001').update(statut='LOUE')  # Loué
+        Logement.objects.filter(identifiant='V-002').update(statut='DISPONIBLE')  # Disponible
+
+        Logement.objects.filter(identifiant='APT-101').update(statut='LOUE')  # Loué (contrat actif)
+        Logement.objects.filter(identifiant='APT-102').update(statut='DISPONIBLE')  # Disponible
+        Logement.objects.filter(identifiant='APT-201').update(statut='DISPONIBLE')  # Disponible
+
+        Logement.objects.filter(identifiant='ST-101').update(statut='DISPONIBLE')  # Disponible
+        Logement.objects.filter(identifiant='ST-102').update(statut='DISPONIBLE')  # Disponible
+
+        print("✅ Statuts des logements mis à jour (démonstration de la diversité)")
+
+        # ──────────────────────────────────────────────
+        # 10. CONTRATS (app_base) - Cohérence avec les propriétés louées
         # ──────────────────────────────────────────────
         client1 = Client.objects.get(user__username='client1')
-        logement1 = Logement.objects.get(identifiant='A-101')
+        client2 = Client.objects.get(user__username='client2')
+        logement1 = Logement.objects.get(identifiant='A-101')  # Propriété 1 (LOUE)
+        logement3 = Logement.objects.get(identifiant='APT-101')  # Propriété 3 (LOUE)
+
+        # Créer un troisième client pour les contrats supplémentaires
+        client3 = Client.objects.get(user__username='client1')  # Réutiliser client1 pour B-201
+        client4 = Client.objects.get(user__username='client2')  # Réutiliser client2 pour V-001
+
+        # Récupérer les logements marqués comme LOUE
+        logement_b201 = Logement.objects.get(identifiant='B-201')  # Loué sans contrat
+        logement_v001 = Logement.objects.get(identifiant='V-001')  # Loué sans contrat
+
         contrats_data = [
             {
-                'reference': 'LOC-2024-001', 'type': 'LOCATION', 
+                'reference': 'LOC-2024-001', 'type': 'LOCATION',
                 'logement': logement1, 'propriete': None, # Lié au logement, pas à la propriété entière
                 'client': client1, 'agent': agent_obj,
                 'date_debut': date.today() - timedelta(days=100), 'montant': Decimal('450.00'),
                 'conditions': 'Loyer mensuel, payable avant le 5 de chaque mois.', 'statut': 'ACTIF'
+            },
+            {
+                'reference': 'LOC-2024-002', 'type': 'LOCATION',
+                'logement': logement3, 'propriete': None, # Propriété 3 (300 Bd Lumumba) - LOUE
+                'client': client2, 'agent': agent_obj,
+                'date_debut': date.today() - timedelta(days=80), 'montant': Decimal('350.00'),
+                'conditions': 'Loyer mensuel, caution incluse.', 'statut': 'ACTIF'
+            },
+            {
+                'reference': 'LOC-2024-003', 'type': 'LOCATION',
+                'logement': logement_b201, 'propriete': None, # B-201 - LOUE
+                'client': client3, 'agent': agent_obj,
+                'date_debut': date.today() - timedelta(days=90), 'montant': Decimal('550.00'),
+                'conditions': 'Loyer mensuel, appartement premium.', 'statut': 'ACTIF'
+            },
+            {
+                'reference': 'LOC-2024-004', 'type': 'LOCATION',
+                'logement': logement_v001, 'propriete': None, # V-001 - LOUE
+                'client': client4, 'agent': agent_obj,
+                'date_debut': date.today() - timedelta(days=70), 'montant': Decimal('600.00'),
+                'conditions': 'Loyer mensuel, maison avec jardin.', 'statut': 'ACTIF'
             }
         ]
         contrats = [Contrat.objects.get_or_create(reference=c['reference'], defaults=c)[0] for c in contrats_data]

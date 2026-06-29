@@ -78,10 +78,20 @@
                     <td class="fw-semibold text-muted">Ville</td>
                     <td>{{ propriete.ville }}</td>
                   </tr>
-                  <tr>
-                    <td class="fw-semibold text-muted">Statut</td>
-                    <td>{{ propriete.get_statut_display }}</td>
-                  </tr>
+                 <tr>
+                   <td class="fw-semibold text-muted">Statut</td>
+                   <td>
+                     {% if propriete.statut == 'LOUE' %}
+                       <span class="badge bg-success text-white">Louée</span>
+                     {% elif propriete.statut == 'DISPONIBLE' %}
+                       <span class="badge bg-primary text-white">Disponible</span>
+                     {% elif propriete.statut == 'MAINTENANCE' %}
+                       <span class="badge bg-warning text-dark">Maintenance</span>
+                     {% else %}
+                       <span class="badge bg-secondary text-white">{{ propriete.get_statut_display }}</span>
+                     {% endif %}
+                   </td>
+                 </tr>
                   <tr>
                     <td class="fw-semibold text-muted">Agence</td>
                     <td>{{ propriete.agence.nom }}</td>

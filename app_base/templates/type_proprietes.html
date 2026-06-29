@@ -36,15 +36,18 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Nb propriétés</th>
-                {% if request.user.is_staff %}
-                <th class="text-center">Actions</th>
-                {% endif %}
-              </tr>
+               <tr>
+                 <th>ID</th>
+                 <th>Nom</th>
+                 <th>Description</th>
+                 <th>Nb propriétés</th>
+                 <th>Nb logements</th>
+                 <th>Créé le</th>
+                 <th>Mis à jour</th>
+                 {% if request.user.is_staff %}
+                 <th class="text-center">Actions</th>
+                 {% endif %}
+               </tr>
             </thead>
             <tbody>
               {% for item in type_proprietes %}
@@ -52,7 +55,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td><a href="{% url 'type_propriete_detail' item.id %}" class="text-decoration-none text-dark">{{ item.id }}</a></td>
                 <td><strong>{{ item.nom }}</strong></td>
                 <td>{{ item.description|truncatechars:50|default:"—" }}</td>
-                <td>{{ item.proprietes.count }}</td>
+                <td>{{ item.propriete_set.count }}</td>
+                <td>
+                  {% with total=0 %}
+                    {% for prop in item.propriete_set.all %}
+                      {% with total=total|add:prop.logements.count %}
+                      {% endwith %}
+                    {% endfor %}
+                    {{ total }}
+                  {% endwith %}
+                </td>
+                <td>{{ item.created_at|date:"d/m/Y H:i" }}</td>
+                <td>{{ item.updated_at|date:"d/m/Y H:i" }}</td>
                 {% if request.user.is_staff %}
                 <td class="text-center">
                   <div class="btn-group" role="group">

@@ -97,12 +97,22 @@ class Propriete(models.Model):
 
 class Logement(models.Model):
     """Sous-élément d'une propriété (appartement spécifique dans un immeuble)"""
+    STATUT_CHOIX = (
+        ('DISPONIBLE', 'Disponible'),
+        ('LOUE', 'Loué'),
+        ('VENDU', 'Vendu'),
+        ('EN_MAINTENANCE', 'En maintenance'),
+    )
+
     propriete = models.ForeignKey(Propriete, on_delete=models.CASCADE, related_name='logements')
     identifiant = models.CharField(max_length=50)  # ex: "A-203", "B-01"
     surface = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     etage = models.IntegerField(null=True, blank=True)
     description = models.TextField(blank=True)
-    
+
+    # Statut individuel pour chaque logement
+    statut = models.CharField(max_length=20, choices=STATUT_CHOIX, default='DISPONIBLE')
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

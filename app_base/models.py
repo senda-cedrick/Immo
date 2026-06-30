@@ -38,7 +38,6 @@ class Personnel(models.Model):
 
 class Proprietaire(models.Model):
     user = models.OneToOneField('app_users.User', on_delete=models.CASCADE, related_name='proprietaire_profile')
-    agence = models.ForeignKey(Agence, on_delete=models.CASCADE, related_name='proprietaires')
     telephone = models.CharField(max_length=20)
     adresse = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

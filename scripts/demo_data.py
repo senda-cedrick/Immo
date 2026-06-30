@@ -96,11 +96,14 @@ def create_demo_data():
             {'username': 'admin',     'noms': 'Admin Système',      'email': 'admin@immo.local',   'profile_name': 'Administrateur', 'is_staff': True},
             {'username': 'manager1',  'noms': 'Jean Dupont',        'email': 'j.dupont@immo.local', 'profile_name': 'Manager', 'is_staff': True},
             {'username': 'agent1',    'noms': 'Marie Kabange',      'email': 'm.kabange@immo.local', 'profile_name': 'Agent'},
+            {'username': 'agent2',    'noms': 'Lucie Mbuyi',        'email': 'l.mbuyi@immo.local',   'profile_name': 'Agent'},
             {'username': 'proprio1',  'noms': 'Paul Mukendi',       'email': 'p.mukendi@immo.local', 'profile_name': 'Proprietaire'},
+            {'username': 'proprio2',  'noms': 'Jeanine Kalala',     'email': 'j.kalala@immo.local',  'profile_name': 'Proprietaire'},
             {'username': 'compta1',   'noms': 'Alice Tshibangu',    'email': 'a.tshibangu@immo.local', 'profile_name': 'Comptable'},
             {'username': 'super1',    'noms': 'Georges Lumbala',    'email': 'g.lumbala@immo.local', 'profile_name': 'Superviseur'},
             {'username': 'client1',   'noms': 'Kakudji Pierre',     'email': 'kakudji@mail.com',     'profile_name': 'Client'},
             {'username': 'client2',   'noms': 'Mukendi Albert',     'email': 'mukendi@mail.com',     'profile_name': 'Client'},
+            {'username': 'client3',   'noms': 'Ndaye Marie',        'email': 'ndaye.marie@mail.com', 'profile_name': 'Client'},
         ]
         users = []
         for udata in users_data:
@@ -147,6 +150,7 @@ def create_demo_data():
         personnel_data = [
             {'user': User.objects.get(username='manager1'), 'agence': agences[0], 'sexe': 'M', 'telephone': '+243820000001'},
             {'user': User.objects.get(username='agent1'), 'agence': agences[0], 'sexe': 'F', 'telephone': '+243820000002'},
+            {'user': User.objects.get(username='agent2'), 'agence': agences[1], 'sexe': 'F', 'telephone': '+243820000003'},
         ]
         for pdata in personnel_data:
             Personnel.objects.get_or_create(user=pdata['user'], defaults=pdata)
@@ -156,7 +160,8 @@ def create_demo_data():
         # 5. PROPRIETAIRES (app_base)
         # ──────────────────────────────────────────────
         proprietaires_data = [
-            {'user': User.objects.get(username='proprio1'), 'agence': agences[0], 'telephone': '+243990000001', 'adresse': '10 Av. des propriétaires'},
+            {'user': User.objects.get(username='proprio1'), 'telephone': '+243990000001', 'adresse': '10 Av. des propriétaires'},
+            {'user': User.objects.get(username='proprio2'), 'telephone': '+243990000002', 'adresse': '25 Blvd. du 30 Juin'},
         ]
         for pr in proprietaires_data:
             Proprietaire.objects.get_or_create(user=pr['user'], defaults=pr)
@@ -168,6 +173,7 @@ def create_demo_data():
         clients_data = [
             {'user': User.objects.get(username='client1'), 'agence': agences[0], 'telephone': '+243811000001', 'adresse': '25 Av. des clients'},
             {'user': User.objects.get(username='client2'), 'agence': agences[1], 'telephone': '+243811000002', 'adresse': '30 Av. des palmiers'},
+            {'user': User.objects.get(username='client3'), 'agence': agences[0], 'telephone': '+243811000003', 'adresse': '18 Rue Mont Ngaliema'},
         ]
         for cl in clients_data:
             Client.objects.get_or_create(user=cl['user'], defaults=cl)
@@ -214,14 +220,17 @@ def create_demo_data():
         # ──────────────────────────────────────────────
         # 8. PROPRIETES (app_base) - Données diversifiées
         # ──────────────────────────────────────────────
-        proprio_obj = Proprietaire.objects.first()
-        agent_obj = Personnel.objects.filter(user__profile__name='Agent').first()
+        proprio1 = Proprietaire.objects.get(user__username='proprio1')
+        proprio2 = Proprietaire.objects.get(user__username='proprio2')
+        agent1 = Personnel.objects.get(user__username='agent1')
+        agent2 = Personnel.objects.get(user__username='agent2')
         proprietes_data = [
-            {'agence': agences[0], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[0], 'adresse': '100 Av. de la Liberté', 'ville': 'Kinshasa/Gombe', 'superficie': 1200, 'nb_pieces': 15, 'statut': 'LOUE', 'agent': agent_obj},
-            {'agence': agences[1], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[1], 'adresse': '200 Av. de la Paix', 'ville': 'Kinshasa/Ngaliema', 'superficie': 800, 'nb_pieces': 8, 'statut': 'DISPONIBLE'},
-            {'agence': agences[0], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[2], 'adresse': '300 Bd Lumumba', 'ville': 'Kinshasa/Lingwala', 'superficie': 600, 'nb_pieces': 6, 'statut': 'LOUE', 'agent': agent_obj},
-            {'agence': agences[1], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[3], 'adresse': '400 Rue Commerce', 'ville': 'Kinshasa/Kintambo', 'superficie': 400, 'nb_pieces': 4, 'statut': 'DISPONIBLE'},
-            {'agence': agences[0], 'proprietaire': proprio_obj, 'type_propriete': types_propriete[0], 'adresse': '500 Av des Martyrs', 'ville': 'Kinshasa/Bandundu', 'superficie': 900, 'nb_pieces': 10, 'statut': 'MAINTENANCE', 'agent': agent_obj},
+            {'agence': agences[0], 'proprietaire': proprio1, 'type_propriete': types_propriete[0], 'adresse': '100 Av. de la Liberté', 'ville': 'Kinshasa/Gombe', 'superficie': 1200, 'nb_pieces': 15, 'statut': 'LOUE', 'agent': agent1},
+            {'agence': agences[1], 'proprietaire': proprio1, 'type_propriete': types_propriete[1], 'adresse': '200 Av. de la Paix', 'ville': 'Kinshasa/Ngaliema', 'superficie': 800, 'nb_pieces': 8, 'statut': 'DISPONIBLE'},
+            {'agence': agences[0], 'proprietaire': proprio1, 'type_propriete': types_propriete[2], 'adresse': '300 Bd Lumumba', 'ville': 'Kinshasa/Lingwala', 'superficie': 600, 'nb_pieces': 6, 'statut': 'LOUE', 'agent': agent1},
+            {'agence': agences[1], 'proprietaire': proprio2, 'type_propriete': types_propriete[3], 'adresse': '400 Rue Commerce', 'ville': 'Kinshasa/Kintambo', 'superficie': 400, 'nb_pieces': 4, 'statut': 'DISPONIBLE'},
+            {'agence': agences[0], 'proprietaire': proprio2, 'type_propriete': types_propriete[0], 'adresse': '500 Av des Martyrs', 'ville': 'Kinshasa/Bandundu', 'superficie': 900, 'nb_pieces': 10, 'statut': 'MAINTENANCE', 'agent': agent2},
+            {'agence': agences[1], 'proprietaire': proprio2, 'type_propriete': types_propriete[1], 'adresse': '600 Ave. Ngongo', 'ville': 'Kinshasa/Lemba', 'superficie': 750, 'nb_pieces': 9, 'statut': 'LOUE', 'agent': agent2},
         ]
         proprietes = [Propriete.objects.get_or_create(adresse=p['adresse'], defaults=p)[0] for p in proprietes_data]
         print(f"✅ {len(proprietes_data)} propriétés créées.")
@@ -304,53 +313,47 @@ def create_demo_data():
         # ──────────────────────────────────────────────
         client1 = Client.objects.get(user__username='client1')
         client2 = Client.objects.get(user__username='client2')
-        logement1 = Logement.objects.get(identifiant='A-101')  # Propriété 1 (LOUE)
-        logement3 = Logement.objects.get(identifiant='APT-101')  # Propriété 3 (LOUE)
-
-        # Créer un troisième client pour les contrats supplémentaires
-        client3 = Client.objects.get(user__username='client1')  # Réutiliser client1 pour B-201
-        client4 = Client.objects.get(user__username='client2')  # Réutiliser client2 pour V-001
+        client3 = Client.objects.get(user__username='client3')
 
         # Récupérer les logements marqués comme LOUE
-        logement_b201 = Logement.objects.get(identifiant='B-201')  # Loué sans contrat
-        logement_v001 = Logement.objects.get(identifiant='V-001')  # Loué sans contrat
-
-        # Définir explicitement le propriétaire pour chaque contrat
-        # Le propriétaire est déterminé à partir du logement
-        proprio_obj = Proprietaire.objects.first()  # Il n'y a qu'un seul propriétaire dans les données de demo
+        logement_a101 = Logement.objects.get(identifiant='A-101')   # Propriété 1 (proprio1)
+        logement_apt101 = Logement.objects.get(identifiant='APT-101')  # Propriété 3 (proprio1)
+        logement_b201 = Logement.objects.get(identifiant='B-201')   # Propriété 1 (proprio1)
+        logement_v001 = Logement.objects.get(identifiant='V-001')   # Propriété 2 (proprio2)
+        logement_st101 = Logement.objects.get(identifiant='ST-101') # Propriété 4 (proprio2)
 
         contrats_data = [
             {
                 'reference': 'LOC-2024-001', 'type': 'LOCATION',
-                'logement': logement1, 'propriete': None,
-                'proprietaire': logement1.propriete.proprietaire,  # Définir explicitement le propriétaire
-                'client': client1, 'agent': agent_obj,
+                'logement': logement_a101, 'propriete': None,
+                'proprietaire': logement_a101.propriete.proprietaire,
+                'client': client1, 'agent': agent1,
                 'date_debut': date.today() - timedelta(days=100), 'montant': Decimal('450.00'),
                 'conditions': 'Loyer mensuel, payable avant le 5 de chaque mois.', 'statut': 'ACTIF'
             },
             {
                 'reference': 'LOC-2024-002', 'type': 'LOCATION',
-                'logement': logement3, 'propriete': None,
-                'proprietaire': logement3.propriete.proprietaire,  # Définir explicitement le propriétaire
-                'client': client2, 'agent': agent_obj,
+                'logement': logement_apt101, 'propriete': None,
+                'proprietaire': logement_apt101.propriete.proprietaire,
+                'client': client2, 'agent': agent1,
                 'date_debut': date.today() - timedelta(days=80), 'montant': Decimal('350.00'),
                 'conditions': 'Loyer mensuel, caution incluse.', 'statut': 'ACTIF'
             },
             {
                 'reference': 'LOC-2024-003', 'type': 'LOCATION',
                 'logement': logement_b201, 'propriete': None,
-                'proprietaire': logement_b201.propriete.proprietaire,  # Définir explicitement le propriétaire
-                'client': client3, 'agent': agent_obj,
+                'proprietaire': logement_b201.propriete.proprietaire,
+                'client': client3, 'agent': agent2,
                 'date_debut': date.today() - timedelta(days=90), 'montant': Decimal('550.00'),
                 'conditions': 'Loyer mensuel, appartement premium.', 'statut': 'ACTIF'
             },
             {
                 'reference': 'LOC-2024-004', 'type': 'LOCATION',
-                'logement': logement_v001, 'propriete': None,
-                'proprietaire': logement_v001.propriete.proprietaire,  # Définir explicitement le propriétaire
-                'client': client4, 'agent': agent_obj,
+                'logement': logement_st101, 'propriete': None,
+                'proprietaire': logement_st101.propriete.proprietaire,
+                'client': client1, 'agent': agent2,
                 'date_debut': date.today() - timedelta(days=70), 'montant': Decimal('600.00'),
-                'conditions': 'Loyer mensuel, maison avec jardin.', 'statut': 'ACTIF'
+                'conditions': 'Loyer mensuel, studio meublé.', 'statut': 'ACTIF'
             }
         ]
         contrats = [Contrat.objects.get_or_create(reference=c['reference'], defaults=c)[0] for c in contrats_data]
@@ -399,25 +402,43 @@ def create_demo_data():
         # ──────────────────────────────────────────────
         # 11. PAIEMENTS (app_paiements)
         # ──────────────────────────────────────────────
-        contrat_actif = contrats[0]
-        client_actif = contrat_actif.client
-        # Création de 3 paiements pour le contrat actif
+        contrat1 = contrats[0]  # proprio1
+        contrat2 = contrats[1]  # proprio1
+        contrat3 = contrats[2]  # proprio1
+        contrat4 = contrats[3]  # proprio2
+
         paiements_data = [
-            {
-                'contrat': contrat_actif, 'client': client_actif, 'montant': 450,
-                'date_paiement': date.today() - timedelta(days=65), 'date_echeance': date.today() - timedelta(days=70),
-                'type_paiement': 'LOYER', 'statut': 'PAYE'
-            },
-            {
-                'contrat': contrat_actif, 'client': client_actif, 'montant': 450,
-                'date_paiement': date.today() - timedelta(days=35), 'date_echeance': date.today() - timedelta(days=40),
-                'type_paiement': 'LOYER', 'statut': 'PAYE'
-            },
-            {
-                'contrat': contrat_actif, 'client': client_actif, 'montant': 450,
-                'date_paiement': None, 'date_echeance': date.today() - timedelta(days=10),
-                'type_paiement': 'LOYER', 'statut': 'EN_RETARD'
-            },
+            # Contrat 1 (proprio1, client1) - 3 paiements
+            {'contrat': contrat1, 'client': contrat1.client, 'montant': 450,
+             'date_paiement': date.today() - timedelta(days=65), 'date_echeance': date.today() - timedelta(days=70),
+             'type_paiement': 'LOYER', 'statut': 'PAYE'},
+            {'contrat': contrat1, 'client': contrat1.client, 'montant': 450,
+             'date_paiement': date.today() - timedelta(days=35), 'date_echeance': date.today() - timedelta(days=40),
+             'type_paiement': 'LOYER', 'statut': 'PAYE'},
+            {'contrat': contrat1, 'client': contrat1.client, 'montant': 450,
+             'date_paiement': None, 'date_echeance': date.today() - timedelta(days=10),
+             'type_paiement': 'LOYER', 'statut': 'EN_RETARD'},
+            # Contrat 2 (proprio1, client2) - 2 paiements
+            {'contrat': contrat2, 'client': contrat2.client, 'montant': 350,
+             'date_paiement': date.today() - timedelta(days=50), 'date_echeance': date.today() - timedelta(days=55),
+             'type_paiement': 'LOYER', 'statut': 'PAYE'},
+            {'contrat': contrat2, 'client': contrat2.client, 'montant': 350,
+             'date_paiement': None, 'date_echeance': date.today() - timedelta(days=5),
+             'type_paiement': 'LOYER', 'statut': 'EN_RETARD'},
+            # Contrat 3 (proprio1, client3) - 2 paiements
+            {'contrat': contrat3, 'client': contrat3.client, 'montant': 550,
+             'date_paiement': date.today() - timedelta(days=40), 'date_echeance': date.today() - timedelta(days=45),
+             'type_paiement': 'LOYER', 'statut': 'PAYE'},
+            {'contrat': contrat3, 'client': contrat3.client, 'montant': 550,
+             'date_paiement': None, 'date_echeance': date.today() - timedelta(days=15),
+             'type_paiement': 'LOYER', 'statut': 'EN_RETARD'},
+            # Contrat 4 (proprio2, client1) - 2 paiements
+            {'contrat': contrat4, 'client': contrat4.client, 'montant': 600,
+             'date_paiement': date.today() - timedelta(days=60), 'date_echeance': date.today() - timedelta(days=65),
+             'type_paiement': 'LOYER', 'statut': 'PAYE'},
+            {'contrat': contrat4, 'client': contrat4.client, 'montant': 600,
+             'date_paiement': None, 'date_echeance': date.today() - timedelta(days=20),
+             'type_paiement': 'LOYER', 'statut': 'EN_ATTENTE'},
         ]
         for p in paiements_data:
             Paiement.objects.create(**p)
@@ -426,13 +447,13 @@ def create_demo_data():
         # ──────────────────────────────────────────────
         # 12. CAISSE (app_caisse) - Données enrichies
         # ──────────────────────────────────────────────
-        paiements = list(Paiement.objects.filter(date_paiement__isnull=False).order_by('date_paiement'))
+        all_paiements = list(Paiement.objects.filter(date_paiement__isnull=False).order_by('date_paiement'))
 
         # Créer des données de caisse variées pour démontrer toutes les fonctionnalités
         caisse_data = []
 
         # Entrées de caisse liées à des paiements (loyers perçus)
-        for i, paiement in enumerate(paiements[:3]):  # 3 premières entrées liées à des paiements
+        for i, paiement in enumerate(all_paiements[:4]):  # 4 premières entrées liées à des paiements
             caisse_data.append({
                 'type_caisse': 'ENTREE',
                 'status_caisse': 'VALIDATED',
@@ -529,6 +550,6 @@ def create_demo_data():
         print(f"   - {Caisse.objects.count()} entrées de caisse")
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' or True:
     clean_data()
     create_demo_data()

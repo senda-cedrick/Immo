@@ -1,6 +1,7 @@
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.db.models import Q
 from .models import Paiement
 # from .forms import PaiementForm # Assurez-vous d'avoir un PaiementForm
 
@@ -11,7 +12,16 @@ class PaiementListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return super().get_queryset().select_related('contrat__client__user', 'agent__user')
+        qs = super().get_queryset().select_related('contrat__client__user', 'agent__user')
+        user = self.request.user
+        if user.is_authenticated and getattr(user, 'profile', None) and user.profile.name == 'Proprietaire':
+            from app_base.models import Propriete, Contrat
+            proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+            contrats_ids = Contrat.objects.filter(
+                Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
+            ).values_list('id', flat=True)
+            qs = qs.filter(contrat_id__in=contrats_ids)
+        return qs
 
 class PaiementCreateView(LoginRequiredMixin, CreateView):
     model = Paiement

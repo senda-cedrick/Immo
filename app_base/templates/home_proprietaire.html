@@ -79,36 +79,67 @@
       </a>
     </div>
 
-    <!-- Deuxième ligne : Gestion des contrats et paiements -->
-    <div class="row g-4 mb-4">
-      <a href="{% url 'contrats' %}" class="col-xl-6 col-md-6 text-decoration-none">
-        <div class="card border-0 shadow-sm rounded-4 h-100 kpi-card-sm kpi-indigo">
-          <div class="card-body p-4 d-flex align-items-center">
-            <div class="kpi-icon-sm me-3">
-              <i class="mdi mdi-file-document"></i>
-            </div>
-            <div class="flex-grow-1">
-              <h3 class="text-white fw-bold mb-0">{{ nbcontrats }}</h3>
-              <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Contrats de location ({{ nbcontrats_actifs }} actifs, {{ nbcontrats_brouillons }} brouillons)</p>
-            </div>
-          </div>
-        </div>
-      </a>
+     <!-- Deuxième ligne : Gestion des contrats et paiements -->
+     <div class="row g-4 mb-4">
+       <a href="{% url 'contrats' %}" class="col-xl-4 col-md-6 text-decoration-none">
+         <div class="card border-0 shadow-sm rounded-4 h-100 kpi-card-sm kpi-indigo">
+           <div class="card-body p-4 d-flex align-items-center">
+             <div class="kpi-icon-sm me-3">
+               <i class="mdi mdi-file-document"></i>
+             </div>
+             <div class="flex-grow-1">
+               <h3 class="text-white fw-bold mb-0">{{ nbcontrats }}</h3>
+               <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Contrats de location ({{ nbcontrats_actifs }} actifs, {{ nbcontrats_brouillons }} brouillons)</p>
+             </div>
+           </div>
+         </div>
+       </a>
 
-      <a href="{% url 'paiements' %}" class="col-xl-6 col-md-6 text-decoration-none">
-        <div class="card border-0 shadow-sm rounded-4 h-100 kpi-card-sm kpi-cyan">
-          <div class="card-body p-4 d-flex align-items-center">
-            <div class="kpi-icon-sm me-3">
-              <i class="mdi mdi-credit-card"></i>
-            </div>
-            <div class="flex-grow-1">
-              <h3 class="text-white fw-bold mb-0">{{ nbpaiements }}</h3>
-              <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Paiements reçus ce mois</p>
-            </div>
-          </div>
-        </div>
-      </a>
-    </div>
+       <a href="{% url 'paiements' %}" class="col-xl-4 col-md-6 text-decoration-none">
+         <div class="card border-0 shadow-sm rounded-4 h-100 kpi-card-sm kpi-cyan">
+           <div class="card-body p-4 d-flex align-items-center">
+             <div class="kpi-icon-sm me-3">
+               <i class="mdi mdi-credit-card"></i>
+             </div>
+             <div class="flex-grow-1">
+               <h3 class="text-white fw-bold mb-0">{{ nbpaiements }}</h3>
+               <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Paiements reçus ce mois</p>
+             </div>
+           </div>
+         </div>
+       </a>
+
+       <a href="{% url 'garanties' %}" class="col-xl-4 col-md-6 text-decoration-none">
+         <div class="card border-0 shadow-sm rounded-4 h-100 kpi-card-sm kpi-teal">
+           <div class="card-body p-4 d-flex align-items-center">
+             <div class="kpi-icon-sm me-3">
+               <i class="mdi mdi-shield-check"></i>
+             </div>
+             <div class="flex-grow-1">
+               <h3 class="text-white fw-bold mb-0">{{ nbgaranties }}</h3>
+               <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Garanties associées</p>
+             </div>
+           </div>
+         </div>
+       </a>
+     </div>
+
+     <!-- Troisième ligne : Caisse -->
+     <div class="row g-4 mb-4">
+       <a href="{% url 'caisses' %}" class="col-xl-12 text-decoration-none">
+         <div class="card border-0 shadow-sm rounded-4 h-100 kpi-card-sm kpi-green">
+           <div class="card-body p-4 d-flex align-items-center">
+             <div class="kpi-icon-sm me-3">
+               <i class="mdi mdi-cash-register"></i>
+             </div>
+             <div class="flex-grow-1">
+               <h3 class="text-white fw-bold mb-0">{{ nbcaisses }}</h3>
+               <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Entrées de caisse enregistrées</p>
+             </div>
+           </div>
+         </div>
+       </a>
+     </div>
 
     <!-- Section spéciale : Résumé financier -->
     <div class="row g-4 mb-4">
@@ -198,15 +229,15 @@
                     <td class="py-3">{{ p.date_paiement|date:"d M Y"|default:"—" }}</td>
                     <td class="py-3">
                       {% if p.statut == 'PAYE' %}
-                        <span class="badge rounded-pill px-3 py-2" style="background: #198754; color: #fff; font-weight: 700; border: 2px solid #146c43;">
+                        <span class="badge rounded-pill px-3 py-2" style="background: #198754; color: #fff; font-weight: 700; border: 2px solid #146c43; font-size: 0.85rem;">
                           <i class="mdi mdi-check-circle me-1"></i> Confirmé
                         </span>
                       {% elif p.statut == 'EN_RETARD' or p.est_en_retard %}
-                        <span class="badge rounded-pill px-3 py-2" style="background: #ffc107; color: #000; font-weight: 700; border: 2px solid #d39e00;">
+                        <span class="badge rounded-pill px-3 py-2" style="background: #dc3545; color: #fff; font-weight: 700; border: 2px solid #b02a37; font-size: 0.85rem;">
                           <i class="mdi mdi-alert me-1"></i> En retard
                         </span>
                       {% else %}
-                        <span class="badge rounded-pill px-3 py-2" style="background: #0dcaf0; color: #000; font-weight: 700; border: 2px solid #0aa2c0;">
+                        <span class="badge rounded-pill px-3 py-2" style="background: #6c757d; color: #fff; font-weight: 700; border: 2px solid #5c636a; font-size: 0.85rem;">
                           <i class="mdi mdi-clock-outline me-1"></i> {{ p.get_statut_display }}
                         </span>
                       {% endif %}
@@ -309,7 +340,9 @@
   .kpi-purple { background: linear-gradient(135deg, var(--c-client) 0%, var(--c-client) 66%) !important; }
   .kpi-pink  { background: linear-gradient(135deg, var(--c-logement) 0%, var(--c-logement) 66%) !important; }
   .kpi-indigo { background: linear-gradient(135deg, var(--c-contrat) 0%, var(--c-contrat) 66%) !important; }
-  .kpi-cyan   { background: linear-gradient(135deg, var(--c-paiement) 0%, var(--c-paiement) 66%) !important; }
+   .kpi-cyan   { background: linear-gradient(135deg, var(--c-paiement) 0%, var(--c-paiement) 66%) !important; }
+   .kpi-teal   { background: linear-gradient(135deg, var(--c-garantie) 0%, var(--c-garantie) 66%) !important; }
+   .kpi-green  { background: linear-gradient(135deg, var(--c-caisse) 0%, var(--c-caisse) 66%) !important; }
 
   /* ── KPI Cards Secondaires ── */
   .kpi-card-sm {

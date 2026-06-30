@@ -76,6 +76,7 @@
     </li>
 
     <!-- Section : Gestion locative -->
+    {% if not user.is_proprietaire %}
     <li class="nav-item nav-category">
       <span class="nav-link">Gestion locative</span>
     </li>
@@ -83,18 +84,6 @@
       <a class="nav-link" href="{% url 'agences' %}">
         <span class="menu-icon"><i class="mdi mdi-domain"></i></span>
         <span class="menu-title">Agences</span>
-      </a>
-    </li>
-    <li class="nav-item menu-items {% if 'propriete' in request.path and 'type-propriete' not in request.path %}active{% endif %}" data-color="var(--c-propriete)">
-      <a class="nav-link" href="{% url 'proprietes' %}">
-        <span class="menu-icon"><i class="mdi mdi-home"></i></span>
-        <span class="menu-title">Propriétés</span>
-      </a>
-    </li>
-    <li class="nav-item menu-items {% if 'appartement' in request.path or 'logement' in request.path %}active{% endif %}" data-color="var(--c-logement)">
-      <a class="nav-link" href="{% url 'logements' %}">
-        <span class="menu-icon"><i class="mdi mdi-home-floor-3"></i></span>
-        <span class="menu-title">Logements</span>
       </a>
     </li>
     <li class="nav-item menu-items {% if 'type-propriete' in request.path %}active{% endif %}" data-color="var(--c-type-propriete)">
@@ -109,8 +98,22 @@
         <span class="menu-title">Types de logement</span>
       </a>
     </li>
+    {% endif %}
+    <li class="nav-item menu-items {% if 'propriete' in request.path and 'type-propriete' not in request.path %}active{% endif %}" data-color="var(--c-propriete)">
+      <a class="nav-link" href="{% url 'proprietes' %}">
+        <span class="menu-icon"><i class="mdi mdi-home"></i></span>
+        <span class="menu-title">Propriétés</span>
+      </a>
+    </li>
+    <li class="nav-item menu-items {% if 'appartement' in request.path or 'logement' in request.path %}active{% endif %}" data-color="var(--c-logement)">
+      <a class="nav-link" href="{% url 'logements' %}">
+        <span class="menu-icon"><i class="mdi mdi-home-floor-3"></i></span>
+        <span class="menu-title">Logements</span>
+      </a>
+    </li>
 
     <!-- Section : Acteurs -->
+    {% if not user.is_proprietaire %}
     <li class="nav-item nav-category">
       <span class="nav-link">Acteurs</span>
     </li>
@@ -126,6 +129,7 @@
         <span class="menu-title">Propriétaires</span>
       </a>
     </li>
+    {% endif %}
     <li class="nav-item menu-items {% if 'locataire' in request.path or 'client' in request.path %}active{% endif %}" data-color="var(--c-client)">
       <a class="nav-link" href="{% url 'clients' %}">
         <span class="menu-icon"><i class="mdi mdi-account-multiple"></i></span>
@@ -168,6 +172,7 @@
           </li>
 
     <!-- Section : Administration -->
+    {% if not user.is_proprietaire %}
     <li class="nav-item nav-category">
       <span class="nav-link">Administration</span>
     </li>
@@ -184,6 +189,7 @@
         <span class="menu-title">Profils</span>
       </a>
     </li>
+    {% endif %}
     {% endif %}
   </ul>
 </nav>

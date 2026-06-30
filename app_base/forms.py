@@ -32,10 +32,9 @@ class PersonnelForm(forms.ModelForm):
 class ProprietaireForm(forms.ModelForm):
     class Meta:
         model = Proprietaire
-        fields = ['user', 'agence', 'telephone', 'adresse']
+        fields = ['user', 'telephone', 'adresse']
         widgets = {
             'user': forms.Select(attrs={'class': 'form-control'}),
-            'agence': forms.Select(attrs={'class': 'form-control'}),
             'telephone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+243...'}),
             'adresse': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }

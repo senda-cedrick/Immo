@@ -10,6 +10,7 @@ from .forms import (
 )
 from django.db.models import Sum, Count, Q
 from django.utils import timezone
+from datetime import timedelta
 from .models import (
     Agence, Personnel, Proprietaire, Client,
     TypePropriete, TypeLogement, Propriete, Logement, Contrat, Garantie, Maintenance
@@ -22,6 +23,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from .serializers import ProprietaireProprieteSerializer, ProprietaireContratSerializer
 
 # Supprimé car ces vues n'existaient pas
 # def garanties(request): ...
@@ -82,13 +84,20 @@ def dashboard(request):
 
         # Calculer le nombre de contrats expirant dans les 30 jours
         from django.utils import timezone
-        from datetime import timedelta
         contrats_expirant = Contrat.objects.filter(
             Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
             statut='ACTIF',
             date_fin__gte=timezone.now(),
             date_fin__lte=timezone.now() + timedelta(days=30)
         ).count()
+
+        # Calculer le nombre de garanties
+        from app_base.models import Garantie
+        nb_garanties = Garantie.objects.filter(contrat_id__in=contrats_ids).count()
+
+        # Calculer le nombre d'entrées de caisse
+        from app_caisse.models import Caisse
+        nb_caisses = Caisse.objects.filter(paiement_id__in=contrats_ids).count()
 
         nb_paiements = Paiement.objects.filter(contrat_id__in=contrats_ids).count()
         derniers_paiements = Paiement.objects.filter(contrat_id__in=contrats_ids).select_related(
@@ -109,12 +118,15 @@ def dashboard(request):
             'taux_occupation': taux_occupation,
             'paiements_retard': paiements_retard,
             'contrats_expirant': contrats_expirant,
+            'nbgaranties': nb_garanties,
+            'nbcaisses': nb_caisses,
             'visites_planifiees': 0,  # À implémenter plus tard
             'derniers_paiements': derniers_paiements,
         }
         return render(request, 'home_proprietaire.html', stats)
 
     from app_caisse.models import Caisse
+    from app_base.models import Garantie
     stats = {
         'nbagence': Agence.objects.filter(active=True).count(),
         'nbpropriete': Propriete.objects.count(),
@@ -147,6 +159,10 @@ class AgenceListView(LoginRequiredMixin, ListView):
                 default=0
             )
         )
+        user = self.request.user
+        if user.is_authenticated and getattr(user, 'profile', None) and user.profile.name == 'Proprietaire':
+            ids = Propriete.objects.filter(proprietaire__user=user).values_list('agence', flat=True).distinct()
+            qs = qs.filter(id__in=ids)
         query = self.request.GET.get('q')
         if query:
             qs = qs.filter(nom__icontains=query)
@@ -294,6 +310,17 @@ class ClientListView(LoginRequiredMixin, ListView):
     template_name = 'clients.html'
     context_object_name = 'clients'
     paginate_by = 10
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        user = self.request.user
+        if user.is_authenticated and getattr(user, 'profile', None) and user.profile.name == 'Proprietaire':
+            proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+            contrats_ids = Contrat.objects.filter(
+                Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
+            ).values_list('client', flat=True).distinct()
+            qs = qs.filter(id__in=contrats_ids)
+        return qs
 
 class ClientDetailView(LoginRequiredMixin, DetailView):
     model = Client
@@ -445,6 +472,9 @@ class ProprieteListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset().select_related('agence', 'proprietaire__user', 'type_propriete', 'agent__user')
+        user = self.request.user
+        if user.is_authenticated and getattr(user, 'profile', None) and user.profile.name == 'Proprietaire':
+            qs = qs.filter(proprietaire__user=user)
         query = self.request.GET.get('q')
         if query:
             qs = qs.filter(
@@ -501,6 +531,14 @@ class LogementListView(LoginRequiredMixin, ListView):
     context_object_name = 'logements'
     paginate_by = 10
 
+    def get_queryset(self):
+        qs = super().get_queryset().select_related('propriete__type_propriete', 'propriete__agence', 'propriete__proprietaire__user')
+        user = self.request.user
+        if user.is_authenticated and getattr(user, 'profile', None) and user.profile.name == 'Proprietaire':
+            proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+            qs = qs.filter(propriete_id__in=proprietes_ids)
+        return qs
+
 class LogementDetailView(LoginRequiredMixin, DetailView):
     model = Logement
     template_name = 'logement_detail.html'
@@ -545,6 +583,19 @@ class ContratListView(LoginRequiredMixin, ListView):
     context_object_name = 'contrats'
     paginate_by = 10
 
+    def get_queryset(self):
+        qs = super().get_queryset().select_related(
+            'client__user', 'agent__user',
+            'propriete__type_propriete', 'logement__propriete__type_propriete'
+        )
+        user = self.request.user
+        if user.is_authenticated and getattr(user, 'profile', None) and user.profile.name == 'Proprietaire':
+            proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+            qs = qs.filter(
+                Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
+            )
+        return qs
+
 class ContratDetailView(LoginRequiredMixin, DetailView):
     model = Contrat
     template_name = 'contrat_detail.html'
@@ -587,6 +638,17 @@ class GarantieListView(LoginRequiredMixin, ListView):
     template_name = 'garantie_list.html'
     context_object_name = 'garanties'
     paginate_by = 10
+
+    def get_queryset(self):
+        qs = super().get_queryset().select_related('contrat__client__user')
+        user = self.request.user
+        if user.is_authenticated and getattr(user, 'profile', None) and user.profile.name == 'Proprietaire':
+            proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+            contrats_ids = Contrat.objects.filter(
+                Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
+            ).values_list('id', flat=True)
+            qs = qs.filter(contrat_id__in=contrats_ids)
+        return qs
 
 class GarantieCreateView(LoginRequiredMixin, CreateView):
     model = Garantie

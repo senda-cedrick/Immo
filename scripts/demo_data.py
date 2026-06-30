@@ -315,31 +315,39 @@ def create_demo_data():
         logement_b201 = Logement.objects.get(identifiant='B-201')  # Loué sans contrat
         logement_v001 = Logement.objects.get(identifiant='V-001')  # Loué sans contrat
 
+        # Définir explicitement le propriétaire pour chaque contrat
+        # Le propriétaire est déterminé à partir du logement
+        proprio_obj = Proprietaire.objects.first()  # Il n'y a qu'un seul propriétaire dans les données de demo
+
         contrats_data = [
             {
                 'reference': 'LOC-2024-001', 'type': 'LOCATION',
-                'logement': logement1, 'propriete': None, # Lié au logement, pas à la propriété entière
+                'logement': logement1, 'propriete': None,
+                'proprietaire': logement1.propriete.proprietaire,  # Définir explicitement le propriétaire
                 'client': client1, 'agent': agent_obj,
                 'date_debut': date.today() - timedelta(days=100), 'montant': Decimal('450.00'),
                 'conditions': 'Loyer mensuel, payable avant le 5 de chaque mois.', 'statut': 'ACTIF'
             },
             {
                 'reference': 'LOC-2024-002', 'type': 'LOCATION',
-                'logement': logement3, 'propriete': None, # Propriété 3 (300 Bd Lumumba) - LOUE
+                'logement': logement3, 'propriete': None,
+                'proprietaire': logement3.propriete.proprietaire,  # Définir explicitement le propriétaire
                 'client': client2, 'agent': agent_obj,
                 'date_debut': date.today() - timedelta(days=80), 'montant': Decimal('350.00'),
                 'conditions': 'Loyer mensuel, caution incluse.', 'statut': 'ACTIF'
             },
             {
                 'reference': 'LOC-2024-003', 'type': 'LOCATION',
-                'logement': logement_b201, 'propriete': None, # B-201 - LOUE
+                'logement': logement_b201, 'propriete': None,
+                'proprietaire': logement_b201.propriete.proprietaire,  # Définir explicitement le propriétaire
                 'client': client3, 'agent': agent_obj,
                 'date_debut': date.today() - timedelta(days=90), 'montant': Decimal('550.00'),
                 'conditions': 'Loyer mensuel, appartement premium.', 'statut': 'ACTIF'
             },
             {
                 'reference': 'LOC-2024-004', 'type': 'LOCATION',
-                'logement': logement_v001, 'propriete': None, # V-001 - LOUE
+                'logement': logement_v001, 'propriete': None,
+                'proprietaire': logement_v001.propriete.proprietaire,  # Définir explicitement le propriétaire
                 'client': client4, 'agent': agent_obj,
                 'date_debut': date.today() - timedelta(days=70), 'montant': Decimal('600.00'),
                 'conditions': 'Loyer mensuel, maison avec jardin.', 'statut': 'ACTIF'

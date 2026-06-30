@@ -31,6 +31,19 @@ def dashboard(request):
         proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
         nb_prop = proprietes_ids.count()
         nb_log = Logement.objects.filter(propriete_id__in=proprietes_ids).count()
+
+        # Calculer le nombre d'agences qui gèrent les propriétés du propriétaire
+        nb_agences = Propriete.objects.filter(
+            id__in=proprietes_ids
+        ).values('agence').distinct().count()
+
+        # Calculer le nombre de clients qui louent les logements du propriétaire
+        contrats_ids = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
+        ).values_list('id', flat=True)
+        clients_ids = Contrat.objects.filter(id__in=contrats_ids).values('client').distinct()
+        nb_clients = clients_ids.count()
+
         nb_contrat_actif = Contrat.objects.filter(
             Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
             statut='ACTIF'
@@ -39,27 +52,62 @@ def dashboard(request):
             Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
             statut='BROUILLON'
         ).count()
-        contrats_ids = Contrat.objects.filter(
-            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
-        ).values_list('id', flat=True)
+
+        # Calculer le revenu mensuel estimé
+        from django.db.models import Sum
+        revenu_mensuel = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
+            statut='ACTIF'
+        ).aggregate(total=Sum('montant'))['total'] or 0
+
+        # Calculer le taux d'occupation
+        taux_occupation = 0
+        if nb_log > 0:
+            logements_occupes = Contrat.objects.filter(
+                Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
+                statut='ACTIF'
+            ).values('logement').distinct().count()
+            taux_occupation = round((logements_occupes / nb_log) * 100)
+
+        # Calculer le nombre de paiements en retard
+        paiements_retard = Paiement.objects.filter(
+            contrat_id__in=contrats_ids,
+            statut='EN_RETARD'
+        ).count()
+
+        # Calculer le nombre de contrats expirant dans les 30 jours
+        from django.utils import timezone
+        from datetime import timedelta
+        contrats_expirant = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
+            statut='ACTIF',
+            date_fin__gte=timezone.now(),
+            date_fin__lte=timezone.now() + timedelta(days=30)
+        ).count()
+
         nb_paiements = Paiement.objects.filter(contrat_id__in=contrats_ids).count()
         derniers_paiements = Paiement.objects.filter(contrat_id__in=contrats_ids).select_related(
             'client__user', 'contrat'
         ).order_by('-date_paiement')[:5]
+
+        # Utiliser le template dédié pour les propriétaires
         stats = {
-            'nbagence': 0,
+            'nbagence': nb_agences,
             'nbpropriete': nb_prop,
-            'nbclients': 0,
-            'nbproprietaires': 0,
-            'nbpersonnel': 0,
-            'nbcontrats': nb_contrat_actif + nb_contrat_non_sign,
-            'nbpaiements': nb_paiements,
-            'nbcaisse': 0,
-            'nbgaranties': 0,
+            'nbclients': nb_clients,
             'nblogements': nb_log,
+            'nbcontrats': nb_contrat_actif + nb_contrat_non_sign,
+            'nbcontrats_actifs': nb_contrat_actif,
+            'nbcontrats_brouillons': nb_contrat_non_sign,
+            'nbpaiements': nb_paiements,
+            'revenu_mensuel': revenu_mensuel,
+            'taux_occupation': taux_occupation,
+            'paiements_retard': paiements_retard,
+            'contrats_expirant': contrats_expirant,
+            'visites_planifiees': 0,  # À implémenter plus tard
             'derniers_paiements': derniers_paiements,
         }
-        return render(request, 'home.html', stats)
+        return render(request, 'home_proprietaire.html', stats)
 
     from app_caisse.models import Caisse
     stats = {

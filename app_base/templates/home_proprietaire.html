@@ -4,23 +4,22 @@
 <div class="content-wrapper">
   <div class="container-fluid">
 
-    <!-- En-tête -->
+    <!-- En-tête personnalisée pour les propriétaires -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
-        <h4 class="text-white fw-bold mb-1">Tableau de bord</h4>
-        <p class="text-white-50 mb-0" style="font-size: 0.9rem;">Bienvenue, {{ user.noms }}</p>
+        <h4 class="text-white fw-bold mb-1">Mon Portefeuille Immobilier</h4>
+        <p class="text-white-50 mb-0" style="font-size: 0.9rem;">Bienvenue, {{ user.noms }} | {{ nbpropriete }} propriété(s)</p>
       </div>
     </div>
 
-    <!-- Première ligne : KPIs principaux -->
+    <!-- Première ligne : Statistiques clés -->
     <div class="row g-4 mb-4">
-      <!-- Pour les propriétaires, montrer les agences qui gèrent leurs biens -->
       <a href="{% url 'agences' %}" class="col-xl-3 col-md-6 text-decoration-none">
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 kpi-card kpi-blue">
           <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-start">
               <div>
-                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">AGENCES</p>
+                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">AGENCES PARTENAIRES</p>
                 <h2 class="text-white fw-bold mb-0 display-6">{{ nbagence }}</h2>
               </div>
               <div class="kpi-icon">
@@ -36,7 +35,7 @@
           <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-start">
               <div>
-                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">PROPRIÉTÉS</p>
+                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">MES PROPRIÉTÉS</p>
                 <h2 class="text-white fw-bold mb-0 display-6">{{ nbpropriete }}</h2>
               </div>
               <div class="kpi-icon">
@@ -47,13 +46,12 @@
         </div>
       </a>
 
-      <!-- Pour les propriétaires, montrer les clients qui louent leurs logements -->
       <a href="{% url 'clients' %}" class="col-xl-3 col-md-6 text-decoration-none">
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 kpi-card kpi-purple">
           <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-start">
               <div>
-                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">CLIENTS</p>
+                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">MES LOCATAIRES</p>
                 <h2 class="text-white fw-bold mb-0 display-6">{{ nbclients }}</h2>
               </div>
               <div class="kpi-icon">
@@ -64,59 +62,26 @@
         </div>
       </a>
 
-      <!-- Masquer la liste des propriétaires pour les propriétaires individuels -->
-      {% if not user.is_proprietaire %}
-      <a href="{% url 'proprietaires' %}" class="col-xl-3 col-md-6 text-decoration-none">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 kpi-card kpi-orange">
+      <a href="{% url 'logements' %}" class="col-xl-3 col-md-6 text-decoration-none">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 kpi-card kpi-pink">
           <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-start">
               <div>
-                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">PROPRIÉTAIRES</p>
-                <h2 class="text-white fw-bold mb-0 display-6">{{ nbproprietaires }}</h2>
+                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">MES LOGEMENTS</p>
+                <h2 class="text-white fw-bold mb-0 display-6">{{ nblogements }}</h2>
               </div>
               <div class="kpi-icon">
-                <i class="mdi mdi-account-tie"></i>
+                <i class="mdi mdi-home-floor-3"></i>
               </div>
             </div>
           </div>
         </div>
       </a>
-      {% endif %}
     </div>
 
-    <!-- Deuxième ligne : KPIs secondaires -->
+    <!-- Deuxième ligne : Gestion des contrats et paiements -->
     <div class="row g-4 mb-4">
-      <!-- Masquer le personnel pour les propriétaires -->
-      {% if not user.is_proprietaire %}
-      <a href="{% url 'personnels' %}" class="col-xl-3 col-md-6 text-decoration-none">
-        <div class="card border-0 shadow-sm rounded-4 h-100 kpi-card-sm kpi-teal">
-          <div class="card-body p-4 d-flex align-items-center">
-            <div class="kpi-icon-sm me-3">
-              <i class="mdi mdi-account-star"></i>
-            </div>
-            <div class="flex-grow-1">
-              <h3 class="text-white fw-bold mb-0">{{ nbpersonnel }}</h3>
-              <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Personnel</p>
-            </div>
-          </div>
-        </div>
-      </a>
-      {% endif %}
-
-      <a href="{% url 'logements' %}" class="col-xl-3 col-md-6 text-decoration-none">
-        <div class="card border-0 shadow-sm rounded-4 h-100 kpi-card-sm kpi-pink">
-          <div class="card-body p-4 d-flex align-items-center">
-            <div class="kpi-icon-sm me-3">
-              <i class="mdi mdi-home-floor-3"></i>
-            </div>
-            <div class="flex-grow-1">
-              <h3 class="text-white fw-bold mb-0">{{ nblogements }}</h3>
-              <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Logements</p>
-            </div>
-          </div>
-        </div>
-      </a>
-      <a href="{% url 'contrats' %}" class="col-xl-3 col-md-6 text-decoration-none">
+      <a href="{% url 'contrats' %}" class="col-xl-6 col-md-6 text-decoration-none">
         <div class="card border-0 shadow-sm rounded-4 h-100 kpi-card-sm kpi-indigo">
           <div class="card-body p-4 d-flex align-items-center">
             <div class="kpi-icon-sm me-3">
@@ -124,12 +89,13 @@
             </div>
             <div class="flex-grow-1">
               <h3 class="text-white fw-bold mb-0">{{ nbcontrats }}</h3>
-              <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Contrats</p>
+              <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Contrats de location ({{ nbcontrats_actifs }} actifs, {{ nbcontrats_brouillons }} brouillons)</p>
             </div>
           </div>
         </div>
       </a>
-      <a href="{% url 'paiements' %}" class="col-xl-3 col-md-6 text-decoration-none">
+
+      <a href="{% url 'paiements' %}" class="col-xl-6 col-md-6 text-decoration-none">
         <div class="card border-0 shadow-sm rounded-4 h-100 kpi-card-sm kpi-cyan">
           <div class="card-body p-4 d-flex align-items-center">
             <div class="kpi-icon-sm me-3">
@@ -137,52 +103,59 @@
             </div>
             <div class="flex-grow-1">
               <h3 class="text-white fw-bold mb-0">{{ nbpaiements }}</h3>
-              <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Paiements</p>
+              <p class="text-white-50 mb-0" style="font-size: 0.85rem;">Paiements reçus ce mois</p>
             </div>
           </div>
         </div>
       </a>
     </div>
 
-    <!-- Troisième ligne : Cartes caisses, garanties, etc. -->
+    <!-- Section spéciale : Résumé financier -->
     <div class="row g-4 mb-4">
-    <!-- Masquer caisses et garanties pour les propriétaires -->
-    {% if not user.is_proprietaire %}
-    <a href="{% url 'caisses' %}" class="col-sm-4 text-decoration-none">
-      <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden h-100">
-        <div class="card-body p-4">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-bold text-dark mb-0"><i class="mdi mdi-cash-register text-primary me-2"></i>Caisses</h6>
-            <span class="badge bg-primary text-white rounded-pill px-3 py-1">{{ nbcaisse }} total</span>
+      <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 bg-white">
+          <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-4 pb-0">
+            <h5 class="fw-bold text-dark mb-0"><i class="mdi mdi-chart-line me-2 text-success"></i>Résumé Financier</h5>
           </div>
-          <h2 class="fw-bold mb-0 text-primary">{{ nbcaisse }}</h2>
+          <div class="card-body p-4">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="d-flex align-items-center">
+                  <div class="me-3">
+                    <i class="mdi mdi-cash-multiple text-success" style="font-size: 2rem;"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-bold mb-0" style="color: #2c3e50;">{{ revenu_mensuel }} CDF</h3>
+                    <p class="text-muted mb-0" style="font-size: 0.85rem;">Revenu mensuel estimé</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="d-flex align-items-center">
+                  <div class="me-3">
+                    <i class="mdi mdi-calendar-check text-info" style="font-size: 2rem;"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-bold mb-0" style="color: #2c3e50;">{{ taux_occupation }}%</h3>
+                    <p class="text-muted mb-0" style="font-size: 0.85rem;">Taux d'occupation</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="d-flex align-items-center">
+                  <div class="me-3">
+                    <i class="mdi mdi-alert-circle text-warning" style="font-size: 2rem;"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-bold mb-0" style="color: #2c3e50;">{{ paiements_retard }}</h3>
+                    <p class="text-muted mb-0" style="font-size: 0.85rem;">Paiements en retard</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </a>
-      <a href="{% url 'garanties' %}" class="col-sm-4 text-decoration-none">
-        <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden h-100">
-          <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h6 class="fw-bold text-dark mb-0"><i class="mdi mdi-shield-check text-success me-2"></i>Garanties</h6>
-              <span class="badge bg-success text-white rounded-pill px-3 py-1">{{ nbgaranties }} total</span>
-            </div>
-            <h2 class="fw-bold mb-0 text-success">{{ nbgaranties }}</h2>
-          </div>
-        </div>
-      </a>
-    {% endif %}
-
-      <a href="{% url 'paiements' %}" class="col-sm-4 text-decoration-none">
-        <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden h-100">
-          <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h6 class="fw-bold text-dark mb-0"><i class="mdi mdi-credit-card text-info me-2"></i>Paiements</h6>
-              <span class="badge bg-info text-white rounded-pill px-3 py-1">{{ nbpaiements }} total</span>
-            </div>
-            <h2 class="fw-bold mb-0 text-info">{{ nbpaiements }}</h2>
-          </div>
-        </div>
-      </a>
     </div>
 
     <!-- Tableau : Derniers Paiements -->
@@ -190,7 +163,7 @@
       <div class="col-12">
         <div class="card border-0 shadow-sm rounded-4 bg-white">
           <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-4 pb-0">
-            <h5 class="fw-bold text-dark mb-0"><i class="mdi mdi-credit-card me-2 text-primary"></i>Derniers Paiements</h5>
+            <h5 class="fw-bold text-dark mb-0"><i class="mdi mdi-credit-card me-2 text-primary"></i>Derniers Paiements Reçus</h5>
             <span class="badge bg-primary text-white rounded-pill px-3 py-1">{{ nbpaiements }} total</span>
           </div>
           <div class="card-body p-4">
@@ -198,11 +171,10 @@
               <table class="table table-hover align-middle mb-0">
                 <thead>
                   <tr>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Client</th>
+                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Locataire</th>
+                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Logement</th>
                     <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Montant</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Payé le</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Échéance</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Type</th>
+                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Date</th>
                     <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Statut</th>
                   </tr>
                 </thead>
@@ -217,14 +189,17 @@
                         <span class="fw-semibold text-dark">{{ p.client.user.noms }}</span>
                       </div>
                     </td>
+                    <td class="py-3">
+                      <span class="badge bg-light text-dark rounded-pill px-2 py-1">
+                        {{ p.contrat.logement.identifiant|default:"—" }}
+                      </span>
+                    </td>
                     <td class="py-3 fw-bold" style="color: #2c3e50;">{{ p.montant }} CDF</td>
                     <td class="py-3">{{ p.date_paiement|date:"d M Y"|default:"—" }}</td>
-                    <td class="py-3">{{ p.date_echeance|date:"d M Y" }}</td>
-                    <td class="py-3"><span class="badge bg-light text-dark rounded-pill px-3 py-1">{{ p.get_type_paiement_display }}</span></td>
                     <td class="py-3">
                       {% if p.statut == 'PAYE' %}
                         <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1">
-                          <i class="mdi mdi-check-circle me-1" style="font-size: 0.7rem;"></i> Confirmé
+                          <i class="mdi mdi-check-circle me-1" style="font-size: 0.7rem;"></i> Payé
                         </span>
                       {% elif p.statut == 'EN_RETARD' or p.est_en_retard %}
                         <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-1">
@@ -239,14 +214,49 @@
                   </tr>
                   {% empty %}
                   <tr>
-                    <td colspan="6" class="text-center py-5 text-muted">
+                    <td colspan="5" class="text-center py-5 text-muted">
                       <i class="mdi mdi-credit-card-off" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
-                      Aucun paiement enregistré.
+                      Aucun paiement enregistré pour le moment.
                     </td>
                   </tr>
                   {% endfor %}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Alertes et Rappels -->
+    <div class="row g-4 mt-2">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 bg-white">
+          <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-4 pb-0">
+            <h5 class="fw-bold text-dark mb-0"><i class="mdi mdi-bell me-2 text-warning"></i>Alertes et Rappels</h5>
+          </div>
+          <div class="card-body p-4">
+            <div class="alert alert-warning d-flex align-items-center p-3 mb-3" role="alert">
+              <i class="mdi mdi-alert-circle me-3" style="font-size: 1.5rem;"></i>
+              <div>
+                Vous avez <strong>{{ contrats_expirant }}</strong> contrat(s) expirant dans les 30 prochains jours.
+                <a href="{% url 'contrats' %}" class="alert-link ms-2">Voir les détails →</a>
+              </div>
+            </div>
+
+            <div class="alert alert-info d-flex align-items-center p-3 mb-3" role="alert">
+              <i class="mdi mdi-calendar-clock me-3" style="font-size: 1.5rem;"></i>
+              <div>
+                <strong>{{ visites_planifiees }}</strong> visite(s) de propriété planifiée(s) cette semaine.
+                <a href="#" class="alert-link ms-2">Gérer le calendrier →</a>
+              </div>
+            </div>
+
+            <div class="alert alert-success d-flex align-items-center p-3" role="alert">
+              <i class="mdi mdi-check-circle me-3" style="font-size: 1.5rem;"></i>
+              <div>
+                Tout est à jour ! Vos <strong>{{ nbpropriete }}</strong> propriétés sont bien gérées.
+              </div>
             </div>
           </div>
         </div>
@@ -297,7 +307,9 @@
   .kpi-blue  { background: linear-gradient(135deg, var(--c-agence) 0%, var(--c-agence) 66%) !important; }
   .kpi-green { background: linear-gradient(135deg, var(--c-propriete) 0%, var(--c-propriete) 66%) !important; }
   .kpi-purple { background: linear-gradient(135deg, var(--c-client) 0%, var(--c-client) 66%) !important; }
-  .kpi-orange { background: linear-gradient(135deg, var(--c-proprietaire) 0%, var(--c-proprietaire) 66%) !important; }
+  .kpi-pink  { background: linear-gradient(135deg, var(--c-logement) 0%, var(--c-logement) 66%) !important; }
+  .kpi-indigo { background: linear-gradient(135deg, var(--c-contrat) 0%, var(--c-contrat) 66%) !important; }
+  .kpi-cyan   { background: linear-gradient(135deg, var(--c-paiement) 0%, var(--c-paiement) 66%) !important; }
 
   /* ── KPI Cards Secondaires ── */
   .kpi-card-sm {
@@ -319,11 +331,6 @@
     color: rgba(255,255,255,0.9);
     flex-shrink: 0;
   }
-
-  .kpi-teal   { background: linear-gradient(135deg, var(--c-personnel) 0%, var(--c-personnel) 66%) !important; }
-  .kpi-pink   { background: linear-gradient(135deg, var(--c-logement) 0%, var(--c-logement) 66%) !important; }
-  .kpi-indigo { background: linear-gradient(135deg, var(--c-contrat) 0%, var(--c-contrat) 66%) !important; }
-  .kpi-cyan   { background: linear-gradient(135deg, var(--c-paiement) 0%, var(--c-paiement) 66%) !important; }
 
   /* ── Tableau ── */
   .table thead th { border-bottom: 2px solid #f1f3f5 !important; }

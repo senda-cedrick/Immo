@@ -167,6 +167,7 @@ class Contrat(models.Model):
     
     propriete = models.ForeignKey(Propriete, on_delete=models.CASCADE, related_name='contrats', null=True, blank=True)
     logement = models.ForeignKey(Logement, on_delete=models.CASCADE, related_name='contrats', null=True, blank=True)
+    proprietaire = models.ForeignKey('Proprietaire', on_delete=models.CASCADE, related_name='contrats')
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='contrats')
     agent = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True, blank=True, related_name='contrats_geres')
     
@@ -192,6 +193,18 @@ class Contrat(models.Model):
 
     def __str__(self):
         return f"{self.reference} - {self.type}"
+
+    def save(self, *args, **kwargs):
+        """
+        Remplit automatiquement le propriétaire si ce n'est pas déjà défini.
+        Le propriétaire est déterminé à partir de la propriété ou du logement lié.
+        """
+        if not self.proprietaire:
+            if self.propriete:
+                self.proprietaire = self.propriete.proprietaire
+            elif self.logement:
+                self.proprietaire = self.logement.propriete.proprietaire
+        super().save(*args, **kwargs)
 
     class Meta:
         constraints = [

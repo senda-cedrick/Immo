@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+  <p style="text-align: right;font-size: 13px ">Kinshasa, le {{date}}</p>
+  <table class="styled-table" >
+    <thead>
+      
+       <tr >
+           <th style="text-align: left; padding-top: 5px;width:20%"><strong><img src="app_controle/static/flag.png" alt="Ministere de defense" style="width:90px;height:90px;border-radius:123px;objectif-fit:cover;margin-right:0px"/></strong></th>
+           <th style="text-align: center; padding-top: 5px;width:60%"><p style="font-size: 16px;margin-left:10px;visibility:hidden">  MINISTERE DE LA DEFENSE NATIONALE  ET ANCIENS COMBATTANTS <br><i style="font-size: 12px">INSPECTORAT GENERAL DES FORCES ARMEES DE LA REPUBLIQUE DEMOCRATIQUE DU CONGO  </i>          </p></th>
+           <th style="text-align: right; padding-top: 5px;width:20%"><strong><img src="app_controle/static/rdc1.png" alt="Ministere de defense" style="width:90px;height:90px;border-radius:123px;objectif-fit:cover;margin-right:0px"/></strong></th>
+           
+       </tr>
+       </thead>
+     </table>
+<hr>
+<div style="text-align: center;">
+<h2>RAPPORT DE SYNTHESE CONTROLE DES EFFECTIFS MILITAIRES AU SEIN DES FARDC DE LA GARNISON DE {{province}}
+</h2>
+<table class="table" border="1px">   
+    
+    <tr style="padding-top: 5px;">
+      
+      <td style="text-align: center; padding-top: 5px;"><strong><h3 style="font-style: bold">EFFECTIFS A CONTROLER</h3></strong></td>
+    </tr>
+</table>
+<table class="table" border="1px">
+    
+    <tr style="padding-top: 5px;">
+      <td style="text-align: center; padding-top: 3px;"><strong>EFFECTIF ATTENDU<sup>1</sup> : {{effatt}}</strong></td>
+      <td style="text-align: center; padding-top: 3px;"><strong>EFFECTIF INSCRIT AU CONTROLE<sup>2</sup> : {{inscr}}</strong></td>
+
+    </tr>
+</table>
+<table class="table" border="1px">
+    
+    <tr style="padding-top: 3px;">
+      <td style="text-align: center; padding-top: 5px;">
+        <h3>MILITAIRES NON CONFIRMES<sup>3</sup> : <strong style="color:red">{{nonv}}</h3></strong>
+      </td>
+    </tr>
+</table>
+ <br>
+ <table class="table" border="1px">
+    
+    <tr style="padding-top: 5px;">
+      <td style="text-align: center; padding-top: 5px;"><strong><h3>MILITAIRES CONTROLES PRESENTS PHYSIQUEMENT</h3></strong></td>
+    </tr>
+</table>
+ <table class="table" border="1px">
+    <tr style="padding-top: 5px;">
+      <td style="text-align: center; padding-top: 5px;"><strong>MILITAIRES PRESENTS A L'UNITE</strong><sup>4</sup> : <strong style="color: green">{{prueffCtr}}</strong></td>
+      <td style="text-align: center; padding-top: 5px;"><strong>MILITAIRES PRESENTS JUSTIFIES</strong><sup>5</sup> : <strong style="color: green">{{prjeffCtr}}</strong></td>
+
+    </tr>
+</table>
+
+ <table class="table" border="1px">
+    
+    <tr style="padding-top: 3px;">
+      <td style="text-align: center; padding-top: 3px;">
+        <h3>TOTAL DE L'EFFECTIF MILITAIRE PRESENT PHYSIQUEMENT  : <strong style="color: green">{{effctr}}</strong></h3>
+      </td>
+    </tr>
+</table>
+<br>
+<table class="table" border="1px">
+    <tr style="padding-top: 3px;">
+      <td style="text-align: center; padding-top: 5px;"><strong>TOTAL MILITAIRES ABSENTS JUSTIFIES MISSION ET FORMATION<sup>6</sup></strong> : <strong style="color: green">{{effjs}}</strong></td>
+    </tr>
+</table>
+
+</table>
+<br>
+<table class="table" border="1px">
+    <tr style="padding-top: 5px;">
+      <td style="text-align: center; padding-top: 5px;"><strong>TOTAL MILITAIRES CONTROLES DE LA GARNISON DE BANDUNDU<sup>7</sup></strong> : <strong style="color:green">{{totactifs}}</strong></td>
+    </tr>
+</table>
+<br>
+
+
+<table class="table" border="1px">
+    
+    <tr style="padding-top: 5px;">
+      
+      <td style="text-align: center; padding-top: 5px;"><h3>TOTAL EFFECTIF DECEDES ET RETRAITES : <strong style="color:red">{{toldr}}</h3></strong></td>
+    </tr>
+</table>
+<br>
+<table class="table" border="1px">
+    
+    <tr style="padding-top: 5px;">
+      
+      <td style="text-align: center; padding-top: 5px;"><strong><h3>MILITAIRES NON CONTROLES</h3></strong></td>
+    </tr>
+</table>
+ <table class="table" border="1px">
+    <tr style="padding-top: 5px;">
+      <td style="text-align: center; padding-top: 5px;"><strong>ABSENTS NON JUSTIFIES</strong><sup>9</sup> : <strong style="color:red">{{effnjs}}</strong></td>
+      <td style="text-align: center; padding-top: 5px;"><strong>NON CONFIRMES</strong> : <strong style="color:red">{{nonv}}
+    </strong></td>
+
+    </tr>
+</table>
+<table class="table" border="1px">
+    
+    <tr style="padding-top: 5px;">
+      
+      <td style="text-align: center; padding-top: 5px;"><h2>TOTAL MILITAIRES NON VUS <sup>10</sup> :<strong style="color:red">{{totnvus}}</h2></strong></td>
+    </tr>
+</table>
+<br>
+<hr>
+<table>
+  <tr>
+    <td style="text-align:left; " width="67%">
+      <sup style="font-size:12px  "><strong> 1. Militaires repris dans la base de données des FARDC</strong></sup><br/>
+      <sup style="font-size:12px "><strong>2. Militaires repris dans les listes des commandants des unités</strong></sup><br/>
+      <sup style="font-size:12px;color:red "><strong>3. Militaires non confirmés : écart non justifié entre la base de données et les listes des commandants</strong></sup><br/>
+      <sup style="font-size:12px;color:green "><strong>4. Militaires présents physiquement à l'unité : Militaires en ordre, présents physiquement au sein de son unité lors du contrôle biométrique des effectifs militaires sur terrain</strong></sup><br/>
+      <sup style="font-size:12px;color:green  "><strong>5. Militaires présents justifiés : Militaires présents à l'unité justifiés par des pièces justificatives valables</strong></sup ><br/>
+      <sup style="font-size:12px;color:green"><strong>6. Militaires absents justifiés : Militaires absents physiquement lors du contrôle biométrique physique sur terrain, mais justifiés avec des pièces justificatives valables</strong></sup><br/>
+      <sup style="font-size:12px; color:green  "><strong>7. Militaires actifs : somme des militaires présents physiquement et des militaires absents justifiés</strong></sup><br/>
+      <sup style="font-size:12px;color:red"><strong>8. Militaires décédés et Militaires retraités : anomalie. Situation devant se trouver dans la base de données des inactifs</strong></sup><br/>
+      <sup style="font-size:12px;color:red "><strong>9. Militaires absents non justifiés : anomalie. Militaires inscrits au contrôle mais absents physiquement lors du contrôle biométrique sur terrain. Sans justificatifs</strong></sup><br/>
+      <sup style="font-size:12px;color:red "><strong>10. Militaires non vus : anomalie. Somme des militaires absents non justifiés et militaires non vus.</strong></sup > 
+      <ul>
+        <li><strong style="color:red">Rouge : anomalie, pas ok</strong></li>
+        <li><strong style="color:green">Vert : Situation normale, ok</strong></li>
+      </ul>  
+    </td>
+    <td style="text-align:right;">
+      <img src="mediafiles/qrcode/{{img}}" width="120" alt="qrcode"/><br>
+      <h6>Imprimé via l’application <br> « CONTROL MANAGER »  <br>
+          Par {{noms}} <br> <br>
+          Rapport Certifié conforme 
+      </h6>
+      {{ signature }}
+      <img src="app_controle/static/signature.png" alt="Ministere de la defense" style="width:90px; object-fit: cover;margin-right:0px"/>      
+    </td>
+  </tr>
+</table>
+ 
+</body>
+</html>

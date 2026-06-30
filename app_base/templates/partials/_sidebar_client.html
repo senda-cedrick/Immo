@@ -1,0 +1,247 @@
+{% load static %}
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+  <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+    <a class="sidebar-brand brand-logo" href="{% url 'home' %}">
+      <span style="font-size: 1.5rem; font-weight: 700;">
+        <i class="mdi mdi-home-city" style="color: var(--c-dashboard);"></i> Immo
+      </span>
+    </a>
+    <a class="sidebar-brand brand-logo-mini" href="{% url 'home' %}">
+      <span style="font-size: 1rem; font-weight: 700;">
+        <i class="mdi mdi-home-city" style="color: var(--c-dashboard);"></i>
+      </span>
+    </a>
+  </div>
+  <ul class="nav">
+    <!-- Profil utilisateur -->
+    <li class="nav-item profile">
+      <div class="profile-desc">
+        <div class="profile-pic">
+          <div class="count-indicator">
+            <img class="img-xs rounded-circle" src="{% static 'assets/images/faces/face28.jpg' %}" alt="">
+            <span class="count bg-success"></span>
+          </div>
+          <div class="profile-name">
+            <h5 class="mb-0 font-weight-normal">{{ user.noms }}</h5>
+            <span>Client</span>
+          </div>
+        </div>
+        <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
+        <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
+          <a href="{% url 'page_modifpassword' %}" class="dropdown-item preview-item">
+            <div class="preview-thumbnail">
+              <div class="preview-icon bg-dark rounded-circle">
+                <i class="mdi mdi-lock" style="color: var(--c-admin);"></i>
+              </div>
+            </div>
+            <div class="preview-item-content">
+              <p class="preview-subject ellipsis mb-1 text-small">Modifier mot de passe</p>
+            </div>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="{% url 'logout' %}" class="dropdown-item preview-item">
+            <div class="preview-thumbnail">
+              <div class="preview-icon bg-dark rounded-circle">
+                <i class="mdi mdi-logout" style="color: var(--c-impayes);"></i>
+              </div>
+            </div>
+            <div class="preview-item-content">
+              <p class="preview-subject ellipsis mb-1 text-small">Déconnexion</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </li>
+
+    <!-- Section : Mon Espace -->
+    <li class="nav-item nav-category">
+      <span class="nav-link">Mon Espace</span>
+    </li>
+    <li class="nav-item menu-items {% if request.resolver_match.url_name == 'home' %}active{% endif %}" data-color="var(--c-dashboard)">
+      <a class="nav-link" href="{% url 'home' %}">
+        <span class="menu-icon"><i class="mdi mdi-view-dashboard"></i></span>
+        <span class="menu-title">Tableau de bord</span>
+      </a>
+    </li>
+
+    <!-- Section : Mes Contrats -->
+    <li class="nav-item nav-category">
+      <span class="nav-link">Mes Contrats</span>
+    </li>
+    <li class="nav-item menu-items {% if 'contrat' in request.path %}active{% endif %}" data-color="var(--c-contrat)">
+      <a class="nav-link" href="{% url 'contrats' %}">
+        <span class="menu-icon"><i class="mdi mdi-file-document"></i></span>
+        <span class="menu-title">Mes contrats</span>
+      </a>
+    </li>
+
+    <!-- Section : Mes Paiements -->
+    <li class="nav-item nav-category">
+      <span class="nav-link">Mes Paiements</span>
+    </li>
+    <li class="nav-item menu-items {% if 'paiement' in request.path %}active{% endif %}" data-color="var(--c-paiement)">
+      <a class="nav-link" href="{% url 'paiements' %}">
+        <span class="menu-icon"><i class="mdi mdi-credit-card"></i></span>
+        <span class="menu-title">Mes paiements</span>
+      </a>
+    </li>
+
+    <!-- Section : Mon Profil -->
+    <li class="nav-item nav-category">
+      <span class="nav-link">Mon Profil</span>
+    </li>
+    <li class="nav-item menu-items" data-color="var(--c-client)">
+      <a class="nav-link" href="{% url 'clients' %}">
+        <span class="menu-icon"><i class="mdi mdi-account"></i></span>
+        <span class="menu-title">Mon profil</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<style>
+  /* ─────────────────────────────────────────
+     PALETTE DE COULEURS PAR MODÈLE MÉTIER
+     ───────────────────────────────────────── */
+  :root {
+    --c-dashboard:      #4fc3f7;
+    --c-agence:         #3b82f6;
+    --c-propriete:      #ef4444;
+    --c-logement:       #ec4899;
+    --c-type-propriete: #14b8a6;
+    --c-personnel:      #10b981;
+    --c-proprietaire:   #f59e0b;
+    --c-client:         #8b5cf6;
+    --c-contrat:        #06b6d4;
+    --c-garantie:       #22c55e;
+    --c-paiement:       #6366f1;
+    --c-impayes:        #f97316;
+    --c-caisse:         #84cc16;
+    --c-admin:          #64748b;
+    --c-sidebar-bg:     #0f172a;
+    --c-sidebar-surface:#1e293b;
+    --c-sidebar-border: rgba(255,255,255,0.06);
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    background: var(--c-sidebar-bg) !important;
+  }
+  .sidebar .sidebar-brand-wrapper {
+    background: var(--c-sidebar-bg) !important;
+    border-bottom: 1px solid var(--c-sidebar-border);
+  }
+  .sidebar .sidebar-brand-wrapper .brand-logo span {
+    color: #e2e8f0;
+  }
+
+  /* ── Catégories ── */
+  .sidebar .nav .nav-category .nav-link {
+    color: rgba(255,255,255,0.3) !important;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    padding: 1.4rem 1rem 0.3rem 1rem;
+  }
+
+  /* ── Items de navigation ── */
+  .sidebar .nav .menu-items .nav-link {
+    color: rgba(255,255,255,0.6);
+    padding: 0.65rem 1rem;
+    margin: 0.1rem 0.5rem;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .sidebar .nav .menu-items .nav-link:hover {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    transform: translateX(4px);
+  }
+  .sidebar .nav .menu-items .nav-link .menu-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    transition: all 0.25s ease;
+  }
+  .sidebar .nav .menu-items .nav-link .menu-icon i {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.45);
+    transition: color 0.25s ease;
+  }
+  .sidebar .nav .menu-items .nav-link .menu-title {
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+
+  /* ── État actif : utilise data-color pour la couleur spécifique du modèle ── */
+  .sidebar .nav .menu-items.active .nav-link,
+  .sidebar .nav .menu-items.active .nav-link:hover {
+    color: #fff;
+    transform: translateX(0);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+  .sidebar .nav .menu-items.active .nav-link .menu-icon {
+    background: rgba(255,255,255,0.18);
+  }
+  .sidebar .nav .menu-items.active .nav-link .menu-icon i {
+    color: #fff;
+  }
+
+  /* ── Profil ── */
+  .sidebar .nav .profile { margin: 0 0.5rem; }
+  .sidebar .nav .profile .profile-desc {
+    padding: 1rem 0.5rem;
+    border-bottom: 1px solid var(--c-sidebar-border);
+    margin-bottom: 0.25rem;
+  }
+  .sidebar .nav .profile .profile-name h5 { color: #e2e8f0 !important; }
+  .sidebar .nav .profile .profile-name span { color: rgba(255,255,255,0.35) !important; }
+  .sidebar .nav .profile-desc > a { color: rgba(255,255,255,0.4) !important; }
+  .sidebar .nav .profile-desc > a:hover { color: #fff !important; }
+
+  /* ── Dropdown ── */
+  .sidebar .dropdown-menu {
+    background: var(--c-sidebar-surface);
+    border: 1px solid var(--c-sidebar-border);
+    border-radius: 12px;
+    padding: 0.5rem;
+  }
+  .sidebar .dropdown-menu .dropdown-item {
+    border-radius: 8px;
+    color: rgba(255,255,255,0.75);
+    padding: 0.5rem 0.75rem;
+    transition: all 0.2s ease;
+  }
+  .sidebar .dropdown-menu .dropdown-item:hover {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+  }
+  .sidebar .dropdown-menu .dropdown-divider { border-color: var(--c-sidebar-border); }
+
+  /* ── Scrollbar ── */
+  .sidebar .nav::-webkit-scrollbar { width: 3px; }
+  .sidebar .nav::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.sidebar .nav .menu-items.active').forEach(function(item) {
+    var color = item.getAttribute('data-color') || 'var(--c-dashboard)';
+    var link = item.querySelector('.nav-link');
+    if (link) {
+      link.style.background = 'linear-gradient(135deg, ' + color + ' 0%, ' + color + 'dd 100%)';
+    }
+  });
+});
+</script>

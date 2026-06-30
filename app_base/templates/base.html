@@ -1,0 +1,318 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>IMMO-MANAGER</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/jvectormap/jquery-jvectormap.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/flag-icon-css/css/flag-icon.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/owl-carousel-2/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/owl-carousel-2/owl.theme.default.min.css' %}">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
+    <style>
+        /* ==========================================
+           THEME PREMIUM — Immo Manager
+           ========================================== */
+
+        /* ── Content Wrapper Premium ── */
+        .content-wrapper {
+            background: #2c3e50 !important;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* ── Card Premium ── */
+        .glass-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08);
+            padding: 2.25rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+        }
+        .glass-card h5 {
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+        .glass-card .form-control,
+        .glass-card .btn {
+            border-radius: 10px;
+        }
+        .glass-card .form-control {
+            border: 2px solid #e9ecef;
+            padding: 0.6rem 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background-color: #fff;
+            color: #212529;
+        }
+        .glass-card .form-control:focus {
+            border-color: #2980b9;
+            box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.15);
+            background-color: #fff;
+        }
+        .glass-card .form-control::placeholder {
+            color: #adb5bd;
+            opacity: 1;
+        }
+        .glass-card label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+        }
+        .glass-card .btn-success {
+            background: #27ae60;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .glass-card .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4);
+        }
+        .glass-card .btn-outline-light {
+            border: 2px solid #dee2e6;
+            color: #6c757d;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+        }
+        .glass-card .btn-outline-light:hover {
+            background: #f8f9fa;
+            border-color: #ced4da;
+        }
+
+        /* ── Tableau Premium ── */
+        .glass-card .table thead th {
+            background: #2c3e50;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border: none;
+            padding: 1rem 0.75rem;
+            white-space: nowrap;
+        }
+        .glass-card .table thead th:first-child {
+            border-radius: 12px 0 0 0;
+        }
+        .glass-card .table thead th:last-child {
+            border-radius: 0 12px 0 0;
+        }
+        .glass-card .table tbody td {
+            color: #495057;
+            padding: 0.85rem 0.75rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f3f5;
+            font-size: 0.9rem;
+        }
+        .glass-card .table tbody tr:hover {
+            background: rgba(41, 128, 185, 0.05);
+        }
+        .glass-card .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ── Pagination Premium ── */
+        .pagination .page-link {
+            border: none;
+            padding: 0.5rem 0.85rem;
+            margin: 0 2px;
+            border-radius: 8px !important;
+            color: #6c757d;
+            background: #fff;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        .pagination .page-link:hover {
+            background: rgba(41, 128, 185, 0.1);
+            color: #2980b9;
+        }
+        .pagination .page-item.active .page-link {
+            background: #2980b9;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(41, 128, 185, 0.3);
+        }
+        .pagination .page-item.disabled .page-link {
+            background: transparent;
+            color: #adb5bd;
+        }
+
+        /* ── Badges ── */
+        .badge-profile {
+            font-size: 0.8rem;
+            padding: 0.4em 0.8em;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+        .badge.bg-success {
+            background: #27ae60 !important;
+            border-radius: 6px;
+        }
+        .badge.bg-danger {
+            background: #e74c3c !important;
+            border-radius: 6px;
+        }
+
+        /* ── Photo ── */
+        .user-photo {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #e9ecef;
+        }
+        .user-photo:hover {
+            border-color: #2980b9;
+        }
+
+        /* ── Clickable Row ── */
+        .clickable-row { cursor: pointer; }
+        .clickable-row td a { position: relative; z-index: 2; }
+
+        /* ── Alertes ── */
+        .alert-warning {
+            background: #e74c3c;
+            border: none;
+            color: #fff;
+            border-radius: 12px;
+        }
+        .alert-warning a { color: #fff; font-weight: 600; text-decoration: underline; }
+
+        /* ── Boutons d'action ── */
+        .btn-group .btn {
+            border-radius: 8px !important;
+            margin: 0 2px;
+            padding: 0.35rem 0.6rem;
+        }
+        .btn-outline-warning { border-color: #ffc107; color: #ffc107; }
+        .btn-outline-warning:hover { background: #ffc107; color: #fff; }
+        .btn-outline-info { border-color: #0dcaf0; color: #0dcaf0; }
+        .btn-outline-info:hover { background: #0dcaf0; color: #fff; }
+        .btn-outline-danger { border-color: #dc3545; color: #dc3545; }
+        .btn-outline-danger:hover { background: #dc3545; color: #fff; }
+
+        /* ── Header actions ── */
+        .glass-card .btn-outline-light.btn-sm {
+            border: 2px solid #e9ecef;
+            color: #6c757d;
+            padding: 0.4rem 1.1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .glass-card .btn-outline-light.btn-sm:hover {
+            background: #2980b9;
+            border-color: #2980b9;
+            color: #fff;
+        }
+
+        /* ── Input group ── */
+        .glass-card .input-group-text { border-radius: 10px 0 0 10px; }
+        .glass-card .input-group .form-control { border-radius: 0 10px 10px 0; }
+
+        /* ── Footer ── */
+        footer {
+            background: rgba(255, 255, 255, 0.08) !important;
+            backdrop-filter: blur(10px);
+            border-radius: 16px 16px 0 0;
+            color: rgba(255, 255, 255, 0.85) !important;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container-scroller text-dark">
+      
+      <!-- partial:partials/_sidebar.html -->
+      {% if request.user.is_authenticated and request.user.profile and request.user.profile.name == 'Client' %}
+        {% include "partials/_sidebar_client.html" %}
+      {% else %}
+        {% include "partials/_sidbar.html" %}
+      {% endif %}
+      
+
+        <!-- partial:partials/_navbar.html -->
+        {% include "partials/_navbar.html" %}
+        <!-- /partial -->
+
+        <div class="main-panel">
+          {% if messages %}
+            <div class="container-fluid">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+          {% endif %}
+
+        {% block content %}
+        
+        {% endblock content %}
+         <!-- Content -->
+
+          <!-- content-wrapper ends -->
+
+        {% include "partials/_footer.html" %}
+          <!-- partial:partials/_footer.html -->
+          <!-- partial -->
+
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{% static 'assets/vendors/chart.js/Chart.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/progressbar.js/progressbar.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jvectormap/jquery-jvectormap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
+    <script src="{% static 'assets/vendors/owl-carousel-2/owl.carousel.min.js' %}"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'assets/js/off-canvas.js' %}"></script>
+    <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+    <script src="{% static 'assets/js/misc.js' %}"></script>
+    <script src="{% static 'assets/js/settings.js' %}"></script>
+    <script src="{% static 'assets/js/todolist.js' %}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <script src="{% static 'assets/js/dashboard.js' %}"></script>
+    <!-- End custom js for this page -->
+    {% block extra_js %}{% endblock extra_js %}
+  </body>
+</html>

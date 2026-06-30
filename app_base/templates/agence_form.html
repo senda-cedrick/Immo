@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto">
+          <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0">
+                <i class="mdi mdi-domain"></i>
+                {% if object %}Modifier l'agence{% else %}Nouvelle Agence{% endif %}
+              </h5>
+              <a href="{% url 'agences' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+            </div>
+
+            <form method="post" class="forms-sample">
+              {% csrf_token %}
+
+              <div class="form-group mb-3">
+                <label for="id_nom" class="text-dark fw-semibold"><i class="mdi mdi-signature-freehand"></i> Nom</label>
+                {{ form.nom }}
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_numero_impot" class="text-dark fw-semibold"><i class="mdi mdi-file-document"></i> N° Impôt</label>
+                    {{ form.numero_impot }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_numero_fisc" class="text-dark fw-semibold"><i class="mdi mdi-file-document-outline"></i> N° Fiscal</label>
+                    {{ form.numero_fisc }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="id_adresse" class="text-dark fw-semibold"><i class="mdi mdi-map-marker"></i> Adresse</label>
+                {{ form.adresse }}
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_telephone" class="text-dark fw-semibold"><i class="mdi mdi-phone"></i> Téléphone</label>
+                    {{ form.telephone }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_email" class="text-dark fw-semibold"><i class="mdi mdi-email"></i> Email</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-dark text-white border-0">@</span>
+                      {{ form.email }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-check mb-4">
+                <label class="form-check-label text-dark fw-semibold">
+                  {{ form.active }}
+                  <i class="mdi mdi-check-circle"></i> Agence active
+                </label>
+              </div>
+
+              <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'agences' %}" class="btn btn-outline-light me-2"><i class="mdi mdi-close"></i> Annuler</a>
+                <button type="submit" class="btn btn-success"><i class="mdi mdi-check"></i> {% if object %}Modifier{% else %}Ajouter{% endif %}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

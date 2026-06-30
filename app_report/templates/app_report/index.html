@@ -1,0 +1,142 @@
+<html>
+<head>
+
+<style>
+    #tab{ 
+        -pdf-keep-with-next: true; 
+        border: 1px solid black;
+        text-align: center;
+    }
+    p { margin: 0; -pdf-keep-with-next: true; }
+    p.separator { -pdf-keep-with-next: false; font-size: 6pt; }
+    @page {
+        size: a4 landscape;
+        @frame header_content {           
+            -pdf-frame-content: header_content;
+            left: 50pt; width: 750pt; top: 30pt; height: 140pt;
+        }
+        @frame content_frame {          
+            left: 50pt; width: 750pt; top: 140pt; height: 400pt;
+        }
+        @frame footer_content {           
+            -pdf-frame-content: footer_content;
+            left: 50pt; width: 750pt; top: 450pt; height: 200pt;
+        }
+    }
+    .page-break{
+        page-break-after: always;
+    }
+</style>
+
+<head>
+   
+<body>
+    {% load my_tags %}
+    <div id="header_content">
+        <p style="text-align: right;font-size: 13px; float: right;">Kinshasa, le {{date}}</p>
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <th style="text-align: left; padding-top: 5px;width:20%; vertical-align: top;"><img src="app_controle/static/flag.png" alt="Ministere de defense" style="width:90px; object-fit: cover;margin-right:0px"/></th>
+                <th style="text-align: center; padding-top: 5px;width:60%">
+                    <span style="font-size: x-large;">
+                        MINISTERE DE L'HABITAT  <br>
+                        <i style="font-size: 12px">
+                            CONCESSION
+                        </i>
+                    </span> 
+                    <span style="font-size:larger;">                
+                        PAIEMENT MENSUEL <br>
+                        {% if data1 %} 
+                        LES UTILISATEURS
+                        {% elif data2 %}
+                        LES PROPRIETAIRES
+                        {% elif data3 %}
+                        LES AGENTS
+                        {% endif %}
+                    </span>
+                </th>
+                <th style="text-align: right; padding-top: 5px;width:20%; vertical-align: top;"><img src="app_controle/static/rdc1.png" alt="Ministere de defense" style="width:80px;object-fit: cover;margin-right:0px"/></th>
+            </tr>
+            </thead>
+        </table>
+        <hr>
+    </div>
+    <div style="text-align: center;">
+        <h1>UNITE  {{unite.name}} : {{nombre}} MILITAIRES<br>
+            <table id="tab">
+                {% for g in grades %}
+                    {% if forloop.counter|modulo:4 == 1 %}
+                        <tr style="padding-top: 5px;">
+                    {% endif %}
+                            <td>
+                                {{g.name}} : {{g.nombre}}
+                            </td>
+                    {% if forloop.last or forloop.counter|modulo:4 == 0 %}
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table> 
+    
+    <table id="tab">
+        <thead>
+             <tr style="padding-top: 5px;">
+                <th>N°</th>
+                <th>MATRICULE</th>
+                <th>NOMS</th>
+                <th>Dans la BD</th>
+                <th>Sur la Liste</th>
+                <th>GRADE</th>
+                <th>STATUS</th>
+                </tr>
+                </thead>
+                <tbody >
+                    {% for d in data %}
+                    <tr style="padding-top: 5px;">
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ d.matricule }}</td>
+                        <td>{{ d.noms }}</td>
+                        <td>{{ d.base_donnee|yesno:"Oui,Non,Inconnu" }}</td>
+                        <td>{{ d.liste_cmd|yesno:"Oui,Non,Inconnu" }}</td>
+                        <td>{{ d.grade }}</td>
+                        <td>{{ d.get_status_display }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+    </table>
+    <table id="signature" style="margin-top:150px;">
+        <tr>
+         <td><img src="mediafiles/qrcode/{{img}}" width="120" alt="qrcode"/></td>
+          </td>
+        <td></td>
+        <td></td>
+          <td style="text-align: center; vertical-align: top;">
+            <h1>
+            {% if user == 4 %}
+            <strong>
+            Imprimé par le Manager <br><br>
+              {{noms}}
+            </strong>
+            {% elif user == 3 %}
+            <strong>
+            imprimé par le Chargé de mission <br><br>
+            {{noms}}
+            </strong>
+            {% elif user == 2 %}
+            <strong>
+            Imprimé par le Chef d'équipe <br><br>
+            {{noms}}
+            </strong>
+        </h1>
+            {% endif %}
+          </td>
+        </tr>
+      </table>
+    <div id="footer_content">
+        page <pdf:pagenumber /> of <pdf:pagecount />
+    </div>
+</body>
+
+</html>
+
+

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div id="content">
+  {% if messages %}
+
+    {% for message in messages %}
+    <div class="alert alert-danger{{ message.tags }}">
+    <p style="text-align: center;">{{message}}</p>
+    </div> 
+    {% endfor %}
+
+  {% endif %}
+  
+    <div class="row-fluid">  
+        <div class="block">
+            
+            <div class="block-content collapse in">
+              <div class="span10" style="padding-left: 10%;">
+                   <form class="form-horizontal" action="{% url 'update_user_motdepasse' %}" method="post">
+                    {% csrf_token %}
+                   
+                      <legend>Modification du mot de passe </legend>
+                      <div class="control-group">
+                        <label>Entrez nouveau mot de passe: </label>
+                        <div class="">
+                          <input class="input-xlarge" name="pass" id="focusedInput" type="password">
+                        </div>
+                        </div>
+                        <div class="control-group">
+                        <label>Confirmez le mot de passe: </label>
+                        <div class="">
+                            <input class="input-xlarge" name="cpass" id="focusedInput" type="password">
+                          </div>
+                      </div>
+                      <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                      </div>
+                    
+                  </form>
+              </div>
+
+             
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+{% endblock content %} 

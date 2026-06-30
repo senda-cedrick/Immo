@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0"><i class="mdi mdi-home-floor-3"></i> Détail du logement : {{ logement.identifiant }}</h5>
+              <div class="d-flex gap-2">
+                <a href="{% url 'logements' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+                <a href="{% url 'modifier_logement' logement.id %}" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-pencil"></i> Modifier</a>
+                <a href="{% url 'supprimer_logement' logement.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Supprimer ce logement ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-md-3">
+                <div class="card bg-primary text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Propriété</h6>
+                      <h3 class="mb-0">{{ logement.propriete.ville }}</h3>
+                    </div>
+                    <i class="mdi mdi-home" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-success text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Contrats</h6>
+                      <h3 class="mb-0">{{ contrats|length }}</h3>
+                    </div>
+                    <i class="mdi mdi-file-document" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-info text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Surface</h6>
+                      <h3 class="mb-0">{{ logement.surface|floatformat:0 }} m²</h3>
+                    </div>
+                    <i class="mdi mdi-ruler-square" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-warning text-white p-3 rounded-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-0">Étage</h6>
+                      <h3 class="mb-0">{{ logement.etage|default:"—" }}</h3>
+                    </div>
+                    <i class="mdi mdi-stairs" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-information"></i> Informations générales</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td class="fw-semibold text-muted" style="width: 40%;">ID</td>
+                    <td>{{ logement.id }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Identifiant</td>
+                    <td><strong>{{ logement.identifiant }}</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Étage</td>
+                    <td>{{ logement.etage|default:"—" }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Surface</td>
+                    <td>{{ logement.surface|floatformat:0 }} m²</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Description</td>
+                    <td>{{ logement.description|default:"—"|linebreaksbr }}</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-map-marker"></i> Propriété associée</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td class="fw-semibold text-muted" style="width: 40%;">Type</td>
+                    <td>{{ logement.propriete.type_propriete.nom }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Ville</td>
+                    <td>{{ logement.propriete.ville }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Adresse</td>
+                    <td>{{ logement.propriete.adresse|truncatechars:40 }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Agence</td>
+                    <td>{{ logement.propriete.agence.nom }}</td>
+                  </tr>
+                 <tr>
+                   <td class="fw-semibold text-muted">Propriétaire</td>
+                   <td>{{ logement.propriete.proprietaire.user.noms|default:"—" }}</td>
+                 </tr>
+                 <tr>
+                   <td class="fw-semibold text-muted">Statut</td>
+                   <td>
+                     {% if logement.statut == 'LOUE' %}
+                       <span class="badge bg-success text-white">Loué</span>
+                     {% elif logement.statut == 'DISPONIBLE' %}
+                       <span class="badge bg-primary text-white">Disponible</span>
+                     {% elif logement.statut == 'MAINTENANCE' %}
+                       <span class="badge bg-warning text-dark">Maintenance</span>
+                     {% else %}
+                       <span class="badge bg-secondary text-white">{{ logement.statut }}</span>
+                     {% endif %}
+                   </td>
+                 </tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-file-document"></i> Contrats de la propriété ({{ contrats|length }})</h6>
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>Référence</th>
+                        <th>Type</th>
+                        <th>Client</th>
+                        <th>Montant</th>
+                        <th>Date début</th>
+                        <th>Statut</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for contrat in contrats %}
+                      <tr>
+                        <td><strong>{{ contrat.reference }}</strong></td>
+                        <td>{{ contrat.get_type_display }}</td>
+                        <td>{{ contrat.client.user.noms }}</td>
+                        <td>{{ contrat.montant|floatformat:0 }} €</td>
+                        <td>{{ contrat.date_debut|date:"d/m/Y" }}</td>
+                        <td>
+                          {% if contrat.statut == 'ACTIF' %}
+                            <span class="badge bg-success text-white">Actif</span>
+                          {% elif contrat.statut == 'TERMINE' %}
+                            <span class="badge bg-secondary text-white">Terminé</span>
+                          {% elif contrat.statut == 'RESILIE' %}
+                            <span class="badge bg-danger text-white">Résilié</span>
+                          {% else %}
+                            <span class="badge bg-warning text-dark">{{ contrat.get_statut_display }}</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="6" class="text-muted">Aucun contrat pour cette propriété.</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div id="content">
+  {% if messages %}
+
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      <p style="text-align: center;">{{message}}</p>
+    </div> 
+    {% endfor %}
+
+  {% endif %}
+  
+    <div class="row-fluid">  
+        <div class="block">
+            
+            <div class="block-content collapse in">
+              <!-- <div class="span10" style="padding-left: 2.5%;">
+                   <form class="form-horizontal" action="{% url 'writeip' %}" method="post">
+                    {% csrf_token %}
+                    <fieldset>
+                      <legend>Configuration IP Serveur</legend>
+                      <div class="control-group">
+                        <label class="control-label" for="focusedInput">IP </label>
+                        <div class="controls">
+                          <input class="input-xlarge" name="adresse" id="focusedInput" type="text" value="http://192.168.2.12:80">
+                        </div>
+                        <div class="controls">
+                          <span> IP Serveur Actuel <strong>{{data}}</strong></span>
+                        </div>
+                      </div>
+                      <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                      </div>
+                    </fieldset>
+                  </form>
+              </div> -->
+              <br />
+              <br />
+              <br />
+              <div class="span3">
+                <form class="form" action="{% url 'init_data' %}" method="post">
+                  {% csrf_token %}
+                 <fieldset>
+                   <legend>Initialiser</legend> 
+                   <div class="form-actions">
+                     <button type="submit" class="btn btn-info">Initialiser</button>
+                   </div>
+                 </fieldset>
+               </form>
+              </div>
+
+              <div class="span3">
+                <form class="form" action="{% url 'import_data' %}" method="post">
+                  {% csrf_token %}
+                 <fieldset>
+                   <legend>Importer</legend> 
+                   <div class="form-actions">
+                     <button type="submit" class="btn btn-success">Importer</button>
+                   </div>
+                 </fieldset>
+               </form>
+              </div>
+
+              <div class="span3">
+                <form class="form"  action="{% url 'synchronize_data' %}" method="post">
+                  {% csrf_token %}
+                 <fieldset>
+                   <legend>Synchroniser</legend> 
+                   <div class="form-actions">
+                     <button type="submit" class="btn btn-primary">Synchroniser</button>
+                   </div>
+                 </fieldset>
+               </form>
+              </div>
+
+            </div>
+
+        </div>
+    </div>
+  
+</div>
+{% endblock content %} 

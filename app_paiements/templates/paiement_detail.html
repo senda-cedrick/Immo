@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="mb-0"><i class="mdi mdi-credit-card"></i> Détail du paiement #{{ paiement.id }}</h5>
+          <div class="d-flex gap-2">
+            <a href="{% url 'paiements' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+            <a href="{% url 'modifier_paiement' paiement.id %}" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-pencil"></i> Modifier</a>
+            <a href="{% url 'supprimer_paiement' paiement.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Supprimer ce paiement ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-3">
+            <div class="card bg-primary text-white p-3 rounded-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0">Montant</h6>
+                  <h3 class="mb-0">{{ paiement.montant|floatformat:0 }} CDF</h3>
+                </div>
+                <i class="mdi mdi-cash" style="font-size: 2.5rem; opacity: 0.5;"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-success text-white p-3 rounded-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0">Statut</h6>
+                  <h3 class="mb-0">{{ paiement.get_statut_display }}</h3>
+                </div>
+                <i class="mdi mdi-information" style="font-size: 2.5rem; opacity: 0.5;"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-info text-white p-3 rounded-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0">Type</h6>
+                  <h3 class="mb-0">{{ paiement.get_type_paiement_display }}</h3>
+                </div>
+                <i class="mdi mdi-tag" style="font-size: 2.5rem; opacity: 0.5;"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-warning text-white p-3 rounded-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0">Échéance</h6>
+                  <h3 class="mb-0">{{ paiement.date_echeance|date:"d/m/Y" }}</h3>
+                </div>
+                <i class="mdi mdi-calendar" style="font-size: 2.5rem; opacity: 0.5;"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-information"></i> Informations générales</h6>
+            <table class="table table-borderless">
+              <tr>
+                <td class="fw-semibold text-muted" style="width: 40%;">ID</td>
+                <td>{{ paiement.id }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Contrat</td>
+                <td><strong>{{ paiement.contrat.reference }}</strong></td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Client</td>
+                <td>{{ paiement.client.user.noms }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Agent</td>
+                <td>{{ paiement.agent.user.noms|default:"—" }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Date de paiement</td>
+                <td>{{ paiement.date_paiement|date:"d/m/Y"|default:"—" }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Date d'échéance</td>
+                <td>{{ paiement.date_echeance|date:"d/m/Y" }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Statut</td>
+                <td>
+                  {% if paiement.statut == 'PAYE' %}
+                    <span class="badge bg-success text-white">Payé</span>
+                  {% elif paiement.statut == 'EN_ATTENTE' %}
+                    <span class="badge bg-warning text-dark">En attente</span>
+                  {% elif paiement.statut == 'EN_RETARD' %}
+                    <span class="badge bg-danger text-white">En retard</span>
+                  {% else %}
+                    <span class="badge bg-secondary text-white">{{ paiement.get_statut_display }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Type de paiement</td>
+                <td>{{ paiement.get_type_paiement_display }}</td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-md-6">
+            <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-file-document"></i> Informations du contrat</h6>
+            <table class="table table-borderless">
+              <tr>
+                <td class="fw-semibold text-muted" style="width: 40%;">Référence</td>
+                <td>{{ paiement.contrat.reference }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Type</td>
+                <td>{{ paiement.contrat.get_type_display }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Montant contrat</td>
+                <td>{{ paiement.contrat.montant|floatformat:0 }} CDF</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Date début</td>
+                <td>{{ paiement.contrat.date_debut|date:"d/m/Y" }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Date fin</td>
+                <td>{{ paiement.contrat.date_fin|date:"d/m/Y"|default:"—" }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Propriété</td>
+                <td>{{ paiement.contrat.propriete.adresse|truncatechars:30 }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        {% if paiement.notes %}
+        <div class="row mb-4">
+          <div class="col-12">
+            <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-note"></i> Notes</h6>
+            <div class="card bg-light p-3">
+              <p class="mb-0">{{ paiement.notes|linebreaksbr }}</p>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="row mb-4">
+          <div class="col-12">
+            <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-history"></i> Historique</h6>
+            <table class="table table-borderless">
+              <tr>
+                <td class="fw-semibold text-muted" style="width: 40%;">Créé le</td>
+                <td>{{ paiement.created_at|date:"d/m/Y H:i" }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Mis à jour le</td>
+                <td>{{ paiement.updated_at|date:"d/m/Y H:i" }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock content %}

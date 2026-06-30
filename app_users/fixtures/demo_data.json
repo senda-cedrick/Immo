@@ -1,0 +1,22 @@
+[
+  {
+    "model": "app_users.user",
+    "pk": 1,
+    "fields": {
+      "username": "demo_user",
+      "email": "demo@example.com",
+      "password": "pbkdf2_sha256$260000$example$hashedpassword"
+    }
+  },
+  {
+    "model": "app_users.user",
+    "pk": 2,
+    "fields": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "password": "pbkdf2_sha256$260000$example$hashedpassword",
+      "is_staff": true,
+      "is_superuser": true
+    }
+  }
+]

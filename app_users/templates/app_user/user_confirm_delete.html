@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        padding: 2rem;
+        margin-top: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .glass-card h5 { color: #fff; }
+    .glass-card p { color: #eee; }
+</style>
+
+<div class="container-fluid">
+    <div class="glass-card">
+        <h5 class="mb-4 text-danger"><i class="mdi mdi-alert-outline"></i> Confirmer la suppression</h5>
+        
+        <p>Êtes-vous sûr de vouloir supprimer l'utilisateur "<strong>{{ object.noms }}</strong>" ({{ object.username }}) ?</p>
+        <p class="text-muted">Cette action est irréversible.</p>
+
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger me-2"><i class="mdi mdi-delete-forever"></i> Oui, supprimer</button>
+            <a href="{% url 'users' %}" class="btn btn-outline-light">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock content %}

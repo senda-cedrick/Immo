@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+  <p style="text-align: right;font-size: 13px ">Kinshasa, le {{date}}</p>
+  <table class="styled-table" >
+    <thead>
+      
+       <tr >
+           <th style="text-align: left; padding-top: 5px;width:20%"><strong><img src="app_controle/static/flag.png" alt="Ministere de defense" style="width:90px;height:90px;border-radius:123px;objectif-fit:cover;margin-right:0px"/></strong></th>
+           <th style="text-align: center; padding-top: 5px;width:60%"><p style="font-size: 16px;margin-left:10px;visibility:hidden">  MINISTERE DE LA DEFENSE NATIONALE  ET ANCIENS COMBATTANTS <br><i style="font-size: 12px">INSPECTORAT GENERAL DES FORCES ARMEES DE LA REPUBLIQUE DEMOCRATIQUE DU CONGO  </i>          </p></th>
+           <th style="text-align: right; padding-top: 5px;width:20%"><strong><img src="app_controle/static/rdc1.png" alt="Ministere de defense" style="width:90px;height:90px;border-radius:123px;objectif-fit:cover;margin-right:0px"/></strong></th>
+           
+       </tr>
+       </thead>
+     </table>
+<hr>
+<div style="text-align: center;">
+<h2>Rapport cadre détaillé des effectifs militaires FARDC au niveau national <br>
+Résultats sur base du nombre total d'effectifs militaires FARDC déclarés au niveau national,soit {{pers}} Militaires: <br>
+</h2>
+
+</div>
+<div style="margin-left: 100px;">
+  <h4>
+  1. Nombre total des militaires contrôlés présents physiquement : {{nctrs}} Militaires actifs au niveau national<br>
+  2. Nombre total des militaires absents justifiés avec pièces justificatives : {{njust}} Militaires absents justifiés au niveau national<br>
+  3. Nombre total des militaires fictifs : {{pnjus}} Militaires fictifs au niveau national
+  </h4>
+</div>
+<hr>
+{% if unites %} 
+{% for u in unites %}
+ <div class="navbar navbar-inner block-header collapsible">
+ 
+  {% if u.count %}
+  <h1 style="text-align: center;">
+  <STRong>UNITE {{ u.unite.name }} | TOTAL : {{ u.count }} MILITAIRES</STRong>
+</h1>
+</div>
+    
+<table class="table" border="1px">
+    <tr style="padding-top: 5px;font-size: small;">
+      <td style="text-align: center; padding-top: 5px;"><strong>N°</strong></td>
+      <td style="text-align: center; padding-top: 5px;"><strong>MATRICULE</strong></td>
+      <td style="text-align: center;padding-top: 5px;"><strong>NOMS</strong></td>
+      <td style="text-align: center;padding-top: 5px;"><strong>DANS LA BD</strong></td>
+      <td style="text-align: center;padding-top: 5px;"><strong>SUR LA LISTE</strong></td>
+      <td style="text-align: center;padding-top: 5px;"><strong>PRESENT</strong></td>
+      <td style="text-align: center;padding-top: 5px;"><strong>GRADE</strong></td>
+      <td style="text-align: center;padding-top: 5px;"><strong>STATUT</strong></td>
+      <td style="text-align: center;padding-top: 5px;"><strong>SITUATION</strong></td>
+      <td style="text-align: center;padding-top: 5px;"><strong>OBSERV</strong></td>
+      <td style="text-align: center;padding-top: 5px;"><strong>RESULTAT DU RAPPORT</strong></td>
+      <!-- <td style="text-align: center;padding-top: 5px;"><strong>UNITE</strong></td> -->
+    </tr>
+    {% for r in u.persons %}
+    <tr style="padding-top: 5px;font-size: small;">
+        <td style="text-align: center;">{{ forloop.counter }}</td>
+        <td style="text-align: center;">{{ r.matricule }}</td>
+        <td style="text-align: center;">{{ r.noms }}</td>
+        <td style="text-align: center;">{% if r.base_donnee == True %} Oui {% else %} Non {% endif %}</td>
+       
+        <td style="text-align: center;">{% if r.liste_cmd == True %} Oui {% else %} Non {% endif %}</td>
+        <td style="text-align: center;">{% if r.present == True %} Oui {% elif r.justifie == True %} Justif{% else %} Non{% endif %}</td>
+        <td style="text-align: center;">{{ r.grade }}</td>
+        <td style="text-align: center;">
+          {{r.get_status_display }}
+        </td>
+        <td style="text-align: center;">
+          {% if r.present == True %}
+          Normal
+          {% elif r.justifie == True %}
+          situation à régulariser par le cmdt de l'unité, via pièce justificatives
+          {% else %}
+          Pas normal
+          {% endif %}
+          {% if r.base_donnee == True  and r.present == True and r.liste_cmd == True%}
+           1A
+          {% elif r.base_donnee == True and r.liste_cmd == True and r.present == False and r.justifie == True %}
+          1B
+          {% elif r.base_donnee == True and r.liste_cmd == True and r.present == False and r.justifie == False %}
+           1C
+          {% elif r.base_donnee == True and r.liste_cmd == False and r.present == True %}
+          2A 
+          {% elif r.base_donnee == True and r.liste_cmd == False and r.present == False %}
+           2B
+          {% elif r.base_donnee == False and r.liste_cmd == True and r.present == True %}
+           3A 
+          {% elif r.base_donnee == False and r.liste_cmd == True and r.present == False %}
+           3B
+          {% endif %} 
+        </td>
+        <td style="text-align: center;">
+            {% if r.present == True %}
+            A contrôler ; A enrôler, A remettre carte
+            {% elif  r.justifie == True and r.present == False %}
+            A contrôler ultérieurement, pas à enrôler, pas de remise de carte
+            {% elif r.present == False or r.justifie == False %}
+            Avis de recherche
+            {% elif r.base_donnee == False %}
+            Surveillance très élevée
+            {% endif %}
+        </td>
+        <td style="text-align: center;">
+          {% if r.present == True  %}
+           Actif
+          {% elif r.present == False and r.justifie == True %}
+          absent justifié
+          {% else %}
+          Fictif
+          {% endif %}
+       </td>
+       <!-- <td style="text-align: center;">
+        {{ r.unite }}
+     </td> -->
+    </tr>
+    {% endfor %}
+</table>
+<br>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+
+</h6>
+<img src="mediafiles/qrcode/{{img}}" width="120" alt="qrcode"/><br>
+<h6>Imprimé via l’application « CONTROL MANAGER » <br> <br>
+    Par {{noms}} <br> <br>
+  Rapport Certifié conforme 
+</h6>
+{{ signature }}
+<br>
+<img src="app_controle/static/signature.png" alt="Ministere de defense" style="width:90px; object-fit: cover;margin-right:0px"/> 
+</body>
+</html>

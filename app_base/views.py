@@ -17,6 +17,11 @@ from .models import (
 from django.http import JsonResponse
 from app_paiements.models import Paiement
 import json
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 # Supprimé car ces vues n'existaient pas
 # def garanties(request): ...
@@ -681,3 +686,108 @@ def generate_contrat_reference(request):
         return JsonResponse({'error': 'Données JSON invalides'}, status=400)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+# --- API pour Proprietaire ---
+
+class ProprietaireDashboardAPI(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if not (user.profile and user.profile.name == 'Proprietaire'):
+            return Response({'error': 'Accès refusé'}, status=403)
+
+        proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+        nb_prop = proprietes_ids.count()
+        nb_log = Logement.objects.filter(propriete_id__in=proprietes_ids).count()
+        nb_agences = Propriete.objects.filter(id__in=proprietes_ids).values('agence').distinct().count()
+
+        contrats_ids = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
+        ).values_list('id', flat=True)
+        clients_ids = Contrat.objects.filter(id__in=contrats_ids).values('client').distinct()
+        nb_clients = clients_ids.count()
+
+        nb_contrat_actif = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
+            statut='ACTIF'
+        ).count()
+        nb_contrat_non_sign = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
+            statut='BROUILLON'
+        ).count()
+
+        revenu_mensuel = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
+            statut='ACTIF'
+        ).aggregate(total=Sum('montant'))['total'] or 0
+
+        taux_occupation = 0
+        if nb_log > 0:
+            logements_occupes = Contrat.objects.filter(
+                Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
+                statut='ACTIF'
+            ).values('logement').distinct().count()
+            taux_occupation = round((logements_occupes / nb_log) * 100)
+
+        paiements_retard = Paiement.objects.filter(
+            contrat_id__in=contrats_ids,
+            statut='EN_RETARD'
+        ).count()
+
+        contrats_expirant = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
+            statut='ACTIF',
+            date_fin__gte=timezone.now(),
+            date_fin__lte=timezone.now() + timedelta(days=30)
+        ).count()
+
+        nb_paiements = Paiement.objects.filter(contrat_id__in=contrats_ids).count()
+
+        data = {
+            'nb_proprietes': nb_prop,
+            'nb_logements': nb_log,
+            'nb_agences': nb_agences,
+            'nb_clients': nb_clients,
+            'nb_contrats_actifs': nb_contrat_actif,
+            'nb_contrats_non_signes': nb_contrat_non_sign,
+            'revenu_mensuel': revenu_mensuel,
+            'taux_occupation': taux_occupation,
+            'nb_paiements_retard': paiements_retard,
+            'nb_contrats_expirant_30j': contrats_expirant,
+            'nb_paiements_total': nb_paiements,
+        }
+        return Response(data)
+
+
+class ProprietaireProprietesAPI(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if not (user.profile and user.profile.name == 'Proprietaire'):
+            return Response({'error': 'Accès refusé'}, status=403)
+
+        proprietes = Propriete.objects.filter(proprietaire__user=user).select_related('type_propriete', 'agence')
+        serializer = ProprietaireProprieteSerializer(proprietes, many=True)
+        return Response(serializer.data)
+
+
+class ProprietaireContratsAPI(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if not (user.profile and user.profile.name == 'Proprietaire'):
+            return Response({'error': 'Accès refusé'}, status=403)
+
+        proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+        contrats = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
+        ).select_related('client__user', 'propriete', 'logement', 'agent__user')
+        serializer = ProprietaireContratSerializer(contrats, many=True)
+        return Response(serializer.data)

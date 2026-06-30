@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'import_export',
     'app_report.apps.AppReportConfig',
-    'knox',
     'app_base',
     'app_users',
     'app_paiements',
@@ -142,7 +141,6 @@ AUTH_USER_MODEL = 'app_users.User'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'knox.auth.TokenAuthentication',
     )
 }
 LOGIN_URL = '/user/login/'

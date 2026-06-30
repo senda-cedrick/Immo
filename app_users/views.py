@@ -55,22 +55,18 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         user = self.user
         data['user'] = user.username
 
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+
         if user.profile is None or user.profile.id == 4:
             if user.is_superuser:
-                data['refresh'] = str(refresh)
-                data['access'] = str(refresh.access_token)
                 LogUser(user=user,action="Connexion distante du Manager ou Admin").save()
-                return data
             else:
-                data['refresh'] = str(refresh)
-                data['access'] = str(refresh.access_token)
                 LogUser(user=user,action="Connexion distante du Manager").save()
-                return data
         elif user.profile.id == 2 or user.profile.id == 3 :
-            data['refresh'] = str(refresh)
-            data['access'] = str(refresh.access_token)
             LogUser(user=user,action="Connexion distante").save()
-            return data
+
+        return data
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer

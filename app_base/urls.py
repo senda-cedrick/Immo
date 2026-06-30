@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 urlpatterns = [
     # Agences
@@ -81,4 +82,9 @@ urlpatterns = [
     # API pour JS
     path('api/get_logements/', views.get_logements_for_propriete, name='api_get_logements'),
     path('api/generate-contrat-reference/', views.generate_contrat_reference, name='api_generate_contrat_reference'),
+
+    # API pour Proprietaire (JWT)
+    path('api/proprietaire/dashboard/', views.ProprietaireDashboardAPI.as_view(), name='api_proprietaire_dashboard'),
+    path('api/proprietaire/proprietes/', views.ProprietaireProprietesAPI.as_view(), name='api_proprietaire_proprietes'),
+    path('api/proprietaire/contrats/', views.ProprietaireContratsAPI.as_view(), name='api_proprietaire_contrats'),
 ]

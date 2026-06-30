@@ -17,7 +17,6 @@ urlpatterns = [
     path('caisses/', include('app_caisse.urls')), # URLs pour la gestion de caisse
     path('user/', include('app_users.urls')),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/auth/', include('knox.urls')),
     path('api/token/', MyTokenObtainPairView.as_view(), name='obtain_token'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='refresh_token'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),

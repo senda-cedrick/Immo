@@ -1,6 +1,6 @@
 from django.urls import path
 
-from app_users.views import (LoginPageView, active_user, listeusers, logout_user, logusers, page_modifpassword, print_users, rechercher_user, update_user_motdepasse,generer_user_motdepasse, ProfileListView, ProfileCreateView, ProfileUpdateView, ProfileDeleteView, UserCreateView, UserUpdateView, UserDeleteView)
+from app_users.views import (LoginPageView, active_user, listeusers, logout_user, logusers, page_modifpassword, print_users, rechercher_user, update_user_motdepasse,generer_user_motdepasse, ProfileListView, ProfileCreateView, ProfileUpdateView, ProfileDeleteView, UserCreateView, UserUpdateView, UserDeleteView, login_remote)
 urlpatterns = [
     path('users/', listeusers, name='users'),
     path('users/add/', UserCreateView.as_view(), name='user_add'),
@@ -25,4 +25,5 @@ urlpatterns = [
     path('profiles/delete/<int:pk>/', ProfileDeleteView.as_view(), name='profile_delete'),
    
     path('addusers/', UserCreateView.as_view(), name='addusers'),
+    path('login-remote/', login_remote, name='login_remote'),
 ]

@@ -50,7 +50,7 @@ fi
 
 DB_NAME=${DB_NAME:-immo_db}
 DB_USER=${DB_USER:-postgres}
-DB_PASS=${DB_PASS:-admin}
+DB_PASS=${DB_PASS:-postgres}
 DB_HOST=${DB_HOST:-localhost}
 DB_PORT=${DB_PORT:-5432}
 # Vérifier que PostgreSQL est accessible

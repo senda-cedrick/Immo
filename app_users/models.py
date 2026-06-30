@@ -45,6 +45,16 @@ class User(AbstractUser):
         """Vérifie si l'utilisateur a le profil 'Proprietaire'."""
         return self.profile and self.profile.name == 'Proprietaire'
 
+    @property
+    def is_administrateur(self):
+        """Vérifie si l'utilisateur a le profil 'Administrateur'."""
+        return self.profile and self.profile.name == 'Administrateur'
+
+    @property
+    def is_client(self):
+        """Vérifie si l'utilisateur a le profil 'Client'."""
+        return self.profile and self.profile.name == 'Client'
+
 
 class LogUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

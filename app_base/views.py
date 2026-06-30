@@ -26,6 +26,41 @@ import json
 @login_required
 def dashboard(request):
     # Logique pour récupérer les statistiques du dashboard
+    user = request.user
+    if user.is_authenticated and user.profile and user.profile.name == 'Proprietaire':
+        proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+        nb_prop = proprietes_ids.count()
+        nb_log = Logement.objects.filter(propriete_id__in=proprietes_ids).count()
+        nb_contrat_actif = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
+            statut='ACTIF'
+        ).count()
+        nb_contrat_non_sign = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
+            statut='BROUILLON'
+        ).count()
+        contrats_ids = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
+        ).values_list('id', flat=True)
+        nb_paiements = Paiement.objects.filter(contrat_id__in=contrats_ids).count()
+        derniers_paiements = Paiement.objects.filter(contrat_id__in=contrats_ids).select_related(
+            'client__user', 'contrat'
+        ).order_by('-date_paiement')[:5]
+        stats = {
+            'nbagence': 0,
+            'nbpropriete': nb_prop,
+            'nbclients': 0,
+            'nbproprietaires': 0,
+            'nbpersonnel': 0,
+            'nbcontrats': nb_contrat_actif + nb_contrat_non_sign,
+            'nbpaiements': nb_paiements,
+            'nbcaisse': 0,
+            'nbgaranties': 0,
+            'nblogements': nb_log,
+            'derniers_paiements': derniers_paiements,
+        }
+        return render(request, 'home.html', stats)
+
     from app_caisse.models import Caisse
     stats = {
         'nbagence': Agence.objects.filter(active=True).count(),
@@ -281,7 +316,7 @@ class TypeProprieteDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         type_propriete = self.get_object()
-        context['proprietes'] = type_propriete.propriete_set.select_related('type_propriete', 'agence').all()
+        context['proprietes'] = type_propriete.propriete_set.select_related('type_propriete', 'agence').all()  # type: ignore
         context['total_proprietes'] = context['proprietes'].count()
         return context
 
@@ -324,7 +359,7 @@ class TypeLogementDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         type_logement = self.get_object()
-        context['logements'] = type_logement.logement_set.select_related('propriete__type_propriete', 'propriete__agence').all()
+        context['logements'] = type_logement.logement_set.select_related('propriete__type_propriete', 'propriete__agence').all()  # type: ignore
         context['total_logements'] = context['logements'].count()
         return context
 
@@ -383,8 +418,8 @@ class ProprieteDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         propriete = self.get_object()
-        context['logements'] = propriete.logements.all()
-        context['contrats'] = propriete.contrats.all()
+        context['logements'] = propriete.logements.all()  # type: ignore
+        context['contrats'] = propriete.contrats.all()  # type: ignore
         return context
 
 class ProprieteCreateView(LoginRequiredMixin, CreateView):
@@ -428,7 +463,7 @@ class LogementDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         logement = self.get_object()
-        context['contrats'] = logement.propriete.contrats.select_related('client__user', 'agent__user').all()
+        context['contrats'] = logement.propriete.contrats.select_related('client__user', 'agent__user').all()  # type: ignore
         return context
 
 class LogementCreateView(LoginRequiredMixin, CreateView):

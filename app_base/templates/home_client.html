@@ -309,8 +309,10 @@
 <style>
   /* ── KPI Cards Principales ── */
   .kpi-card {
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   .kpi-card::before {
     content: '';
@@ -342,12 +344,23 @@
     font-size: 1.6rem;
     color: rgba(255,255,255,0.9);
     flex-shrink: 0;
+    -webkit-flex-shrink: 0;
+  }
+  .kpi-card p,
+  .kpi-card h2 {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    color: rgba(255, 255, 255, 0.95) !important;
+  }
+  .kpi-card h2 {
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   }
 
-  .kpi-indigo { background: linear-gradient(135deg, var(--c-contrat) 0%, var(--c-contrat) 66%) !important; }
-  .kpi-warning { background: linear-gradient(135deg, #ffc107 0%, #ffb300 66%) !important; }
-  .kpi-danger { background: linear-gradient(135deg, #dc3545 0%, #c82333 66%) !important; }
-  .kpi-cyan { background: linear-gradient(135deg, var(--c-paiement) 0%, var(--c-paiement) 66%) !important; }
+.kpi-indigo { background: linear-gradient(135deg, #06b6d4 0%, #06b6d4 66%) !important; }
+.kpi-warning { background: linear-gradient(135deg, #ffc107 0%, #ffb300 66%) !important; }
+.kpi-danger { background: linear-gradient(135deg, #dc3545 0%, #c82333 66%) !important; }
+.kpi-cyan { background: linear-gradient(135deg, #6366f1 0%, #6366f1 66%) !important; }
 
   /* ── KPI Cards Secondaires ── */
   .kpi-card-sm {

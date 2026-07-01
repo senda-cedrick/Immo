@@ -2,14 +2,14 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
     <a class="sidebar-brand brand-logo" href="{% url 'home' %}">
-      <span style="font-size: 1.5rem; font-weight: 700;">
-        <i class="mdi mdi-home-city" style="color: var(--c-dashboard);"></i> Immo
-      </span>
+<span style="font-size: 1.5rem; font-weight: 700;">
+  <i class="mdi mdi-home-city" style="color: #4fc3f7;"></i> Immo
+</span>
     </a>
     <a class="sidebar-brand brand-logo-mini" href="{% url 'home' %}">
-      <span style="font-size: 1rem; font-weight: 700;">
-        <i class="mdi mdi-home-city" style="color: var(--c-dashboard);"></i>
-      </span>
+<span style="font-size: 1rem; font-weight: 700;">
+  <i class="mdi mdi-home-city" style="color: #4fc3f7;"></i>
+</span>
     </a>
   </div>
   <ul class="nav">
@@ -236,11 +236,30 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // Function to resolve CSS variables to their actual values
+  function resolveCSSVar(varName) {
+    var rootStyles = getComputedStyle(document.documentElement);
+    return rootStyles.getPropertyValue(varName).trim();
+  }
+
   document.querySelectorAll('.sidebar .nav .menu-items.active').forEach(function(item) {
-    var color = item.getAttribute('data-color') || 'var(--c-dashboard)';
+    var colorRef = item.getAttribute('data-color') || 'var(--c-dashboard)';
     var link = item.querySelector('.nav-link');
+
     if (link) {
-      link.style.background = 'linear-gradient(135deg, ' + color + ' 0%, ' + color + 'dd 100%)';
+      // Check if the color is a CSS variable reference
+      if (colorRef.startsWith('var(') && colorRef.endsWith(')')) {
+        var varName = colorRef.slice(4, -1); // Extract variable name
+        var actualColor = resolveCSSVar('--' + varName);
+        if (actualColor) {
+          // Create a semi-transparent version of the color for the gradient end
+          var transparentColor = actualColor + 'dd';
+          link.style.background = 'linear-gradient(135deg, ' + actualColor + ' 0%, ' + transparentColor + ' 100%)';
+        }
+      } else {
+        // If it's already a real color value
+        link.style.background = 'linear-gradient(135deg, ' + colorRef + ' 0%, ' + colorRef + 'dd 100%)';
+      }
     }
   });
 });

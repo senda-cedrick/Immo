@@ -25,8 +25,15 @@ class PaiementListView(LoginRequiredMixin, ListView):
             elif user.profile.name == 'Client':
                 # Les clients ne voient que leurs propres paiements
                 from app_base.models import Client
-                client_obj = Client.objects.get(user=user)
-                qs = qs.filter(client=client_obj)
+                try:
+                    client_obj = Client.objects.get(user=user)
+                    qs = qs.filter(client=client_obj)
+                except Client.DoesNotExist:
+                    # Si le client n'existe pas, retourner un queryset vide
+                    qs = qs.none()
+        else:
+            # Si l'utilisateur n'a pas de profil, retourner un queryset vide
+            qs = qs.none()
         return qs
 
 class PaiementCreateView(LoginRequiredMixin, CreateView):

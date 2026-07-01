@@ -1,3 +1,26 @@
+/** Safari-specific fixes **/
+/* Fix for Safari flexbox issues */
+._safari-only {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+}
+
+/* Fix for Safari grid issues */
+._safari-grid {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+/* Fix for Safari subpixel rendering */
+._safari-subpixel {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /** Home Page **/
 body {
 	padding-top: 0;
@@ -49,12 +72,11 @@ body {
   left: 100%;
   position: absolute;
   top: 0;
-  visibility: hidden;
+  display: none;
   margin-top: -1px;
 }
 
 .dropdown-menu-with-subs li:hover .sub-menu {
-  visibility: visible;
   display: block;
 }
 

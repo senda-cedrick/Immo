@@ -36,6 +36,10 @@ class Paiement(models.Model):
 
     def est_en_retard(self):
         from django.utils import timezone
+        # Un paiement est en retard si :
+        # 1. Son statut est 'EN_ATTENTE'
+        # 2. Sa date d'échéance est strictement inférieure à aujourd'hui
+        # (les paiements dus aujourd'hui ne sont pas encore en retard)
         if self.statut == 'EN_ATTENTE' and self.date_echeance < timezone.now().date():
             return True
         return False

@@ -12,19 +12,19 @@
       </div>
     </div>
 
-    <!-- Première ligne : Statistiques clés pour le client -->
-    <div class="row g-4 mb-4">
+    <!-- Première ligne : Statistiques clés pour le client (disposition compacte) -->
+    <div class="row g-3 mb-4 mx-0 px-0">
       <!-- Contrats actifs -->
-      <a href="{% url 'contrats' %}" class="col-xl-3 col-md-6 text-decoration-none">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 kpi-card kpi-indigo">
-          <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-start">
+      <a href="{% url 'contrats' %}?statut=ACTIF" class="col-lg col-md-4 col-6 text-decoration-none">
+        <div class="card border-0 shadow-sm rounded-3 h-100 kpi-card kpi-indigo">
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center">
               <div>
-                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">CONTRATS ACTIFS</p>
-                <h2 class="text-white fw-bold mb-0 display-6">{{ nb_contrats_actifs }}</h2>
+                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em;">CONTRATS</p>
+                <h3 class="text-white fw-bold mb-0">{{ nb_contrats_actifs }}</h3>
               </div>
               <div class="kpi-icon">
-                <i class="mdi mdi-file-document"></i>
+                <i class="mdi mdi-file-document" style="font-size: 1.2rem;"></i>
               </div>
             </div>
           </div>
@@ -32,16 +32,16 @@
       </a>
 
       <!-- Paiements à venir -->
-      <a href="{% url 'paiements' %}" class="col-xl-3 col-md-6 text-decoration-none">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 kpi-card kpi-warning">
-          <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-start">
+      <a href="{% url 'paiements' %}?statut=EN_ATTENTE&non_retard=1" class="col-lg col-md-4 col-6 text-decoration-none">
+        <div class="card border-0 shadow-sm rounded-3 h-100 kpi-card kpi-warning">
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center">
               <div>
-                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">PAIEMENTS À VENIR</p>
-                <h2 class="text-white fw-bold mb-0 display-6">{{ paiements_a_venir }}</h2>
+                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em;">À VENIR</p>
+                <h3 class="text-white fw-bold mb-0">{{ paiements_a_venir }}</h3>
               </div>
               <div class="kpi-icon">
-                <i class="mdi mdi-calendar-clock"></i>
+                <i class="mdi mdi-calendar-clock" style="font-size: 1.2rem;"></i>
               </div>
             </div>
           </div>
@@ -49,16 +49,33 @@
       </a>
 
       <!-- Paiements en retard -->
-      <a href="{% url 'paiements' %}" class="col-xl-3 col-md-6 text-decoration-none">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 kpi-card kpi-danger">
-          <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-start">
+      <a href="{% url 'paiements' %}?statut=EN_RETARD,EN_ATTENTE&en_retard=1" class="col-lg col-md-4 col-6 text-decoration-none">
+        <div class="card border-0 shadow-sm rounded-3 h-100 kpi-card kpi-danger">
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center">
               <div>
-                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">PAIEMENTS EN RETARD</p>
-                <h2 class="text-white fw-bold mb-0 display-6">{{ paiements_retard }}</h2>
+                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em;">EN RETARD</p>
+                <h3 class="text-white fw-bold mb-0">{{ paiements_retard }}</h3>
               </div>
               <div class="kpi-icon">
-                <i class="mdi mdi-alert-circle"></i>
+                <i class="mdi mdi-alert-circle" style="font-size: 1.2rem;"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Paiements payés -->
+      <a href="{% url 'paiements' %}?statut=PAYE" class="col-lg col-md-4 col-6 text-decoration-none">
+        <div class="card border-0 shadow-sm rounded-3 h-100 kpi-card kpi-success">
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div style="min-width: 0;">
+                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em;">PAYÉS</p>
+                <h3 class="text-white fw-bold mb-0" style="font-size: 1.8rem;">{{ paiements_payes }}</h3>
+              </div>
+              <div class="kpi-icon">
+                <i class="mdi mdi-check-circle-outline" style="font-size: 1.2rem;"></i>
               </div>
             </div>
           </div>
@@ -66,21 +83,21 @@
       </a>
 
       <!-- Montant total dû -->
-      <div class="col-xl-3 col-md-6 text-decoration-none">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 kpi-card kpi-cyan">
-          <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-start">
+      <a href="{% url 'paiements' %}" class="col-lg col-md-4 col-6 text-decoration-none">
+        <div class="card border-0 shadow-sm rounded-3 h-100 kpi-card kpi-cyan">
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center">
               <div>
-                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.05em;">MONTANT DÛ</p>
-                <h2 class="text-white fw-bold mb-0 display-6">{{ montant_du }} CDF</h2>
+                <p class="text-white-50 fw-semibold mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em;">MONTANT DÛ</p>
+                <h3 class="text-white fw-bold mb-0">{{ montant_du }} CDF</h3>
               </div>
               <div class="kpi-icon">
-                <i class="mdi mdi-currency-usd"></i>
+                <i class="mdi mdi-cash-multiple" style="font-size: 1.2rem;"></i>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </a>
     </div>
 
     <!-- Section : Mes Contrats Actifs -->
@@ -94,16 +111,16 @@
           <div class="card-body p-4">
             <div class="table-responsive">
               <table class="table table-hover align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Référence</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Logement</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Date début</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Date fin</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Montant</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Statut</th>
-                  </tr>
-                </thead>
+              <thead>
+                <tr>
+                  <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 12%;">Référence</th>
+                  <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 18%;">Logement</th>
+                  <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 15%;">Date début</th>
+                  <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 15%;">Date fin</th>
+                  <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 15%;">Montant</th>
+                  <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 15%;">Statut</th>
+                </tr>
+              </thead>
                 <tbody>
                   {% for contrat in contrats_actifs %}
                   <tr>
@@ -153,12 +170,12 @@
               <table class="table table-hover align-middle mb-0">
                 <thead>
                   <tr>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Contrat</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Type</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Montant</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Date échance</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Jours restants</th>
-                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Statut</th>
+                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 15%;">Contrat</th>
+                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 12%;">Type</th>
+                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 15%;">Montant</th>
+                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 15%;">Date échance</th>
+                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 18%;">Jours restants</th>
+                    <th class="border-0" style="color: #6c757d; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; width: 15%;">Statut</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -361,6 +378,7 @@
 .kpi-warning { background: linear-gradient(135deg, #ffc107 0%, #ffb300 66%) !important; }
 .kpi-danger { background: linear-gradient(135deg, #dc3545 0%, #c82333 66%) !important; }
 .kpi-cyan { background: linear-gradient(135deg, #6366f1 0%, #6366f1 66%) !important; }
+.kpi-success { background: linear-gradient(135deg, #198754 0%, #157347 66%) !important; }
 
   /* ── KPI Cards Secondaires ── */
   .kpi-card-sm {

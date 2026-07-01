@@ -14,6 +14,43 @@ class PaiementListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         qs = super().get_queryset().select_related('contrat__client__user', 'agent__user')
         user = self.request.user
+
+        # Filtrer par statut si le paramètre est présent dans l'URL
+        statut_filter = self.request.GET.get('statut')
+        if statut_filter:
+            # Gérer les statuts multiples séparés par des virgules
+            statuts = [s.strip() for s in statut_filter.split(',')]
+            qs = qs.filter(statut__in=statuts)
+
+        # Filtrer par état de retard si les paramètres sont présents
+        non_retard = self.request.GET.get('non_retard')
+        en_retard_param = self.request.GET.get('en_retard')
+
+        if non_retard:
+            # Filtrer les paiements EN_ATTENTE qui ne sont pas en retard
+            qs = qs.filter(statut='EN_ATTENTE')
+            qs = [p for p in qs if not p.est_en_retard()]
+            # Convertir la liste en queryset (solution temporaire)
+            from django.db.models import Q
+            import itertools
+            if qs:
+                ids = [p.id for p in qs]
+                qs = super().get_queryset().filter(id__in=ids).select_related('contrat__client__user', 'agent__user')
+            else:
+                qs = super().get_queryset().none()
+
+        elif en_retard_param:
+            # Filtrer les paiements qui sont en retard (EN_RETARD ou EN_ATTENTE en retard)
+            qs = list(qs)
+            qs = [p for p in qs if p.statut == 'EN_RETARD' or p.est_en_retard()]
+            # Convertir la liste en queryset
+            from django.db.models import Q
+            if qs:
+                ids = [p.id for p in qs]
+                qs = super().get_queryset().filter(id__in=ids).select_related('contrat__client__user', 'agent__user')
+            else:
+                qs = super().get_queryset().none()
+
         if user.is_authenticated and getattr(user, 'profile', None):
             if user.profile.name == 'Proprietaire':
                 from app_base.models import Propriete, Contrat

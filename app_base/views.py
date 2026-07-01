@@ -139,11 +139,19 @@ def dashboard(request):
         contrats_actifs = Contrat.objects.filter(client=client_obj, statut='ACTIF')
         nb_contrats_actifs = contrats_actifs.count()
 
-        # Calculer le nombre de paiements en retard
-        paiements_retard = Paiement.objects.filter(
+        # Calculer le nombre de paiements payés
+        paiements_payes = Paiement.objects.filter(
             client=client_obj,
-            statut='EN_RETARD'
+            statut='PAYE'
         ).count()
+
+        # Calculer le nombre de paiements en retard
+        # Inclure les paiements qui sont techniquement en retard selon la méthode est_en_retard()
+        paiements_en_retard_query = Paiement.objects.filter(client=client_obj)
+        paiements_retard = 0
+        for paiement in paiements_en_retard_query:
+            if paiement.statut == 'EN_RETARD' or paiement.est_en_retard():
+                paiements_retard += 1
 
         # Calculer le montant total dû
         from django.db.models import Sum
@@ -153,11 +161,15 @@ def dashboard(request):
         ).aggregate(total=Sum('montant'))['total'] or 0
 
         # Calculer le nombre de paiements à venir (non payés, non en retard)
-        paiements_a_venir = Paiement.objects.filter(
+        # Utiliser la méthode est_en_retard() pour une détection plus précise
+        paiements_a_venir = 0
+        paiements_en_attente = Paiement.objects.filter(
             client=client_obj,
-            statut='EN_ATTENTE',
-            date_echeance__gte=timezone.now()
-        ).count()
+            statut='EN_ATTENTE'
+        )
+        for paiement in paiements_en_attente:
+            if not paiement.est_en_retard():
+                paiements_a_venir += 1
 
         # Récupérer les paiements proches (prochains 30 jours)
         paiements_prochains = Paiement.objects.filter(
@@ -183,6 +195,7 @@ def dashboard(request):
         # Préparer les données pour le template
         client_stats = {
             'nb_contrats_actifs': nb_contrats_actifs,
+            'paiements_payes': paiements_payes,  # Ajout de la variable manquante
             'paiements_retard': paiements_retard,
             'montant_du': montant_du,
             'paiements_a_venir': paiements_a_venir,
@@ -382,12 +395,29 @@ class ClientListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         qs = super().get_queryset()
         user = self.request.user
-        if user.is_authenticated and getattr(user, 'profile', None) and user.profile.name == 'Proprietaire':
-            proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
-            contrats_ids = Contrat.objects.filter(
-                Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
-            ).values_list('client', flat=True).distinct()
-            qs = qs.filter(id__in=contrats_ids)
+        if user.is_authenticated and getattr(user, 'profile', None):
+            if user.profile.name == 'Proprietaire':
+                proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+                contrats_ids = Contrat.objects.filter(
+                    Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
+                ).values_list('client', flat=True).distinct()
+                qs = qs.filter(id__in=contrats_ids)
+            elif user.profile.name == 'Client':
+                # Un client ne peut voir que son propre profil
+                # Rediriger vers sa propre page de détail ou retourner un queryset vide
+                try:
+                    client_obj = Client.objects.get(user=user)
+                    # Retourner uniquement le client connecté
+                    qs = qs.filter(id=client_obj.id)
+                except Client.DoesNotExist:
+                    qs = qs.none()
+            else:
+                # Pour les autres rôles (Personnel, etc.), filtrer selon les besoins
+                # Par défaut, ne montrer aucun client si le rôle n'est pas explicitement autorisé
+                qs = qs.none()
+        else:
+            # Utilisateur non authentifié ou sans profil
+            qs = qs.none()
         return qs
 
 class ClientDetailView(LoginRequiredMixin, DetailView):

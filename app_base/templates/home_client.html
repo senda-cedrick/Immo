@@ -100,16 +100,17 @@
       </a>
     </div>
 
-    <!-- Section : Mes Contrats Actifs -->
+    <!-- Section : Mes Contrats et Paiements (disposition en 2 colonnes) -->
     <div class="row g-4 mb-4">
-      <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 bg-white">
+      <!-- Mes Contrats Actifs - Colonne de gauche -->
+      <div class="col-lg-6 col-12">
+        <div class="card border-0 shadow-sm rounded-4 bg-white h-100">
           <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-4 pb-0">
             <h5 class="fw-bold text-dark mb-0"><i class="mdi mdi-file-document me-2 text-indigo"></i>Mes Contrats Actifs</h5>
             <span class="badge bg-indigo text-white rounded-pill px-3 py-1">{{ nb_contrats_actifs }} contrat(s)</span>
           </div>
           <div class="card-body p-4">
-            <div class="table-responsive">
+            <div class="table-responsive" style="width: 100%;">
               <table class="table table-hover align-middle mb-0">
               <thead>
                 <tr>
@@ -129,9 +130,14 @@
                         {{ contrat.reference }}
                       </span>
                     </td>
-                    <td class="py-3 fw-semibold text-dark">
+                  <td class="py-3 fw-semibold text-dark">
+                    <a href="#" class="text-dark text-decoration-none" data-bs-toggle="tooltip" title="Voir les détails du logement">
                       {{ contrat.logement.identifiant|default:"—" }}
-                    </td>
+                    </a>
+                    <div class="small text-muted">
+                      {{ contrat.logement.propriete.adresse|truncatechars:20|default:"—" }}
+                    </div>
+                  </td>
                     <td class="py-3">{{ contrat.date_debut|date:"d M Y" }}</td>
                     <td class="py-3">{{ contrat.date_fin|date:"d M Y" }}</td>
                     <td class="py-3 fw-bold" style="color: #2c3e50;">{{ contrat.montant }} CDF</td>
@@ -155,18 +161,16 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Section : Prochains Paiements -->
-    <div class="row g-4 mb-4">
-      <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 bg-white">
+      <!-- Prochains Paiements - Colonne de droite -->
+      <div class="col-lg-6 col-12">
+        <div class="card border-0 shadow-sm rounded-4 bg-white h-100">
           <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-4 pb-0">
             <h5 class="fw-bold text-dark mb-0"><i class="mdi mdi-calendar-clock me-2 text-warning"></i>Prochains Paiements</h5>
             <span class="badge bg-warning text-dark rounded-pill px-3 py-1">{{ paiements_prochains.count }} paiement(s) à venir</span>
           </div>
           <div class="card-body p-4">
-            <div class="table-responsive">
+            <div class="table-responsive" style="width: 100%;">
               <table class="table table-hover align-middle mb-0">
                 <thead>
                   <tr>
@@ -233,45 +237,74 @@
       </div>
     </div>
 
-    <!-- Section spéciale : Résumé financier -->
+    <!-- Section : Résumé financier et Alertes (disposition en 2 colonnes) -->
     <div class="row g-4 mb-4">
-      <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 bg-white">
+      <!-- Résumé financier - Colonne de gauche -->
+      <div class="col-lg-6 col-12">
+        <div class="card border-0 shadow-sm rounded-4 bg-white h-100">
           <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-4 pb-0">
             <h5 class="fw-bold text-dark mb-0"><i class="mdi mdi-chart-line me-2 text-success"></i>Résumé Financier</h5>
           </div>
           <div class="card-body p-4">
             <div class="row g-3">
-              <div class="col-md-4">
+              <!-- Montant total payé -->
+              <div class="col-md-6">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="me-3">
+                    <i class="mdi mdi-cash-check text-success" style="font-size: 2rem;"></i>
+                  </div>
+                  <div>
+                    <h3 class="fw-bold mb-0" style="color: #2c3e50;">{{ paiements_payes }} paiement(s)</h3>
+                    <p class="text-muted mb-0" style="font-size: 0.85rem;">Paiements effectués</p>
+                  </div>
+                </div>
+                <!-- Taux de conformité -->
                 <div class="d-flex align-items-center">
                   <div class="me-3">
-                    <i class="mdi mdi-cash-multiple text-success" style="font-size: 2rem;"></i>
+                    <i class="mdi mdi-chart-pie text-info" style="font-size: 1.8rem;"></i>
+                  </div>
+                  <div>
+                      {% if nb_contrats_actifs > 0 %}
+                      <h3 class="fw-bold mb-0" style="color: #2c3e50;">{{ taux_paiements_a_jour }}%</h3>
+                      <div class="progress" style="height: 6px; width: 120px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ taux_paiements_a_jour }}%" aria-valuenow="{{ taux_paiements_a_jour }}" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <p class="text-muted mb-0" style="font-size: 0.8rem; margin-top: 0.2rem;">Taux de paiements à jour</p>
+                      {% else %}
+                      <h3 class="fw-bold mb-0" style="color: #2c3e50;">—</h3>
+                      <p class="text-muted mb-0" style="font-size: 0.85rem;">Taux de paiements à jour</p>
+                      {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Statistiques financières clés -->
+              <div class="col-md-6">
+                <!-- Montant dû -->
+                <div class="d-flex align-items-center mb-3">
+                  <div class="me-3">
+                    <i class="mdi mdi-currency-usd-off text-danger" style="font-size: 2rem;"></i>
                   </div>
                   <div>
                     <h3 class="fw-bold mb-0" style="color: #2c3e50;">{{ montant_du }} CDF</h3>
                     <p class="text-muted mb-0" style="font-size: 0.85rem;">Montant total dû</p>
                   </div>
                 </div>
-              </div>
-              <div class="col-md-4">
+                <!-- Prochaine échéance -->
                 <div class="d-flex align-items-center">
                   <div class="me-3">
-                    <i class="mdi mdi-calendar-check text-info" style="font-size: 2rem;"></i>
+                    <i class="mdi mdi-calendar-clock text-warning" style="font-size: 1.8rem;"></i>
                   </div>
                   <div>
-                    <h3 class="fw-bold mb-0" style="color: #2c3e50;">{{ nb_contrats_actifs }}</h3>
-                    <p class="text-muted mb-0" style="font-size: 0.85rem;">Contrats actifs</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="d-flex align-items-center">
-                  <div class="me-3">
-                    <i class="mdi mdi-alert-circle text-warning" style="font-size: 2rem;"></i>
-                  </div>
-                  <div>
-                    <h3 class="fw-bold mb-0" style="color: #2c3e50;">{{ paiements_retard }}</h3>
-                    <p class="text-muted mb-0" style="font-size: 0.85rem;">Paiements en retard</p>
+                    {% if paiements_prochains %}
+                      {% with premier_paiement=paiements_prochains|first %}
+                        <h3 class="fw-bold mb-0" style="color: #2c3e50;">{{ premier_paiement.date_echeance|date:"d M Y" }}</h3>
+                        <p class="text-muted mb-0" style="font-size: 0.85rem;">Prochaine échéance</p>
+                      {% endwith %}
+                    {% else %}
+                      <h3 class="fw-bold mb-0" style="color: #2c3e50;">—</h3>
+                      <p class="text-muted mb-0" style="font-size: 0.85rem;">Prochaine échéance</p>
+                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -279,12 +312,10 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Section Alertes et Rappels -->
-    <div class="row g-4 mt-2">
-      <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 bg-white">
+      <!-- Alertes et Rappels - Colonne de droite -->
+      <div class="col-lg-6 col-12">
+        <div class="card border-0 shadow-sm rounded-4 bg-white h-100">
           <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-4 pb-0">
             <h5 class="fw-bold text-dark mb-0"><i class="mdi mdi-bell me-2 text-warning"></i>Alertes et Rappels</h5>
           </div>

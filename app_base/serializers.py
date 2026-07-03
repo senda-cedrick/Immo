@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db.models import Q
 from .models import (
     Agence, Personnel, Proprietaire, Client,
     TypePropriete, TypeLogement, Propriete, Logement, Contrat, Garantie, Maintenance
@@ -181,6 +182,46 @@ class ProprietaireContratSerializer(serializers.ModelSerializer):
     def get_dernier_paiement_date(self, obj):
         dernier = obj.paiements.order_by('-date_paiement').first()
         return dernier.date_paiement if dernier else None
+
+
+class ClientContratSerializer(serializers.ModelSerializer):
+    client_noms = serializers.CharField(source='client.user.noms', read_only=True)
+    propriete_adresse = serializers.CharField(source='propriete.adresse', read_only=True, default=None)
+    logement_identifiant = serializers.CharField(source='logement.identifiant', read_only=True, default=None)
+    proprietaire_noms = serializers.CharField(source='proprietaire.user.noms', read_only=True)
+    proprietaire_telephone = serializers.CharField(source='proprietaire.telephone', read_only=True)
+    proprietaire_email = serializers.CharField(source='proprietaire.user.email', read_only=True)
+    paiements_count = serializers.SerializerMethodField()
+    paiements = serializers.SerializerMethodField()
+    type_contrat = serializers.CharField(source='get_type_display', read_only=True)
+
+    class Meta:
+        model = Contrat
+        fields = [
+            'id', 'reference', 'type_contrat', 'client_noms',
+            'proprietaire_noms', 'proprietaire_telephone', 'proprietaire_email',
+            'propriete_adresse', 'logement_identifiant',
+            'date_debut', 'date_fin', 'montant', 'statut',
+            'paiements_count', 'paiements', 'conditions'
+        ]
+
+    def get_paiements_count(self, obj):
+        return obj.paiements.count()
+
+    def get_paiements(self, obj):
+        from app_paiements.models import Paiement
+        paiements = Paiement.objects.filter(contrat=obj).order_by('-date_echeance')
+        return [
+            {
+                'id': p.id,
+                'type_paiement': p.get_type_paiement_display(),
+                'montant': str(p.montant),
+                'date_echeance': p.date_echeance.strftime('%Y-%m-%d'),
+                'date_paiement': p.date_paiement.strftime('%Y-%m-%d') if p.date_paiement else None,
+                'statut': p.statut
+            }
+            for p in paiements
+        ]
 
 
 class ProprietaireDashboardSerializer(serializers.Serializer):

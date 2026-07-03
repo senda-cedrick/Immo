@@ -87,4 +87,9 @@ urlpatterns = [
     path('api/proprietaire/dashboard/', views.ProprietaireDashboardAPI.as_view(), name='api_proprietaire_dashboard'),
     path('api/proprietaire/proprietes/', views.ProprietaireProprietesAPI.as_view(), name='api_proprietaire_proprietes'),
     path('api/proprietaire/contrats/', views.ProprietaireContratsAPI.as_view(), name='api_proprietaire_contrats'),
+
+    # API pour Client (JWT)
+    path('api/client/dashboard/', views.ClientDashboardAPI.as_view(), name='api_client_dashboard'),
+    path('api/client/contrats/', views.ClientContratsAPI.as_view(), name='api_client_contrats'),
+    path('api/client/contrats/<int:contrat_id>/', views.ClientContratDetailAPI.as_view(), name='api_client_contrat_detail'),
 ]

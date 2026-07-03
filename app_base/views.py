@@ -192,6 +192,14 @@ def dashboard(request):
             statut='EN_RETARD'
         ).aggregate(total=Sum('montant'))['total'] or 0
 
+        # Calculer le taux de paiements à jour
+        paiements_totaux = paiements_payes + paiements_retard
+        taux_paiements_a_jour = 0
+        if paiements_totaux > 0:
+            taux_paiements_a_jour = round((paiements_payes / paiements_totaux) * 100)
+        else:
+            taux_paiements_a_jour = 100  # Si aucun paiement n'est attendu, considérer comme 100%
+
         # Préparer les données pour le template
         client_stats = {
             'nb_contrats_actifs': nb_contrats_actifs,
@@ -203,6 +211,7 @@ def dashboard(request):
             'paiements_prochains': paiements_prochains,
             'contrats_proches_expiration': contrats_proches_expiration,
             'montant_retard': montant_retard,
+            'taux_paiements_a_jour': taux_paiements_a_jour,  # Nouveau champ ajouté
         }
         return render(request, 'home_client.html', client_stats)
 
@@ -632,9 +641,24 @@ class LogementListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         qs = super().get_queryset().select_related('propriete__type_propriete', 'propriete__agence', 'propriete__proprietaire__user')
         user = self.request.user
-        if user.is_authenticated and getattr(user, 'profile', None) and user.profile.name == 'Proprietaire':
-            proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
-            qs = qs.filter(propriete_id__in=proprietes_ids)
+        if user.is_authenticated and getattr(user, 'profile', None):
+            if user.profile.name == 'Proprietaire':
+                proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+                qs = qs.filter(propriete_id__in=proprietes_ids)
+            elif user.profile.name == 'Client':
+                # Un client ne peut voir que les logements qu'il loue
+                contrats_ids = Contrat.objects.filter(
+                    client__user=user,
+                    statut='ACTIF'
+                ).values_list('logement', flat=True).distinct()
+                qs = qs.filter(id__in=contrats_ids)
+            else:
+                # Pour les autres rôles (Personnel, etc.), filtrer selon les besoins
+                # Par défaut, ne montrer aucun logement si le rôle n'est pas explicitement autorisé
+                qs = qs.none()
+        else:
+            # Utilisateur non authentifié ou sans profil
+            qs = qs.none()
         return qs
 
 class LogementDetailView(LoginRequiredMixin, DetailView):
@@ -652,7 +676,10 @@ class LogementDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         logement = self.get_object()
-        context['contrats'] = logement.propriete.contrats.select_related('client__user', 'agent__user').all()  # type: ignore
+        # Récupérer uniquement les contrats liés à ce logement spécifique
+        context['contrats'] = Contrat.objects.filter(
+            Q(logement=logement) | Q(propriete=logement.propriete)
+        ).select_related('client__user', 'agent__user').all()
         return context
 
 class LogementCreateView(LoginRequiredMixin, CreateView):
@@ -955,3 +982,166 @@ class ProprietaireContratsAPI(APIView):
         ).select_related('client__user', 'propriete', 'logement', 'agent__user')
         serializer = ProprietaireContratSerializer(contrats, many=True)
         return Response(serializer.data)
+
+# --- API pour Client ---
+class ClientContratDetailAPI(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, contrat_id):
+        user = request.user
+        if not (user.profile and user.profile.name == 'Client'):
+            return Response({'error': 'Accès refusé'}, status=403)
+
+        # Récupérer le client connecté
+        try:
+            client_obj = Client.objects.get(user=user)
+        except Client.DoesNotExist:
+            return Response({'error': 'Client non trouvé'}, status=404)
+
+        # Récupérer le contrat spécifique
+        try:
+            contrat = Contrat.objects.filter(
+                id=contrat_id,
+                client=client_obj
+            ).select_related('propriete', 'logement', 'agent__user').get()
+        except Contrat.DoesNotExist:
+            return Response({'error': 'Contrat non trouvé ou accès refusé'}, status=404)
+
+        # Sérialiser le contrat
+        from .serializers import ClientContratSerializer
+        serializer = ClientContratSerializer(contrat)
+        return Response(serializer.data)
+
+class ClientContratsAPI(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if not (user.profile and user.profile.name == 'Client'):
+            return Response({'error': 'Accès refusé'}, status=403)
+
+        # Récupérer le client connecté
+        try:
+            client_obj = Client.objects.get(user=user)
+        except Client.DoesNotExist:
+            return Response({'error': 'Client non trouvé'}, status=404)
+
+        # Récupérer les contrats du client
+        contrats = Contrat.objects.filter(client=client_obj).select_related(
+            'propriete', 'logement', 'agent__user'
+        ).order_by('-date_debut')
+
+        # Sérialiser les contrats
+        from .serializers import ClientContratSerializer
+        serializer = ClientContratSerializer(contrats, many=True)
+        return Response(serializer.data)
+
+class ClientDashboardAPI(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if not (user.profile and user.profile.name == 'Client'):
+            return Response({'error': 'Accès refusé'}, status=403)
+
+        # Récupérer le client connecté
+        try:
+            client_obj = Client.objects.get(user=user)
+        except Client.DoesNotExist:
+            return Response({'error': 'Client non trouvé'}, status=404)
+
+        # Calculer les statistiques pour le client
+        contrats_actifs = Contrat.objects.filter(client=client_obj, statut='ACTIF')
+        nb_contrats_actifs = contrats_actifs.count()
+
+        # Calculer le nombre de paiements payés
+        paiements_payes = Paiement.objects.filter(
+            client=client_obj,
+            statut='PAYE'
+        ).count()
+
+        # Calculer le nombre de paiements en retard
+        paiements_en_retard_query = Paiement.objects.filter(client=client_obj)
+        paiements_retard = 0
+        for paiement in paiements_en_retard_query:
+            if paiement.statut == 'EN_RETARD' or paiement.est_en_retard():
+                paiements_retard += 1
+
+        # Calculer le montant total dû
+        montant_du = Paiement.objects.filter(
+            client=client_obj,
+            statut__in=['EN_ATTENTE', 'EN_RETARD']
+        ).aggregate(total=Sum('montant'))['total'] or 0
+
+        # Calculer le nombre de paiements à venir
+        paiements_a_venir = 0
+        paiements_en_attente = Paiement.objects.filter(
+            client=client_obj,
+            statut='EN_ATTENTE'
+        )
+        for paiement in paiements_en_attente:
+            if not paiement.est_en_retard():
+                paiements_a_venir += 1
+
+        # Calculer le montant total des paiements en retard
+        montant_retard = Paiement.objects.filter(
+            client=client_obj,
+            statut='EN_RETARD'
+        ).aggregate(total=Sum('montant'))['total'] or 0
+
+        # Calculer le taux de paiements à jour
+        paiements_totaux = paiements_payes + paiements_retard
+        taux_paiements_a_jour = 0
+        if paiements_totaux > 0:
+            taux_paiements_a_jour = round((paiements_payes / paiements_totaux) * 100)
+        else:
+            taux_paiements_a_jour = 100
+
+        # Récupérer les contrats proches de l'expiration
+        contrats_proches_expiration = Contrat.objects.filter(
+            client=client_obj,
+            statut='ACTIF',
+            date_fin__gte=timezone.now(),
+            date_fin__lte=timezone.now() + timedelta(days=30)
+        ).count()
+
+        # Récupérer les paiements proches (prochains 30 jours)
+        paiements_prochains = Paiement.objects.filter(
+            client=client_obj,
+            date_echeance__gte=timezone.now(),
+            date_echeance__lte=timezone.now() + timedelta(days=30)
+        ).select_related('contrat').order_by('date_echeance')
+
+        # Préparer les données de réponse
+        data = {
+            'profil': {
+                'id': client_obj.id,
+                'noms': client_obj.user.noms,
+                'email': client_obj.user.email,
+                'telephone': client_obj.telephone,
+                'adresse': client_obj.adresse,
+                'date_inscription': client_obj.created_at.strftime('%Y-%m-%d')
+            },
+            'nb_contrats_actifs': nb_contrats_actifs,
+            'paiements_payes': paiements_payes,
+            'paiements_retard': paiements_retard,
+            'montant_du': montant_du,
+            'paiements_a_venir': paiements_a_venir,
+            'montant_retard': montant_retard,
+            'taux_paiements_a_jour': taux_paiements_a_jour,
+            'contrats_proches_expiration': contrats_proches_expiration,
+            'paiements_prochains': [
+                {
+                    'id': p.id,
+                    'contrat_reference': p.contrat.reference,
+                    'type_paiement': p.get_type_paiement_display(),
+                    'montant': str(p.montant),
+                    'date_echeance': p.date_echeance.strftime('%Y-%m-%d'),
+                    'statut': p.statut
+                } for p in paiements_prochains
+            ]
+        }
+        return Response(data)

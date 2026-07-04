@@ -1,94 +1,150 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<style>
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto">
+          <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0">
+                <i class="mdi mdi-account-plus"></i>
+                {{ action }} un utilisateur
+              </h5>
+              <a href="{% url 'users' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="forms-sample">
+              {% csrf_token %}
+
+              <div class="form-group mb-3">
+                <label for="id_noms" class="text-dark fw-semibold"><i class="mdi mdi-signature-freehand"></i> Noms complets</label>
+                {{ form.noms }}
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="id_username" class="text-dark fw-semibold"><i class="mdi mdi-account"></i> Nom d'utilisateur</label>
+                {{ form.username }}
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="id_email" class="text-dark fw-semibold"><i class="mdi mdi-email"></i> Email</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-dark text-white border-0">@</span>
+                  {{ form.email }}
+                </div>
+              </div>
+
+              {% if not object %}<!-- Champ mot de passe uniquement pour la création -->
+              <div class="form-group mb-3">
+                <label for="id_password" class="text-dark fw-semibold"><i class="mdi mdi-lock"></i> Mot de passe</label>
+                {{ form.password }}
+              </div>
+              {% endif %}
+
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_telephone" class="text-dark fw-semibold"><i class="mdi mdi-phone"></i> Téléphone</label>
+                    {{ form.telephone }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_sexe" class="text-dark fw-semibold"><i class="mdi mdi-gender-male-female"></i> Sexe</label>
+                    {{ form.sexe }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_date_naissance" class="text-dark fw-semibold"><i class="mdi mdi-calendar"></i> Date de naissance</label>
+                    {{ form.date_naissance }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_adresse" class="text-dark fw-semibold"><i class="mdi mdi-map-marker"></i> Adresse</label>
+                    {{ form.adresse }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="id_photo_url" class="text-dark fw-semibold"><i class="mdi mdi-camera"></i> Photo de profil</label>
+                <div class="image-preview-container mb-2 d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; border-radius: 8px; background: rgba(0,0,0,0.1);">
+                  {% if form.instance and form.instance.photo_url %}
+                  <img id="image-preview" src="{{ form.instance.photo_url.url }}" alt="Photo actuelle" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                  {% else %}
+                  <img id="image-preview" src="" alt="Aperçu" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: none;">
+                  <i id="preview-icon" class="mdi mdi-camera" style="font-size: 40px; color: rgba(0,0,0,0.3);"></i>
+                  {% endif %}
+                </div>
+                {{ form.photo_url }}
+                {% if form.photo_url.errors %}<small class="text-danger">{{ form.photo_url.errors|first }}</small>{% endif %}
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="id_profile" class="text-dark fw-semibold"><i class="mdi mdi-shield-account"></i> Profil</label>
+                {{ form.profile }}
+              </div>
+
+              <div class="form-check mb-4">
+                <label class="form-check-label text-dark fw-semibold">
+                  {{ form.is_active }}
+                  <i class="mdi mdi-check-circle"></i> Utilisateur actif
+                </label>
+              </div>
+
+              <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'users' %}" class="btn btn-outline-light me-2"><i class="mdi mdi-close"></i> Annuler</a>
+                <button type="submit" class="btn btn-success"><i class="mdi mdi-check"></i> Enregistrer</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
     .glass-card {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.9);
         border-radius: 12px;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
         padding: 2rem;
         margin-top: 2rem;
         border: 1px solid rgba(255, 255, 255, 0.18);
     }
-    .glass-card h5 { color: #fff; }
-    .form-label { color: #fff; }
     .form-control, .form-select {
-        background-color: rgba(255,255,255,0.1) !important;
-        color: #fff !important;
-        border: 1px solid rgba(255,255,255,0.2) !important;
+        background-color: rgba(255,255,255,0.8) !important;
+        color: #333 !important;
+        border: 1px solid rgba(0,0,0,0.1) !important;
     }
-    .form-control::placeholder { color: #ccc; }
-    .form-check-label { color: #fff; }
+    .form-control::placeholder { color: #999; }
+    .form-check-input { margin-right: 0.5rem; }
     .image-preview-container {
         position: relative;
-        width: 200px;
-        height: 200px;
+        width: 150px;
+        height: 150px;
         border-radius: 8px;
-        background: rgba(0,0,0,0.2);
+        background: rgba(0,0,0,0.05);
+        overflow: hidden;
     }
-    /* Style pour le widget de téléversement de fichier */
-    .custom-file-input-container {
-        display: flex;
-        flex-direction: column;
-    }
-    .custom-file-input-container > a {
-        display: none; /* Cache le lien "Actuellement" */
-    }
-</style>
+  </style>
 
-<div class="container-fluid">
-    <div class="glass-card">
-        <h5 class="mb-4"><i class="mdi mdi-account-plus"></i> {{ action }} un utilisateur</h5>
-        
-        <form method="post" enctype="multipart/form-data" class="row g-3">
-            {% csrf_token %}
-            
-            {# Boucle pour afficher tous les champs du formulaire #}
-            {# Django va maintenant utiliser le widget ClearableFileInput pour le champ photo_url #}
-            {% for field in form %}
-                {% if field.name == 'photo_url' %}
-                <div class="col-md-6 mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    <div class="image-preview-container mb-2 d-flex align-items-center justify-content-center">
-                        {% if form.instance and form.instance.photo_url %}
-                            <img id="image-preview" src="{{ form.instance.photo_url.url }}" alt="Photo actuelle" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-                        {% else %}
-                            <img id="image-preview" src="" alt="Aperçu" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: none;">
-                            <i id="preview-icon" class="mdi mdi-camera" style="font-size: 50px; color: rgba(255,255,255,0.5);"></i>
-                        {% endif %}
-                    </div>
-                    <div class="custom-file-input-container">
-                        {{ field }}
-                    </div>
-                    {% if field.errors %}<small class="text-danger">{{ field.errors|first }}</small>{% endif %}
-                </div>
-                {% else %}
-                <div class="col-md-6 mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}<small class="text-danger">{{ field.errors|first }}</small>{% endif %}
-                    {% if field.help_text %}<small class="form-text text-muted">{{ field.help_text|safe }}</small>{% endif %}
-                </div>
-                {% endif %}
-            {% endfor %}
-
-            <div class="col-12 d-flex justify-content-end mt-3">
-                <button type="submit" class="btn btn-success me-2"><i class="mdi mdi-check"></i> Enregistrer</button>
-                <a href="{% url 'users' %}" class="btn btn-outline-light">Annuler</a>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
+  <script>
     function previewImage(event) {
         const reader = new FileReader();
         const input = event.target;
-        const imagePreview = document.getElementById('image-preview'); // L'élément img
-        const previewIcon = document.getElementById('preview-icon'); // L'icône
-        
+        const imagePreview = document.getElementById('image-preview');
+        const previewIcon = document.getElementById('preview-icon');
+
         reader.onload = function(){
             if (reader.readyState === 2) {
                 imagePreview.src = reader.result;
@@ -98,17 +154,24 @@
                 }
             }
         };
-        
+
         if (input.files && input.files[0]) {
             reader.readAsDataURL(input.files[0]);
         }
     }
-    // Attache l'événement au champ de fichier
+
     document.addEventListener('DOMContentLoaded', function() {
         const photoInput = document.getElementById('id_photo_url');
         if (photoInput) {
             photoInput.addEventListener('change', previewImage);
         }
     });
-</script>
+  </script>
 {% endblock content %}
+<task_progress>
+- [x] Examiner le template agence_form.html (édition)
+- [x] Examiner le template utilisateur_form.html actuel
+- [x] Appliquer le même style que agence_form.html
+- [ ] Tester les changements
+</task_progress>
+</write_to_file>

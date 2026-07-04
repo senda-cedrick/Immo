@@ -1,107 +1,127 @@
-{% extends 'base.html' %}
-
-{% block title %}Détails du Type de Logement - {{ type_logement.nom }}{% endblock %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Type de Logement: {{ type_logement.nom }}</h3>
-                    <div class="card-tools">
-                        <a href="{% url 'type_logement_update' type_logement.pk %}" class="btn btn-warning">
-                            <i class="fas fa-edit"></i> Modifier
-                        </a>
-                        <a href="{% url 'type_logements' %}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Retour à la liste
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Nom:</label>
-                                <p>{{ type_logement.nom }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>ID:</label>
-                                <p>{{ type_logement.id }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Description:</label>
-                                <p>{{ type_logement.description|linebreaks }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="mb-0"><i class="mdi mdi-home-group"></i> Détail du type de logement : {{ type_logement.nom }}</h5>
+          <div class="d-flex gap-2">
+            <a href="{% url 'type_logements' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+            <a href="{% url 'type_logement_update' type_logement.pk %}" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-pencil"></i> Modifier</a>
+            <a href="{% url 'type_logement_delete' type_logement.pk %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce type de logement ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
+          </div>
         </div>
-    </div>
 
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Logements associés ({{ total_logements }})</h3>
+        <!-- Statistiques -->
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <div class="card bg-info text-white p-3 rounded-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0">Nombre de logements</h6>
+                  <h3 class="mb-0">{{ total_logements }}</h3>
                 </div>
-                <div class="card-body table-responsive p-0">
-                    {% if logements %}
-                    <table class="table table-hover text-nowrap">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Identifiant</th>
-                                <th>Propriété</th>
-                                <th>Surface</th>
-                                <th>Étage</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for logement in logements %}
-                            <tr>
-                                <td>{{ logement.id }}</td>
-                                <td>{{ logement.identifiant }}</td>
-                                <td>
-                                    <a href="{% url 'propriete_detail' logement.propriete.pk %}">
-                                        {{ logement.propriete }}
-                                    </a>
-                                </td>
-                                <td>{{ logement.surface }} m²</td>
-                                <td>{{ logement.etage|default:"-" }}</td>
-                                <td>
-                                    <span class="badge
-                                        {% if logement.statut == 'DISPONIBLE' %}bg-success
-                                        {% elif logement.statut == 'LOUE' %}bg-primary
-                                        {% elif logement.statut == 'VENDU' %}bg-info
-                                        {% else %}bg-warning{% endif %}">
-                                        {{ logement.get_statut_display }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="{% url 'logement_detail' logement.pk %}" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% else %}
-                    <div class="alert alert-info">Aucun logement associé à ce type.</div>
-                    {% endif %}
-                </div>
+                <i class="mdi mdi-home-floor-3" style="font-size: 2.5rem; opacity: 0.5;"></i>
+              </div>
             </div>
+          </div>
         </div>
+
+        <!-- Informations -->
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-information"></i> Informations générales</h6>
+            <table class="table table-borderless">
+              <tr>
+                <td class="fw-semibold text-muted" style="width: 150px;">ID :</td>
+                <td>{{ type_logement.id }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Nom :</td>
+                <td><strong>{{ type_logement.nom }}</strong></td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Description :</td>
+                <td>{{ type_logement.description|linebreaks }}</td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-md-6">
+            <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-calendar"></i> Dates</h6>
+            <table class="table table-borderless">
+              <tr>
+                <td class="fw-semibold text-muted" style="width: 150px;">Créé le :</td>
+                <td>{{ type_logement.created_at|date:"d/m/Y H:i" }}</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold text-muted">Dernière modification :</td>
+                <td>{{ type_logement.updated_at|date:"d/m/Y H:i" }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Logements associés -->
+        <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-home-floor-3"></i> Logements associés ({{ total_logements }})</h6>
+        <div class="table-responsive mb-4">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ID</th>
+                <th>Identifiant</th>
+                <th>Propriété</th>
+                <th>Type de propriété</th>
+                <th>Surface</th>
+                <th>Étage</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for logement in logements %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ logement.id }}</td>
+                <td><strong>{{ logement.identifiant }}</strong></td>
+                <td>
+                  <a href="{% url 'propriete_detail' logement.propriete.pk %}" class="text-decoration-none">
+                    {{ logement.propriete.adresse|truncatechars:30 }}
+                  </a>
+                </td>
+                <td>{{ logement.propriete.type_propriete.nom }}</td>
+                <td>{{ logement.surface }} m²</td>
+                <td>{{ logement.etage|default:"—" }}</td>
+                <td>
+                  <span class="badge {% if logement.statut == 'DISPONIBLE' %}bg-success{% elif logement.statut == 'LOUE' %}bg-primary{% elif logement.statut == 'VENDU' %}bg-info{% else %}bg-warning{% endif %}">
+                    {{ logement.get_statut_display }}
+                  </span>
+                </td>
+                <td>
+                  <a href="{% url 'logement_detail' logement.pk %}" class="btn btn-sm btn-outline-info" title="Voir les détails">
+                    <i class="mdi mdi-eye"></i>
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="9" class="text-muted">Aucun logement associé à ce type.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
     </div>
-</div>
-{% endblock %}
+  </div>
+{% endblock content %}
+<task_progress>
+- [x] Examiner le template agence_detail.html
+- [x] Examiner le template type_logement_detail.html actuel
+- [x] Appliquer le même style que agence_detail.html
+- [ ] Tester les changements
+</task_progress>
+</write_to_file>

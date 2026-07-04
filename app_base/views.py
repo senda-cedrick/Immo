@@ -118,6 +118,7 @@ def dashboard(request):
             'revenu_mensuel': revenu_mensuel,
             'taux_occupation': taux_occupation,
             'paiements_retard': paiements_retard,
+            'nouveau_champ': 'valeur',
             'contrats_expirant': contrats_expirant,
             'nbgaranties': nb_garanties,
             'nbcaisses': nb_caisses,
@@ -533,7 +534,22 @@ class TypeLogementListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related('logement_set')
+        queryset = super().get_queryset().prefetch_related('logement_set').annotate(
+            logement_count=Count('logement')
+        ).order_by('nom')
+
+        # Ajouter la recherche
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(
+                Q(nom__icontains=query) | Q(description__icontains=query)
+            )
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('q', '')
+        return context
 
 class TypeLogementDetailView(LoginRequiredMixin, DetailView):
     model = TypeLogement
@@ -937,18 +953,32 @@ class ProprietaireDashboardAPI(APIView):
 
         nb_paiements = Paiement.objects.filter(contrat_id__in=contrats_ids).count()
 
+        # Calculs supplémentaires pour harmoniser avec le template
+        nbcontrats = nb_contrat_actif + nb_contrat_non_sign
+        nbpaiements = nb_paiements  # Total des paiements
+        visites_planifiees = 0  # À implémenter selon les besoins réels
+        
+        # Calculer le montant total des paiements en retard
+        montant_retard = Paiement.objects.filter(
+            contrat_id__in=contrats_ids,
+            statut='EN_RETARD'
+        ).aggregate(total=Sum('montant'))['total'] or 0
+        
         data = {
-            'nb_proprietes': nb_prop,
-            'nb_logements': nb_log,
-            'nb_agences': nb_agences,
-            'nb_clients': nb_clients,
-            'nb_contrats_actifs': nb_contrat_actif,
-            'nb_contrats_non_signes': nb_contrat_non_sign,
+            'nbagence': nb_agences,
+            'nbpropriete': nb_prop,
+            'nbclients': nb_clients,
+            'nblogements': nb_log,
+            'nbcontrats': nbcontrats,
+            'nbcontrats_actifs': nb_contrat_actif,
+            'nbcontrats_brouillons': nb_contrat_non_sign,
+            'nbpaiements': nbpaiements,
+            'paiements_retard': paiements_retard,
+            'montant_retard': montant_retard,
             'revenu_mensuel': revenu_mensuel,
             'taux_occupation': taux_occupation,
-            'nb_paiements_retard': paiements_retard,
-            'nb_contrats_expirant_30j': contrats_expirant,
-            'nb_paiements_total': nb_paiements,
+            'contrats_expirant': contrats_expirant,
+            'visites_planifiees': visites_planifiees,
         }
         return Response(data)
 

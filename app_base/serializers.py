@@ -167,6 +167,7 @@ class ProprietaireContratSerializer(serializers.ModelSerializer):
     logement_identifiant = serializers.CharField(source='logement.identifiant', read_only=True, default=None)
     paiements_count = serializers.SerializerMethodField()
     dernier_paiement_date = serializers.SerializerMethodField()
+    type_contrat = serializers.CharField(source='get_type_display', read_only=True)
 
     class Meta:
         model = Contrat

@@ -1,67 +1,131 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
-{% block title %}Types de Logements{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.clickable-row').forEach(function(row) {
+    row.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('button')) return;
+      window.location.href = this.dataset.href;
+    });
+  });
+});
+</script>
+{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Types de Logements</h3>
-                    <div class="card-tools">
-                        <a href="{% url 'type_logement_create' %}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Ajouter un type de logement
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body table-responsive p-0">
-                    <table class="table table-hover text-nowrap">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nom</th>
-                                <th>Description</th>
-                                <th>Nombre de logements</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for type_logement in type_logements %}
-                            <tr>
-                                <td>{{ type_logement.id }}</td>
-                                <td>{{ type_logement.nom }}</td>
-                                <td>{{ type_logement.description|truncatechars:50 }}</td>
-                                <td>
-                                    <span class="badge bg-info">
-                                        {{ type_logement.logement_set.count }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="{% url 'type_logement_detail' type_logement.pk %}" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{% url 'type_logement_update' type_logement.pk %}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="{% url 'type_logement_delete' type_logement.pk %}" class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="5" class="text-center">Aucun type de logement trouvé.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer clearfix">
-                    {% include 'pagination.html' %}
-                </div>
-            </div>
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="mb-0"><i class="mdi mdi-home-variant"></i> Types de Logements</h5>
+          <a href="{% url 'type_logement_create' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-plus"></i> Nouveau Type</a>
         </div>
+
+        <!-- Barre de recherche -->
+        <form method="get" action="{% url 'type_logements' %}" class="row g-3 mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control" placeholder="Rechercher un type de logement..." value="{{ search_query }}">
+              <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i> Rechercher</button>
+            </div>
+          </div>
+        </form>
+
+        {% if type_logements %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+               <tr>
+                 <th>ID</th>
+                 <th>Nom</th>
+                 <th>Description</th>
+                 <th class="text-center">Logements</th>
+                 <th class="text-center">Actions</th>
+               </tr>
+            </thead>
+            <tbody>
+              {% for type_logement in type_logements %}
+              <tr class="clickable-row" data-href="{% url 'type_logement_detail' type_logement.pk %}">
+                <td><a href="{% url 'type_logement_detail' type_logement.pk %}" class="text-decoration-none text-dark">{{ type_logement.id }}</a></td>
+                <td><strong>{{ type_logement.nom }}</strong></td>
+                <td>{{ type_logement.description|truncatechars:50 }}</td>
+                <td class="text-center">
+                  <span class="badge {% if type_logement.logement_count > 0 %}bg-success text-white{% else %}bg-secondary text-white{% endif %}">
+                    <i class="mdi mdi-home-outline"></i> {{ type_logement.logement_count }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <div class="btn-group" role="group">
+                    <a href="{% url 'type_logement_update' type_logement.pk %}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="mdi mdi-pencil"></i></a>
+                    <a href="{% url 'type_logement_delete' type_logement.pk %}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce type de logement ?')"><i class="mdi mdi-delete"></i></a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+          <i class="mdi mdi-information"></i> Aucun type de logement trouvé.
+          {% if search_query %}
+          <div class="mt-2">
+            <a href="{% url 'type_logements' %}" class="btn btn-sm btn-outline-secondary">
+              <i class="mdi mdi-close"></i> Réinitialiser la recherche
+            </a>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        {% if is_paginated %}
+        <nav aria-label="Page navigation" class="mt-3">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Premier">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Précédent">
+                <span aria-hidden="true">&lsaquo;</span>
+              </a>
+            </li>
+            {% endif %}
+
+            {% for num in paginator.page_range %}
+              {% if page_obj.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+              {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ num }}</a></li>
+              {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Suivant">
+                <span aria-hidden="true">&rsaquo;</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Dernier">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% endif %}
+      </div>
     </div>
-</div>
-{% endblock %}
+  </div>
+{% endblock content %}
+<task_progress>
+- [x] Examiner le style de agences.html
+- [x] Appliquer le même style à type_logements.html
+- [ ] Tester les changements
+</task_progress>
+</write_to_file>

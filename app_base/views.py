@@ -1013,6 +1013,104 @@ class ProprietaireContratsAPI(APIView):
         serializer = ProprietaireContratSerializer(contrats, many=True)
         return Response(serializer.data)
 
+
+class ProprietaireContratDetailAPI(APIView):
+    """API detail view for a single contract belonging to the authenticated proprietor."""
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, contrat_id):
+        user = request.user
+        if not (user.profile and user.profile.name == 'Proprietaire'):
+            return Response({'error': 'Accès refusé'}, status=403)
+
+        proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+        try:
+            contrat = Contrat.objects.filter(
+                Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids),
+                id=contrat_id
+            ).select_related('client__user', 'propriete', 'logement', 'agent__user').get()
+        except Contrat.DoesNotExist:
+            return Response({'error': 'Contrat non trouvé ou accès refusé'}, status=404)
+
+        serializer = ProprietaireContratSerializer(contrat)
+        return Response(serializer.data)
+
+
+class ProprietairePaiementsAPI(APIView):
+    """List payments for contracts owned by the authenticated proprietor."""
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if not (user.profile and user.profile.name == 'Proprietaire'):
+            return Response({'error': 'Accès refusé'}, status=403)
+
+        proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+        contrats_ids = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
+        ).values_list('id', flat=True)
+
+        paiements = Paiement.objects.filter(contrat_id__in=contrats_ids).select_related(
+            'contrat__client__user', 'agent__user'
+        ).order_by('-date_echeance')
+
+        data = [
+            {
+                'id': p.id,
+                'contrat_id': p.contrat_id,
+                'contrat_reference': p.contrat.reference if getattr(p, 'contrat', None) else None,
+                'client_noms': p.client.user.noms if getattr(p, 'client', None) and getattr(p.client, 'user', None) else None,
+                'type_paiement': p.get_type_paiement_display(),
+                'montant': str(p.montant),
+                'date_echeance': p.date_echeance.strftime('%Y-%m-%d') if p.date_echeance else None,
+                'date_paiement': p.date_paiement.strftime('%Y-%m-%d') if p.date_paiement else None,
+                'statut': p.statut,
+                'agent_noms': p.agent.user.noms if getattr(p, 'agent', None) and getattr(p.agent, 'user', None) else None,
+            }
+            for p in paiements
+        ]
+
+        return Response(data)
+
+
+class ProprietairePaiementDetailAPI(APIView):
+    """Detail view for a single payment belonging to a proprietor's contract."""
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, paiement_id):
+        user = request.user
+        if not (user.profile and user.profile.name == 'Proprietaire'):
+            return Response({'error': 'Accès refusé'}, status=403)
+
+        proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
+        contrats_ids = Contrat.objects.filter(
+            Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
+        ).values_list('id', flat=True)
+
+        try:
+            p = Paiement.objects.filter(contrat_id__in=contrats_ids, id=paiement_id).select_related(
+                'contrat__client__user', 'agent__user'
+            ).get()
+        except Paiement.DoesNotExist:
+            return Response({'error': 'Paiement non trouvé ou accès refusé'}, status=404)
+
+        payload = {
+            'id': p.id,
+            'contrat_id': p.contrat_id,
+            'contrat_reference': p.contrat.reference if getattr(p, 'contrat', None) else None,
+            'client_noms': p.client.user.noms if getattr(p, 'client', None) and getattr(p.client, 'user', None) else None,
+            'type_paiement': p.get_type_paiement_display(),
+            'montant': str(p.montant),
+            'date_echeance': p.date_echeance.strftime('%Y-%m-%d') if p.date_echeance else None,
+            'date_paiement': p.date_paiement.strftime('%Y-%m-%d') if p.date_paiement else None,
+            'statut': p.statut,
+            'agent_noms': p.agent.user.noms if getattr(p, 'agent', None) and getattr(p.agent, 'user', None) else None,
+        }
+        return Response(payload)
+
 # --- API pour Client ---
 class ClientContratDetailAPI(APIView):
     authentication_classes = [JWTAuthentication]

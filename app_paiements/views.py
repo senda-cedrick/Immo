@@ -31,8 +31,6 @@ class PaiementListView(LoginRequiredMixin, ListView):
             qs = qs.filter(statut='EN_ATTENTE')
             qs = [p for p in qs if not p.est_en_retard()]
             # Convertir la liste en queryset (solution temporaire)
-            from django.db.models import Q
-            import itertools
             if qs:
                 ids = [p.id for p in qs]
                 qs = super().get_queryset().filter(id__in=ids).select_related('contrat__client__user', 'agent__user')
@@ -44,7 +42,6 @@ class PaiementListView(LoginRequiredMixin, ListView):
             qs = list(qs)
             qs = [p for p in qs if p.statut == 'EN_RETARD' or p.est_en_retard()]
             # Convertir la liste en queryset
-            from django.db.models import Q
             if qs:
                 ids = [p.id for p in qs]
                 qs = super().get_queryset().filter(id__in=ids).select_related('contrat__client__user', 'agent__user')

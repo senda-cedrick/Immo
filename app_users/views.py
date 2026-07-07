@@ -30,6 +30,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from app_users.models import LogUser, Profile, User
 from app_users.serializers import UserSerializer
 from .forms import ProfileForm, UserCreationForm, UserChangeForm
+from app_base.models import Proprietaire as ProprietaireModel, Client as ClientModel, Personnel as PersonnelModel
 
 
 class RegisterViewset(ModelViewSet):
@@ -53,8 +54,38 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         refresh = self.get_token(self.user)
         user = self.user
-        data['user'] = user.username
 
+        # Récupérer le téléphone selon le profil
+        telephone = None
+        profile_name = user.profile.name if user.profile else None
+
+        if profile_name == 'Proprietaire':
+            try:
+                proprietaire = ProprietaireModel.objects.get(user=user)
+                telephone = proprietaire.telephone
+            except ProprietaireModel.DoesNotExist:
+                pass
+        elif profile_name == 'Client':
+            try:
+                client = ClientModel.objects.get(user=user)
+                telephone = client.telephone
+            except ClientModel.DoesNotExist:
+                pass
+        elif profile_name == 'Agent':
+            try:
+                personnel = PersonnelModel.objects.get(user=user)
+                telephone = personnel.telephone
+            except PersonnelModel.DoesNotExist:
+                pass
+
+        data['user'] = {
+            'id': user.id,
+            'username': user.username,
+            'noms': user.noms,
+            'email': user.email,
+            'profil': profile_name,
+            'telephone': telephone,
+        }
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
 

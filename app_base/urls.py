@@ -6,6 +6,9 @@ urlpatterns = [
     # Agences
     path('agences/', views.AgenceListView.as_view(), name='agences'),
     path('agences/ajouter/', views.AgenceCreateView.as_view(), name='ajouter_agence'),
+
+    # Dashboard (interface, nécessite login)
+    path('dashboard/', views.dashboard, name='dashboard'),
     path('agences/<int:pk>/', views.AgenceDetailView.as_view(), name='agence_detail'),
     path('agences/<int:pk>/modifier/', views.AgenceUpdateView.as_view(), name='modifier_agence'),
     path('agences/<int:pk>/supprimer/', views.AgenceDeleteView.as_view(), name='supprimer_agence'),
@@ -40,7 +43,11 @@ urlpatterns = [
     
     path('logements/', views.LogementListView.as_view(), name='logements'),
     path('logements/ajouter/', views.LogementCreateView.as_view(), name='ajouter_logement'),
+    path('logements/gallery/', views.GalleryView.as_view(), name='logement_gallery'),
+    path('proprietes/gallery/', views.PublicProprieteGalleryView.as_view(), name='propriete_gallery'),
     path('logements/<int:pk>/', views.LogementDetailView.as_view(), name='logement_detail'),
+    path('logements/<int:pk>/public/', views.PublicLogementDetailView.as_view(), name='public_logement_detail'),
+    path('proprietes/<int:pk>/public/', views.PublicProprieteDetailView.as_view(), name='public_propriete_detail'),
     path('logements/<int:pk>/modifier/', views.LogementUpdateView.as_view(), name='modifier_logement'),
     path('logements/<int:pk>/supprimer/', views.LogementDeleteView.as_view(), name='supprimer_logement'),
 

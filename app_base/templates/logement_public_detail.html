@@ -7,11 +7,13 @@
         <div class="col-12">
           <div class="glass-card">
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <h5 class="mb-0"><i class="mdi mdi-home-floor-3"></i> Détail du logement : {{ logement.identifiant }}</h5>
+              <h5 class="mb-0"><i class="mdi mdi-home-floor-3"></i> Logement : {{ logement.identifiant }}</h5>
               <div class="d-flex gap-2">
-                <a href="{% url 'logements' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+                <a href="{% url 'logement_gallery' %}" class="btn btn-outline-light btn-sm"><i class="mdi mdi-arrow-left"></i> Retour</a>
+                {% if user.is_authenticated %}
                 <a href="{% url 'modifier_logement' logement.id %}" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-pencil"></i> Modifier</a>
                 <a href="{% url 'supprimer_logement' logement.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Supprimer ce logement ?')"><i class="mdi mdi-delete"></i> Supprimer</a>
+                {% endif %}
               </div>
             </div>
 
@@ -55,10 +57,10 @@
                     <div class="card bg-success text-white p-3 rounded-3" style="height: 140px;">
                       <div class="d-flex justify-content-between align-items-center h-100">
                         <div>
-                          <h6 class="mb-1" style="font-size: 0.8rem; font-weight: 600;">Contrats</h6>
-                          <h3 class="mb-0" style="font-size: 1.3rem;">{{ contrats|length }}</h3>
+                          <h6 class="mb-1" style="font-size: 0.8rem; font-weight: 600;">Type</h6>
+                          <h3 class="mb-0" style="font-size: 1.3rem;">{{ logement.type_logement.nom|default:"—" }}</h3>
                         </div>
-                        <i class="mdi mdi-file-document" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                        <i class="mdi mdi-shape-outline" style="font-size: 2.5rem; opacity: 0.5;"></i>
                       </div>
                     </div>
                   </div>
@@ -86,10 +88,30 @@
                         <i class="mdi mdi-stairs" style="font-size: 2.5rem; opacity: 0.5;"></i>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                <div class="row mt-3">
+                  <div class="col-md-12">
+                    <div class="card bg-secondary text-white p-3 rounded-3" style="height: 140px;">
+                      <div class="d-flex justify-content-between align-items-center h-100">
+                        <div>
+                          <h6 class="mb-1" style="font-size: 0.8rem; font-weight: 600; color: #333333;">Statut</h6>
+                          <h3 class="mb-0" style="font-size: 1.3rem; color: #333333;">
+                            {% if logement.statut == 'LOUE' %}Loué
+                            {% elif logement.statut == 'DISPONIBLE' %}Disponible
+                            {% elif logement.statut == 'MAINTENANCE' %}Maintenance
+                            {% else %}{{ logement.statut }}{% endif %}
+                          </h3>
+                        </div>
+                        <i class="mdi mdi-check-circle" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+
             <div class="row mb-5">
               <div class="col-md-6">
                 <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-information"></i> Informations générales</h6>
@@ -127,6 +149,7 @@
                     <td class="fw-semibold text-muted">Ville</td>
                     <td>{{ logement.propriete.ville }}</td>
                   </tr>
+                  {% if user.is_authenticated %}
                   <tr>
                     <td class="fw-semibold text-muted">Adresse</td>
                     <td>{{ logement.propriete.adresse|truncatechars:40 }}</td>
@@ -135,75 +158,31 @@
                     <td class="fw-semibold text-muted">Agence</td>
                     <td>{{ logement.propriete.agence.nom }}</td>
                   </tr>
-                 <tr>
-                   <td class="fw-semibold text-muted">Propriétaire</td>
-                   <td>{{ logement.propriete.proprietaire.user.noms|default:"—" }}</td>
-                 </tr>
-                 <tr>
-                   <td class="fw-semibold text-muted">Statut</td>
-                   <td>
-                     {% if logement.statut == 'LOUE' %}
-                       <span class="badge bg-success text-white">Loué</span>
-                     {% elif logement.statut == 'DISPONIBLE' %}
-                       <span class="badge bg-primary text-white">Disponible</span>
-                     {% elif logement.statut == 'MAINTENANCE' %}
-                       <span class="badge bg-warning text-dark">Maintenance</span>
-                     {% else %}
-                       <span class="badge bg-secondary text-white">{{ logement.statut }}</span>
-                     {% endif %}
-                   </td>
-                 </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Propriétaire</td>
+                    <td>{{ logement.propriete.proprietaire.user.noms|default:"—" }}</td>
+                  </tr>
+                  {% else %}
+                  <tr>
+                    <td class="fw-semibold text-muted">Adresse</td>
+                    <td><span class="text-muted">Masquée pour les visiteurs</span></td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Agence</td>
+                    <td><span class="text-muted">Masquée pour les visiteurs</span></td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold text-muted">Propriétaire</td>
+                    <td><span class="text-muted">Masqué pour les visiteurs</span></td>
+                  </tr>
+                  {% endif %}
                 </table>
               </div>
             </div>
 
-            <div class="row mb-5">
-              <div class="col-12">
-                <h6 class="fw-bold text-muted mb-3"><i class="mdi mdi-file-document"></i> Contrats de la propriété ({{ contrats|length }})</h6>
-                <div class="table-responsive">
-                  <table class="table table-hover align-middle">
-                    <thead>
-                      <tr>
-                        <th>Référence</th>
-                        <th>Type</th>
-                        <th>Client</th>
-                        <th>Montant</th>
-                        <th>Date début</th>
-                        <th>Statut</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for contrat in contrats %}
-                      <tr>
-                        <td><strong>{{ contrat.reference }}</strong></td>
-                        <td>{{ contrat.get_type_display }}</td>
-                        <td>{{ contrat.client.user.noms }}</td>
-                        <td>{{ contrat.montant|floatformat:0 }} €</td>
-                        <td>{{ contrat.date_debut|date:"d/m/Y" }}</td>
-                        <td>
-                          {% if contrat.statut == 'ACTIF' %}
-                            <span class="badge bg-success text-white">Actif</span>
-                          {% elif contrat.statut == 'TERMINE' %}
-                            <span class="badge bg-secondary text-white">Terminé</span>
-                          {% elif contrat.statut == 'RESILIE' %}
-                            <span class="badge bg-danger text-white">Résilié</span>
-                          {% else %}
-                            <span class="badge bg-warning text-dark">{{ contrat.get_statut_display }}</span>
-                          {% endif %}
-                        </td>
-                      </tr>
-                      {% empty %}
-                      <tr>
-                        <td colspan="6" class="text-muted">Aucun contrat pour cette propriété.</td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 {% endblock content %}

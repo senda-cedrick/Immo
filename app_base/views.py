@@ -669,13 +669,97 @@ class LogementListView(LoginRequiredMixin, ListView):
                 ).values_list('logement', flat=True).distinct()
                 qs = qs.filter(id__in=contrats_ids)
             else:
-                # Pour les autres rôles (Personnel, etc.), filtrer selon les besoins
-                # Par défaut, ne montrer aucun logement si le rôle n'est pas explicitement autorisé
-                qs = qs.none()
+                # Pour les autres rôles (Admin, Personnel, etc.), montrer tous les logements
+                # Seuls les propriétaires et clients ont des restrictions
+                pass  # qs reste inchangé, montre tous les logements
         else:
             # Utilisateur non authentifié ou sans profil
             qs = qs.none()
         return qs
+
+class GalleryView(ListView):
+    """Vue publique affichant une galerie combinée de logements et propriétés disponibles."""
+    model = Logement
+    template_name = 'gallery.html'
+    context_object_name = 'logements'
+    paginate_by = 12
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Ajouter les propriétés disponibles au contexte
+        proprietes_qs = Propriete.objects.filter(statut='DISPONIBLE').select_related('type_propriete', 'agence')
+        q = self.request.GET.get('q')
+        if q:
+            proprietes_qs = proprietes_qs.filter(
+                Q(adresse__icontains=q) |
+                Q(ville__icontains=q) |
+                Q(type_propriete__nom__icontains=q)
+            )
+        context['proprietes'] = proprietes_qs.order_by('-id')[:8]  # Limiter à 8 propriétés
+
+        return context
+
+    def get_queryset(self):
+        qs = Logement.objects.filter(statut='DISPONIBLE').select_related('propriete__type_propriete', 'type_logement')
+        q = self.request.GET.get('q')
+        if q:
+            qs = qs.filter(
+                Q(identifiant__icontains=q) |
+                Q(propriete__adresse__icontains=q) |
+                Q(propriete__ville__icontains=q)
+            )
+        return qs.order_by('-id')
+
+
+class PublicLogementDetailView(DetailView):
+    """Vue publique permettant de voir le détail d'un logement sans être connecté.
+    L'adresse exacte est masquée pour les visiteurs non authentifiés."""
+    model = Logement
+    template_name = 'logement_public_detail.html'
+    context_object_name = 'logement'
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .select_related('propriete__type_propriete', 'propriete__agence', 'propriete__proprietaire__user', 'type_logement')
+            .prefetch_related('images')
+        )
+
+class PublicProprieteGalleryView(ListView):
+    """Vue publique affichant une galerie des propriétés disponibles."""
+    model = Propriete
+    template_name = 'propriete_gallery.html'
+    context_object_name = 'proprietes'
+    paginate_by = 12
+
+    def get_queryset(self):
+        qs = Propriete.objects.filter(statut='DISPONIBLE').select_related('type_propriete', 'agence')
+        q = self.request.GET.get('q')
+        if q:
+            qs = qs.filter(
+                Q(adresse__icontains=q) |
+                Q(ville__icontains=q) |
+                Q(type_propriete__nom__icontains=q)
+            )
+        return qs.order_by('-id')
+
+class PublicProprieteDetailView(DetailView):
+    """Vue publique permettant de voir le détail d'une propriété sans être connecté.
+    L'adresse exacte est masquée pour les visiteurs non authentifiés."""
+    model = Propriete
+    template_name = 'propriete_public_detail.html'
+    context_object_name = 'propriete'
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .select_related('type_propriete', 'agence', 'proprietaire__user', 'agent__user')
+            .prefetch_related('logements', 'images')
+        )
+
 
 class LogementDetailView(LoginRequiredMixin, DetailView):
     model = Logement
@@ -686,7 +770,8 @@ class LogementDetailView(LoginRequiredMixin, DetailView):
         return (
             super()
             .get_queryset()
-            .select_related('propriete__type_propriete', 'propriete__agence', 'propriete__proprietaire__user')
+            .select_related('propriete__type_propriete', 'propriete__agence', 'propriete__proprietaire__user', 'type_logement')
+            .prefetch_related('images')
         )
 
     def get_context_data(self, **kwargs):
@@ -906,6 +991,9 @@ class ProprietaireDashboardAPI(APIView):
         if not (user.profile and user.profile.name == 'Proprietaire'):
             return Response({'error': 'Accès refusé'}, status=403)
 
+        # Récupérer les infos du propriétaire
+        proprietaire = Proprietaire.objects.get(user=user)
+
         proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
         nb_prop = proprietes_ids.count()
         nb_log = Logement.objects.filter(propriete_id__in=proprietes_ids).count()
@@ -965,6 +1053,13 @@ class ProprietaireDashboardAPI(APIView):
         ).aggregate(total=Sum('montant'))['total'] or 0
         
         data = {
+            'proprietaire': {
+                'id': proprietaire.id,
+                'noms': user.noms,
+                'email': user.email,
+                'telephone': proprietaire.telephone,
+                'adresse': proprietaire.adresse,
+            },
             'nbagence': nb_agences,
             'nbpropriete': nb_prop,
             'nbclients': nb_clients,

@@ -4,14 +4,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from app_base.views import dashboard
+from app_base.views import dashboard, GalleryView
 from app_users.views import MyTokenObtainPairView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    # Route explicite pour le tableau de bord (page d'accueil)
-    path('', dashboard, name='home'),
+    # Page d'accueil publique -> galerie des logements disponibles
+    path('', GalleryView.as_view(), name='home'),
+    # Dashboard administrateur/utilisateurs (interface)
+    path('dashboard/', dashboard, name='dashboard'),
     path('app/', include('app_base.urls')), # Les autres URLs de l'app sont préfixées par /app/
     path('paiements/', include('app_paiements.urls')), # URLs pour la gestion des paiements
     path('caisses/', include('app_caisse.urls')), # URLs pour la gestion de caisse

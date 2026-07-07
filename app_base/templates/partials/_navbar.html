@@ -1,12 +1,13 @@
 {% load static %}
 <nav class="navbar p-0 fixed-top d-flex flex-row">
           <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
-            <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" /></a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}"><img src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" /></a>
           </div>
           <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch bg-secondary text-dark">
             <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
               <span class="mdi mdi-menu"></span>
             </button>
+            {% if user.is_authenticated %}
             <ul class="navbar-nav w-100">
               <li class="nav-item w-100">
                 <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search" method="get" action="{% url 'users' %}">
@@ -14,7 +15,9 @@
                 </form>
               </li>
             </ul>
+            {% endif %}
             <ul class="navbar-nav navbar-nav-right">
+              {% if user.is_authenticated %}
               <li class="nav-item dropdown d-none d-lg-block">
                 <a class="nav-link btn btn-primary text-white create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Créer Utilisateur</a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="createbuttonDropdown">
@@ -24,6 +27,7 @@
                   <a class="dropdown-item" href="{% url 'profile_list' %}"><i class="mdi mdi-shield-account"></i> Gestion des profils</a>
                 </div>
               </li>
+              {% endif %}
               <li class="nav-item nav-settings d-none d-lg-block">
                 <a class="nav-link" href="#">
                   <i class="mdi mdi-view-grid"></i>
@@ -152,6 +156,20 @@
                 </div>
               </li>
             </ul>
+            {% if not user.is_authenticated %}
+            <ul class="navbar-nav navbar-nav-right ms-auto">
+              <li class="nav-item">
+                <a class="nav-link btn btn-outline-light me-2" href="{% url 'login' %}">
+                  <i class="mdi mdi-login"></i> Se connecter
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link btn btn-primary text-white" href="{% url 'user_add' %}">
+                  <i class="mdi mdi-account-plus"></i> S'inscrire
+                </a>
+              </li>
+            </ul>
+            {% endif %}
             <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
               <span class="mdi mdi-format-line-spacing"></span>
             </button>

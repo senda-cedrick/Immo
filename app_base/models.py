@@ -91,7 +91,9 @@ class Propriete(models.Model):
     superficie = models.DecimalField(max_digits=10, decimal_places=2)
     nb_pieces = models.IntegerField(null=True, blank=True)
     description = models.TextField(blank=True)
-    
+    # Image principale (pour la carte / listing)
+    main_image = models.ImageField(upload_to='proprietes/%Y/%m', null=True, blank=True)
+
     # Gestion
     statut = models.CharField(max_length=20, choices=STATUT_CHOIX, default='DISPONIBLE')
     agent = models.ForeignKey('Personnel', on_delete=models.SET_NULL, null=True, blank=True, related_name='proprietes_gerees')
@@ -117,6 +119,9 @@ class Logement(models.Model):
     etage = models.IntegerField(null=True, blank=True)
     description = models.TextField(blank=True)
 
+    # Image principale (vue liste / galerie)
+    main_image = models.ImageField(upload_to='logements/%Y/%m', null=True, blank=True)
+
     # Type spécifique de logement (pour plus de granularité)
     type_logement = models.ForeignKey(TypeLogement, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -128,6 +133,31 @@ class Logement(models.Model):
 
     def __str__(self):
         return f"{self.propriete} - {self.identifiant}"
+
+
+class ProprieteImage(models.Model):
+    """Images supplémentaires pour une propriété."""
+    propriete = models.ForeignKey('Propriete', on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='proprietes/%Y/%m')
+    caption = models.CharField(max_length=255, blank=True)
+    is_primary = models.BooleanField(default=False)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image {self.id} for {self.propriete}"
+
+
+class LogementImage(models.Model):
+    """Images supplémentaires pour un logement."""
+    logement = models.ForeignKey('Logement', on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='logements/%Y/%m')
+    caption = models.CharField(max_length=255, blank=True)
+    is_primary = models.BooleanField(default=False)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image {self.id} for {self.logement}"
+
 
 class Contrat(models.Model):
     """NOUVEAU : Contrat central (location/vente)"""

@@ -1,0 +1,13 @@
+{% load static %}
+<nav class="login-topbar">
+  <a href="{% url 'home' %}" class="logo" style="text-decoration: none; color: inherit;">
+    <i class="mdi mdi-home-city"></i>
+    <span>IMMO MANAGER</span>
+  </a>
+  <div class="nav-links">
+    <a href="{% url 'logement_gallery' %}">Logements</a>
+    <a href="{% url 'propriete_gallery' %}">Propriétés</a>
+    <a href="{% url 'login' %}">Se connecter</a>
+    <a href="{% url 'user_add' %}" class="btn-register">S'inscrire</a>
+  </div>
+</nav>

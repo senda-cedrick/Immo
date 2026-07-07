@@ -110,7 +110,7 @@ python manage.py migrate
 # ─── 6. Génération des données de démonstration ──
 echo ""
 echo "📦 Génération des données de démonstration..."
-python scripts/demo_data.py
+python scripts/reset_demo.py
 
 echo ""
 echo "========================================="

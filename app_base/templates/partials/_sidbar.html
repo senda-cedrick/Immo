@@ -70,6 +70,12 @@
     </li>
     <li class="nav-item menu-items {% if request.resolver_match.url_name == 'home' %}active{% endif %}" data-color="var(--c-dashboard)">
       <a class="nav-link" href="{% url 'home' %}">
+        <span class="menu-icon"><i class="mdi mdi-home-outline"></i></span>
+        <span class="menu-title">Accueil</span>
+      </a>
+    </li>
+    <li class="nav-item menu-items {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" data-color="var(--c-dashboard)">
+      <a class="nav-link" href="{% url 'dashboard' %}">
         <span class="menu-icon"><i class="mdi mdi-view-dashboard"></i></span>
         <span class="menu-title">Dashboard</span>
       </a>

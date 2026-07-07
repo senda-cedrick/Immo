@@ -1,4 +1,5 @@
-{% load static %}<!DOCTYPE html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -22,6 +23,66 @@
     <!-- End layout styles -->
     <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
     <style>
+        /* ===== NAVBAR PUBLIQUE (inspirée de login) ===== */
+        .login-topbar {
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          padding: 12px 20px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 1000;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .login-topbar .logo {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-weight: 600;
+          color: #2c3e50;
+          font-size: 1.1rem;
+        }
+        .login-topbar .logo i {
+          font-size: 1.5rem;
+          color: #0090e7;
+        }
+        .login-topbar .nav-links {
+          display: flex;
+          gap: 20px;
+          align-items: center;
+        }
+        .login-topbar .nav-links a {
+          text-decoration: none;
+          color: #2c3e50;
+          font-weight: 500;
+          font-size: 0.9rem;
+          transition: color 0.2s;
+          padding: 6px 12px;
+          border-radius: 6px;
+        }
+        .login-topbar .nav-links a:hover {
+          color: #0090e7;
+          background: rgba(0, 144, 231, 0.1);
+        }
+        .login-topbar .btn-register {
+          background: #0090e7;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 6px;
+          text-decoration: none;
+          font-weight: 500;
+          font-size: 0.9rem;
+          transition: all 0.2s;
+        }
+        .login-topbar .btn-register:hover {
+          background: #0070b4;
+          transform: translateY(-1px);
+        }
+
         /* ==========================================
            THEME PREMIUM — Immo Manager
            ========================================== */
@@ -252,15 +313,21 @@
     <div class="container-scroller text-dark">
       
       <!-- partial:partials/_sidebar.html -->
-      {% if request.user.is_authenticated and request.user.profile and request.user.profile.name == 'Client' %}
-        {% include "partials/_sidebar_client.html" %}
-      {% else %}
-        {% include "partials/_sidbar.html" %}
+      {% if user.is_authenticated %}
+        {% if user.profile and user.profile.name == 'Client' %}
+          {% include "partials/_sidebar_client.html" %}
+        {% else %}
+          {% include "partials/_sidbar.html" %}
+        {% endif %}
       {% endif %}
       
 
         <!-- partial:partials/_navbar.html -->
-        {% include "partials/_navbar.html" %}
+        {% if user.is_authenticated %}
+          {% include "partials/_navbar_simple.html" %}
+        {% else %}
+          {% include "partials/_navbar_public_v2.html" %}
+        {% endif %}
         <!-- /partial -->
 
         <div class="main-panel">
@@ -284,7 +351,7 @@
 
           <!-- content-wrapper ends -->
 
-        {% include "partials/_footer.html" %}
+          {% include "partials/_footer.html" %}
           <!-- partial:partials/_footer.html -->
           <!-- partial -->
 

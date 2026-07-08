@@ -696,7 +696,7 @@ class GalleryView(ListView):
                 Q(ville__icontains=q) |
                 Q(type_propriete__nom__icontains=q)
             )
-        context['proprietes'] = proprietes_qs.order_by('-id')[:8]  # Limiter à 8 propriétés
+        context['proprietes'] = proprietes_qs.order_by('-id')  # Afficher toutes les propriétés disponibles
 
         return context
 

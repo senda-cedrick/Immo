@@ -129,3 +129,59 @@
     </div>
   </div>
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initialisation des onglets...');
+
+    // Initialiser les onglets Bootstrap
+    var triggerTabList = [].slice.call(document.querySelectorAll('#galleryTabs button[data-bs-toggle="tab"]'))
+    console.log('Nombre d\'onglets trouvés:', triggerTabList.length);
+
+    triggerTabList.forEach(function (triggerEl) {
+        console.log('Initialisation de l\'onglet:', triggerEl.id);
+        var tabTrigger = new bootstrap.Tab(triggerEl)
+        triggerEl.addEventListener('click', function (event) {
+            event.preventDefault()
+            console.log('Clic sur l\'onglet:', triggerEl.id);
+            tabTrigger.show()
+
+            // Ajouter la classe active manuellement au cas où
+            document.querySelectorAll('#galleryTabs .nav-link').forEach(function(link) {
+                link.classList.remove('active');
+            });
+            triggerEl.classList.add('active');
+
+            // S'assurer que le contenu de l'onglet devient visible
+            var targetTabPane = document.querySelector(triggerEl.getAttribute('data-bs-target'));
+            if (targetTabPane) {
+                console.log('Affichage du contenu de l\'onglet:', targetTabPane.id);
+                // Supprimer la classe active de tous les panneaux d'onglets
+                document.querySelectorAll('#galleryTabsContent .tab-pane').forEach(function(pane) {
+                    pane.classList.remove('active', 'show');
+                });
+                // Ajouter les classes active et show au panneau cible
+                targetTabPane.classList.add('active', 'show');
+            }
+        })
+    })
+
+    // Activer le premier onglet par défaut
+    var firstTab = document.querySelector('#galleryTabs button[data-bs-toggle="tab"]')
+    if (firstTab) {
+        console.log('Activation du premier onglet par défaut:', firstTab.id);
+        var firstTabTrigger = new bootstrap.Tab(firstTab)
+        firstTabTrigger.show()
+        firstTab.classList.add('active');
+    }
+
+    // Vérifier si Bootstrap est disponible
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrap JavaScript n\'est pas chargé !');
+    } else {
+        console.log('Bootstrap JavaScript est chargé avec succès.');
+    }
+})
+</script>
+{% endblock extra_js %}

@@ -34,7 +34,13 @@ from .serializers import ProprietaireProprieteSerializer, ProprietaireContratSer
 def dashboard(request):
     # Logique pour récupérer les statistiques du dashboard
     user = request.user
-    if user.is_authenticated and user.profile and user.profile.name == 'Proprietaire':
+
+    # Get profile name safely with fallback
+    profile = getattr(user, 'profile', None)
+    profile_name = getattr(profile, 'name', None) if profile else None
+
+    # Dashboard for Proprietaires
+    if profile_name == 'Proprietaire':
         proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
         nb_prop = proprietes_ids.count()
         nb_log = Logement.objects.filter(propriete_id__in=proprietes_ids).count()
@@ -128,7 +134,7 @@ def dashboard(request):
         return render(request, 'home_proprietaire.html', stats)
 
     # Logique pour les clients
-    elif user.is_authenticated and user.profile and user.profile.name == 'Client':
+    elif profile_name == 'Client':
         # Récupérer les données spécifiques au client
         client_obj = Client.objects.get(user=user)
 
@@ -1213,7 +1219,9 @@ class ClientContratDetailAPI(APIView):
 
     def get(self, request, contrat_id):
         user = request.user
-        if not (user.profile and user.profile.name == 'Client'):
+        profile = getattr(user, 'profile', None)
+        profile_name = getattr(profile, 'name', None) if profile else None
+        if profile_name != 'Client':
             return Response({'error': 'Accès refusé'}, status=403)
 
         # Récupérer le client connecté
@@ -1242,7 +1250,9 @@ class ClientContratsAPI(APIView):
 
     def get(self, request):
         user = request.user
-        if not (user.profile and user.profile.name == 'Client'):
+        profile = getattr(user, 'profile', None)
+        profile_name = getattr(profile, 'name', None) if profile else None
+        if profile_name != 'Client':
             return Response({'error': 'Accès refusé'}, status=403)
 
         # Récupérer le client connecté

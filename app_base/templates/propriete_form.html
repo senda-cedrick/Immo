@@ -42,11 +42,43 @@
                 {{ form.appartement }}
               </div>
 
-              <div class="form-check mb-4">
-                <label class="form-check-label text-dark fw-semibold">
-                  {{ form.gestion }}
-                  <i class="mdi mdi-check-circle"></i> Gestion active
-                </label>
+              <div class="form-group mb-3">
+                <label class="text-dark fw-semibold" for="id_main_image"><i class="mdi mdi-image"></i> Image principale</label>
+                {{ form.main_image }}
+                {% if object and object.main_image %}
+                <div class="mt-2">
+                  <img src="{{ object.main_image.url }}" alt="Image actuelle" class="img-thumbnail" style="max-width: 200px; max-height: 150px; object-fit: cover;">
+                  <p class="text-muted small mt-1">Image actuelle</p>
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Images supplémentaires -->
+              {% if additional_images %}
+              <div class="form-group mb-3">
+                <label class="text-dark fw-semibold"><i class="mdi mdi-images"></i> Images supplémentaires</label>
+                <div class="row">
+                  {% for image in additional_images %}
+                  <div class="col-md-4 col-lg-3 mb-2">
+                    <div class="card">
+                      <img src="{{ image.image.url }}" alt="{{ image.caption|default:'Image' }}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                      {% if image.caption %}
+                      <div class="card-body p-2">
+                        <p class="card-text small text-muted mb-0">{{ image.caption }}</p>
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+
+              <!-- Ajouter de nouvelles images -->
+              <div class="form-group mb-3">
+                <label class="text-dark fw-semibold"><i class="mdi mdi-plus-circle"></i> Ajouter des images</label>
+                <input type="file" name="additional_images" multiple accept="image/*" class="form-control">
+                <small class="text-muted">Vous pouvez sélectionner plusieurs images à la fois</small>
               </div>
 
               <div class="d-flex justify-content-end gap-2">

@@ -1,7 +1,7 @@
 from django import forms
 from .models import (
     Agence, Personnel, TypePropriete, TypeLogement, Propriete, Logement, Client, Proprietaire,
-    Contrat, Garantie, Maintenance
+    Contrat, Garantie, Maintenance, ProprieteImage
 )
 
 class AgenceForm(forms.ModelForm):
@@ -70,13 +70,14 @@ class TypeLogementForm(forms.ModelForm):
 class ProprieteForm(forms.ModelForm):
     class Meta:
         model = Propriete
-        fields = ['agence', 'proprietaire', 'type_propriete', 'adresse', 'ville', 'superficie', 'nb_pieces', 'description', 'statut', 'agent']
+        fields = ['agence', 'proprietaire', 'type_propriete', 'adresse', 'ville', 'superficie', 'nb_pieces', 'description', 'statut', 'agent', 'main_image']
         widgets = {
             'type_propriete': forms.Select(attrs={'class': 'form-control'}),
             'ville': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Kinshasa/Gombe'}),
             'agent': forms.Select(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Description de la propriété'}),
             'surface': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Ex: 250'}),
+            'main_image': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
         }
 
 class LogementForm(forms.ModelForm):

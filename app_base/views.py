@@ -13,7 +13,7 @@ from django.utils import timezone
 from datetime import timedelta
 from .models import (
     Agence, Personnel, Proprietaire, Client,
-    TypePropriete, TypeLogement, Propriete, Logement, Contrat, Garantie, Maintenance
+    TypePropriete, TypeLogement, Propriete, Logement, Contrat, Garantie, Maintenance, ProprieteImage
 )
 from django.http import JsonResponse
 from app_paiements.models import Paiement
@@ -624,7 +624,7 @@ class ProprieteDetailView(LoginRequiredMixin, DetailView):
             super()
             .get_queryset()
             .select_related('type_propriete', 'agent__user', 'agence', 'proprietaire__user')
-            .prefetch_related('logements', 'contrats__client__user', 'contrats__agent__user')
+            .prefetch_related('logements', 'contrats__client__user', 'contrats__agent__user', 'images')
         )
 
     def get_context_data(self, **kwargs):
@@ -632,6 +632,7 @@ class ProprieteDetailView(LoginRequiredMixin, DetailView):
         propriete = self.get_object()
         context['logements'] = propriete.logements.all()  # type: ignore
         context['contrats'] = propriete.contrats.all()  # type: ignore
+        context['images'] = propriete.images.all()  # type: ignore
         return context
 
 class ProprieteCreateView(LoginRequiredMixin, CreateView):
@@ -645,6 +646,30 @@ class ProprieteUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ProprieteForm
     template_name = 'propriete_form.html'
     success_url = reverse_lazy('proprietes')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        propriete = self.get_object()
+        if propriete:
+            context['additional_images'] = propriete.images.all()
+        return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        # Gérer les images supplémentaires
+        additional_images = self.request.FILES.getlist('additional_images')
+        captions = self.request.POST.getlist('image_captions')
+
+        propriete = self.get_object()
+        for i, image_file in enumerate(additional_images):
+            caption = captions[i] if i < len(captions) else ''
+            ProprieteImage.objects.create(
+                propriete=propriete,
+                image=image_file,
+                caption=caption
+            )
+
+        return response
 
 class ProprieteDeleteView(LoginRequiredMixin, DeleteView):
     model = Propriete
@@ -1093,9 +1118,38 @@ class ProprietaireProprietesAPI(APIView):
         if not (user.profile and user.profile.name == 'Proprietaire'):
             return Response({'error': 'Accès refusé'}, status=403)
 
-        proprietes = Propriete.objects.filter(proprietaire__user=user).select_related('type_propriete', 'agence')
-        serializer = ProprietaireProprieteSerializer(proprietes, many=True)
-        return Response(serializer.data)
+        proprietes = Propriete.objects.filter(proprietaire__user=user).select_related('type_propriete', 'agence').prefetch_related('images')
+
+        # Préparer les données avec les images incluses
+        data = []
+        for propriete in proprietes:
+            # Image principale
+            main_image_url = propriete.main_image.url if propriete.main_image else None
+
+            # Images supplémentaires
+            additional_images = []
+            for image in propriete.images.all():
+                additional_images.append({
+                    'url': image.image.url,
+                    'caption': image.caption,
+                    'is_primary': image.is_primary
+                })
+
+            data.append({
+                'id': propriete.id,
+                'adresse': propriete.adresse,
+                'ville': propriete.ville,
+                'superficie': str(propriete.superficie),
+                'nb_pieces': propriete.nb_pieces,
+                'statut': propriete.statut,
+                'type_propriete': propriete.type_propriete.nom,
+                'main_image': main_image_url,
+                'additional_images': additional_images,
+                'created_at': propriete.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': propriete.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+            })
+
+        return Response(data)
 
 
 class ProprietaireContratsAPI(APIView):
@@ -1110,9 +1164,47 @@ class ProprietaireContratsAPI(APIView):
         proprietes_ids = Propriete.objects.filter(proprietaire__user=user).values_list('id', flat=True)
         contrats = Contrat.objects.filter(
             Q(propriete_id__in=proprietes_ids) | Q(logement__propriete_id__in=proprietes_ids)
-        ).select_related('client__user', 'propriete', 'logement', 'agent__user')
-        serializer = ProprietaireContratSerializer(contrats, many=True)
-        return Response(serializer.data)
+        ).select_related('client__user', 'propriete', 'logement', 'agent__user').prefetch_related('logement__images')
+
+        # Préparer les données avec les images des logements incluses
+        data = []
+        for contrat in contrats:
+            # Images du logement si disponible
+            logement_images = []
+            if contrat.logement:
+                # Image principale du logement
+                main_logement_image = contrat.logement.main_image.url if contrat.logement.main_image else None
+
+                # Images supplémentaires du logement
+                for image in contrat.logement.images.all():
+                    logement_images.append({
+                        'url': image.image.url,
+                        'caption': image.caption,
+                        'is_primary': image.is_primary
+                    })
+            else:
+                main_logement_image = None
+
+            data.append({
+                'id': contrat.id,
+                'reference': contrat.reference,
+                'type': contrat.type,
+                'propriete_id': contrat.propriete.id if contrat.propriete else None,
+                'propriete_adresse': contrat.propriete.adresse if contrat.propriete else None,
+                'logement_id': contrat.logement.id if contrat.logement else None,
+                'logement_identifiant': contrat.logement.identifiant if contrat.logement else None,
+                'client_noms': contrat.client.user.noms if contrat.client and contrat.client.user else None,
+                'montant': str(contrat.montant),
+                'date_debut': contrat.date_debut.strftime('%Y-%m-%d'),
+                'date_fin': contrat.date_fin.strftime('%Y-%m-%d') if contrat.date_fin else None,
+                'statut': contrat.statut,
+                'main_logement_image': main_logement_image,
+                'logement_images': logement_images,
+                'created_at': contrat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': contrat.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+            })
+
+        return Response(data)
 
 
 class ProprietaireContratDetailAPI(APIView):
